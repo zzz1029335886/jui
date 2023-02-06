@@ -20,6 +20,10 @@ class JUIShrinkWidget extends StatefulWidget {
   //收缩状态监听
   final Function(bool isOpen, AnimationController shController)? stateListener;
 
+  final Widget? closeTitle;
+  final Widget? openTitle;
+  final Color? arrowColor;
+
   const JUIShrinkWidget(
       {Key? key,
       required this.parent,
@@ -27,7 +31,10 @@ class JUIShrinkWidget extends StatefulWidget {
       this.animateDuration = const Duration(milliseconds: 250),
       this.isOpen = false,
       this.childVisibleWidget,
-      this.stateListener})
+      this.stateListener,
+      this.closeTitle,
+      this.openTitle,
+      this.arrowColor})
       : super(key: key);
 
   @override
@@ -75,15 +82,25 @@ class _JUIShrinkWidgetState extends State<JUIShrinkWidget>
             children: [
               Expanded(child: widget.parent),
               Padding(
-                  padding: EdgeInsets.only(left: 20),
-                  child: RotationTransition(
-                    turns: _shAnimation,
-                    child: Icon(
-                      Icons.keyboard_arrow_down_outlined,
-                      color: const Color.fromRGBO(183, 187, 191, 1),
-                      size: 24,
+                padding: EdgeInsets.only(left: 20),
+                child: Row(
+                  children: [
+                    if (widget.openTitle != null || widget.closeTitle != null)
+                      isOpen
+                          ? widget.openTitle ?? Container()
+                          : widget.closeTitle ?? Container(),
+                    RotationTransition(
+                      turns: _shAnimation,
+                      child: Icon(
+                        Icons.keyboard_arrow_down_outlined,
+                        color: widget.arrowColor ??
+                            const Color.fromRGBO(183, 187, 191, 1),
+                        size: 24,
+                      ),
                     ),
-                  ))
+                  ],
+                ),
+              )
             ],
           ),
         ),

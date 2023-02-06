@@ -15,7 +15,14 @@ class _JUIShrinkWidgetPageState extends State<JUIShrinkWidgetPage> {
       appBar: AppBar(),
       body: SingleChildScrollView(
           child: JUIShrinkWidget(
-              parent: JUIText('parent'),
+              parent: Container(
+                alignment: Alignment.centerLeft,
+                child: Expanded(child: JUIText('parent')),
+                height: 44,
+              ),
+              closeTitle: JUIText('展开'),
+              openTitle: JUIText('关闭'),
+              arrowColor: Colors.amber,
               child: Container(
                 color: Colors.amber,
                 child: Column(
