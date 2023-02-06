@@ -2,6 +2,9 @@ import 'package:example/base/jui_base_page.dart';
 import 'package:flutter/material.dart';
 import 'package:jui/jui.dart';
 
+import 'common/jui_common_page.dart';
+import 'list_button.dart';
+
 void main() {
   runApp(const MyApp());
 }
@@ -69,22 +72,27 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Container(
-              height: 44,
-              alignment: Alignment.center,
-              child: JUIButton(
-                title: 'Base',
-                onPressed: () {
-                  Navigator.of(context)
-                      .push(MaterialPageRoute(builder: (context) {
-                    return JUIBasePage();
-                  }));
-                },
-              ),
-            )
+            _itemWidget(context, 'Base', () {
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+                return JUIBasePage();
+              }));
+            }),
+            _itemWidget(context, 'Common', () {
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+                return JUICommonPage();
+              }));
+            }),
           ],
         ),
       ), // This trailing comma makes auto-formatting nicer for build methods.
+    );
+  }
+
+  Widget _itemWidget(
+      BuildContext context, String title, VoidCallback callback) {
+    return ListButton(
+      title: title,
+      onPressed: callback,
     );
   }
 }
