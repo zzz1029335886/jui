@@ -5,18 +5,18 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "jui",
+            "name": "jieluoxuan_ui-components",
             "request": "launch",
             "type": "dart"
         },
         {
-            "name": "jui (profile mode)",
+            "name": "jieluoxuan_ui-components (profile mode)",
             "request": "launch",
             "type": "dart",
             "flutterMode": "profile"
         },
         {
-            "name": "jui (release mode)",
+            "name": "jieluoxuan_ui-components (release mode)",
             "request": "launch",
             "type": "dart",
             "flutterMode": "release"

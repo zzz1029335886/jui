@@ -1,37 +1,39 @@
-# jieluoxuan_ui components
+<!--
+This README describes the package. If you publish this package to pub.dev,
+this README's contents appear on the landing page for your package.
 
-#### 介绍
-解螺旋4.0 UI组件库
+For information about how to write a good package README, see the guide for
+[writing package pages](https://dart.dev/guides/libraries/writing-package-pages).
 
-#### 软件架构
-软件架构说明
+For general information about developing packages, see the Dart guide for
+[creating packages](https://dart.dev/guides/libraries/create-library-packages)
+and the Flutter guide for
+[developing packages and plugins](https://flutter.dev/developing-packages).
+-->
 
+TODO: Put a short description of the package here that helps potential users
+know whether this package might be useful for them.
 
-#### 安装教程
+## Features
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
+TODO: List what your package can do. Maybe include images, gifs, or videos.
 
-#### 使用说明
+## Getting started
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
+TODO: List prerequisites and provide or point to information on how to
+start using the package.
 
-#### 参与贡献
+## Usage
 
-1.  Fork 本仓库
-2.  新建 Feat_xxx 分支
-3.  提交代码
-4.  新建 Pull Request
+TODO: Include short and useful examples for package users. Add longer examples
+to `/example` folder.
 
+```dart
+const like = 'sample';
+```
 
-#### 特技
+## Additional information
 
-1.  使用 Readme\_XXX.md 来支持不同的语言，例如 Readme\_en.md, Readme\_zh.md
-2.  Gitee 官方博客 [blog.gitee.com](https://blog.gitee.com)
-3.  你可以 [https://gitee.com/explore](https://gitee.com/explore) 这个地址来了解 Gitee 上的优秀开源项目
-4.  [GVP](https://gitee.com/gvp) 全称是 Gitee 最有价值开源项目，是综合评定出的优秀开源项目
-5.  Gitee 官方提供的使用手册 [https://gitee.com/help](https://gitee.com/help)
-6.  Gitee 封面人物是一档用来展示 Gitee 会员风采的栏目 [https://gitee.com/gitee-stars/](https://gitee.com/gitee-stars/)
+TODO: Tell users more about the package: where to find more information, how to
+contribute to the package, how to file issues, what response they can expect
+from the package authors, and more.
