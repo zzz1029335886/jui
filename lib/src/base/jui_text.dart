@@ -1,9 +1,5 @@
 import 'package:flutter/material.dart';
 
-Color rgba(int r, int g, int b, double a) {
-  return Color.fromRGBO(r, g, b, a);
-}
-
 class JUIText extends StatelessWidget {
   final String title;
   final Color? color;
