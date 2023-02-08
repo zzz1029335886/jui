@@ -14,8 +14,11 @@ class _TabBarScrollViewPageState extends State<TabBarScrollViewPage> {
     return Scaffold(
         appBar: AppBar(),
         body: JUITabBarScrollView(
-          titles: ['1', '2', '3', '4'],
+          titles: ['训练营', '直播', '课程'],
           isScrollable: true,
+          titleLabelStyle:
+              const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+          unselectedTitleLabelStyle: const TextStyle(fontSize: 14),
           titleWidgetBuilder: (context, title, index) {
             return Text(title);
           },

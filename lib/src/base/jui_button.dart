@@ -11,6 +11,7 @@ class JUIButton extends StatelessWidget {
   final Color? color;
   final Color? tintColor;
   final String? title;
+  final TextAlign? titleAlign;
   final double? fontSize;
   final FontWeight? fontWeight;
   final JUIText? text;
@@ -25,6 +26,7 @@ class JUIButton extends StatelessWidget {
       this.color,
       this.tintColor,
       this.title,
+      this.titleAlign,
       this.middlePadding = 8,
       this.fontSize,
       this.fontWeight,
@@ -49,6 +51,7 @@ class JUIButton extends StatelessWidget {
       if (title != null)
         Text(
           title!,
+          textAlign: titleAlign,
           style: TextStyle(
               color: tintColor ?? color,
               fontSize: fontSize,
@@ -67,7 +70,7 @@ class JUIButton extends StatelessWidget {
         tapTargetSize: MaterialTapTargetSize.shrinkWrap, //外边距
       ),
       onPressed: onPressed,
-      child: child,
+      child: isOneWidget ? children.first : Expanded(child: child),
     );
   }
 
@@ -82,12 +85,14 @@ class JUIButton extends StatelessWidget {
     if (isVertical) {
       return Column(
         mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
         children: labelPostion == JUIButtonLabelPostion.labelBottom
             ? children
             : children.reversed.toList(),
       );
     } else {
       return Row(
+        mainAxisSize: MainAxisSize.min,
         children: labelPostion == JUIButtonLabelPostion.labelRight
             ? children
             : children.reversed.toList(),

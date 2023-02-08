@@ -7,6 +7,9 @@ typedef JUITabBarScrollViewTitleBuilder = Widget Function(
 
 class JUITabBarScrollView extends StatefulWidget {
   final List<String> titles;
+  final TextStyle? titleLabelStyle;
+  final TextStyle? unselectedTitleLabelStyle;
+
   final IndexedWidgetBuilder bodyWidgetBuilder;
   final JUITabBarScrollViewTitleBuilder titleWidgetBuilder;
   final JUITabBarScrollViewHeaderBuilder? headerBuilder;
@@ -19,9 +22,12 @@ class JUITabBarScrollView extends StatefulWidget {
       {required this.titles,
       required this.titleWidgetBuilder,
       required this.bodyWidgetBuilder,
-      required this.underLineBorderSide,
+      this.titleLabelStyle,
+      this.unselectedTitleLabelStyle,
+      this.underLineBorderSide =
+          const BorderSide(width: 3, color: Color.fromRGBO(129, 216, 208, 1)),
       this.isScrollable = false,
-      this.underLineInsets = EdgeInsets.zero,
+      this.underLineInsets = const EdgeInsets.symmetric(horizontal: 8),
       this.underIndicatorSize = TabBarIndicatorSize.label,
       this.headerBuilder,
       super.key});
@@ -62,9 +68,8 @@ class _JUITabBarScrollViewState extends State<JUITabBarScrollView>
                   padding: EdgeInsets.zero,
                   labelColor: const Color.fromRGBO(28, 31, 33, 1),
                   unselectedLabelColor: const Color.fromRGBO(113, 119, 125, 1),
-                  labelStyle: const TextStyle(
-                      fontSize: 16, fontWeight: FontWeight.w500),
-                  unselectedLabelStyle: const TextStyle(fontSize: 14),
+                  labelStyle: widget.titleLabelStyle,
+                  unselectedLabelStyle: widget.unselectedTitleLabelStyle,
                   isScrollable: widget.isScrollable,
                   indicator: _RoundUnderlineTabIndicator(
                       insets: widget.underLineInsets,

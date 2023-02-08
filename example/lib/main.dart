@@ -1,4 +1,5 @@
 import 'package:example/base/jui_base_page.dart';
+import 'package:example/school/school_page.dart';
 import 'package:flutter/material.dart';
 import 'package:jui/jui.dart';
 
@@ -80,6 +81,13 @@ class _MyHomePageState extends State<MyHomePage> {
             _itemWidget(context, 'Common', () {
               Navigator.of(context).push(MaterialPageRoute(builder: (context) {
                 return JUICommonPage();
+              }));
+            }),
+            _itemWidget(context, 'School', () {
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+                return Container(
+                  child: SchoolPage(),
+                );
               }));
             }),
           ],

@@ -1,11 +1,12 @@
 import 'package:example/common/jui_form_page.dart';
 import 'package:example/common/jui_shrink_widget_page.dart';
+import 'package:example/common/section_title_page.dart';
 import 'package:flutter/material.dart';
 import 'package:jui/jui.dart';
 
 import '../list_button.dart';
-import 'page_container_page.dart';
-import 'tabbar_scroll_view_page.dart';
+import 'jui_page_container_page.dart';
+import 'jui_tabbar_scroll_view_page.dart';
 
 class JUICommonPage extends StatefulWidget {
   const JUICommonPage({super.key});
@@ -53,6 +54,27 @@ class _JUICommonPageState extends State<JUICommonPage> {
             onPressed: () {
               Navigator.of(context).push(MaterialPageRoute(builder: (context) {
                 return TabBarScrollViewPage();
+              }));
+            },
+          ),
+          ListButton(
+            title: 'BottomInput',
+            onPressed: () {
+              JUIBottomInput.show(
+                context: context,
+                content: '内容',
+                placeholder: '123',
+                completeText: (value) {
+                  print(value);
+                },
+              );
+            },
+          ),
+          ListButton(
+            title: 'SectionTitle',
+            onPressed: () {
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+                return SectionTitlePage();
               }));
             },
           ),
