@@ -5,6 +5,7 @@ import 'package:jui/jui.dart';
 
 import '../list_button.dart';
 import 'page_container_page.dart';
+import 'tabbar_scroll_view_page.dart';
 
 class JUICommonPage extends StatefulWidget {
   const JUICommonPage({super.key});
@@ -44,6 +45,14 @@ class _JUICommonPageState extends State<JUICommonPage> {
             onPressed: () {
               Navigator.of(context).push(MaterialPageRoute(builder: (context) {
                 return JUIPageContainerPage();
+              }));
+            },
+          ),
+          ListButton(
+            title: 'TabBarScrollViewPage',
+            onPressed: () {
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+                return TabBarScrollViewPage();
               }));
             },
           ),
