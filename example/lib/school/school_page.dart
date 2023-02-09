@@ -24,9 +24,11 @@ class _SchoolPageState extends State<SchoolPage> {
           ListButton(
             title: 'ListLesson',
             onPressed: () {
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-                return ListLessonPage();
-              }));
+              Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) {
+                  return ListLessonPage();
+                },
+              ));
             },
           ),
         ],
