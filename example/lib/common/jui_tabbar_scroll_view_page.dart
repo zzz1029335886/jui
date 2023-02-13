@@ -16,13 +16,30 @@ class _TabBarScrollViewPageState extends State<TabBarScrollViewPage> {
         body: JUITabBarScrollView(
           titles: ['训练营', '直播', '课程'],
           isScrollable: true,
+          labelColor: Colors.amber,
+          unselectedLabelColor: Colors.black,
           titleLabelStyle:
               const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
           unselectedTitleLabelStyle: const TextStyle(fontSize: 14),
-          titleWidgetBuilder: (context, title, index) {
-            return Text(title);
+          headerTitleWidgetBuilder: (context, title, index, isSelected) {
+            return JUITabBarScrollViewTitle(
+                title: Row(
+              children: [
+                JUIText(
+                  title,
+                  fontSize: isSelected ? 17 : 13,
+                  color: isSelected ? Colors.red : Colors.blue,
+                ),
+                SizedBox(
+                  width: 10,
+                ),
+                JUIButton(
+                  icon: Icons.abc,
+                )
+              ],
+            ));
           },
-          headerBuilder: (context) {
+          topWidgetBuilder: (context) {
             return Container(
               height: 100,
               color: Colors.amber,

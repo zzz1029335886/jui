@@ -1,18 +1,25 @@
 import 'package:flutter/material.dart';
 
-typedef JUITabBarScrollViewHeaderBuilder = Widget Function(
-    BuildContext context);
-typedef JUITabBarScrollViewTitleBuilder = Widget Function(
-    BuildContext context, String title, int index);
+typedef JUITabBarScrollViewHeaderTitleBuilder = JUITabBarScrollViewTitle
+    Function(BuildContext context, String title, int index, bool isSelected);
+
+class JUITabBarScrollViewTitle {
+  final Widget title;
+  final double? width;
+
+  JUITabBarScrollViewTitle({required this.title, this.width});
+}
 
 class JUITabBarScrollView extends StatefulWidget {
   final List<String> titles;
   final TextStyle? titleLabelStyle;
   final TextStyle? unselectedTitleLabelStyle;
+  final Color? labelColor;
+  final Color? unselectedLabelColor;
 
   final IndexedWidgetBuilder bodyWidgetBuilder;
-  final JUITabBarScrollViewTitleBuilder titleWidgetBuilder;
-  final JUITabBarScrollViewHeaderBuilder? headerBuilder;
+  final JUITabBarScrollViewHeaderTitleBuilder? headerTitleWidgetBuilder;
+  final WidgetBuilder? topWidgetBuilder;
   final BorderSide underLineBorderSide;
   final EdgeInsetsGeometry underLineInsets;
   final TabBarIndicatorSize underIndicatorSize;
@@ -20,8 +27,10 @@ class JUITabBarScrollView extends StatefulWidget {
 
   const JUITabBarScrollView(
       {required this.titles,
-      required this.titleWidgetBuilder,
       required this.bodyWidgetBuilder,
+      this.headerTitleWidgetBuilder,
+      this.labelColor,
+      this.unselectedLabelColor,
       this.titleLabelStyle,
       this.unselectedTitleLabelStyle,
       this.underLineBorderSide =
@@ -29,7 +38,7 @@ class JUITabBarScrollView extends StatefulWidget {
       this.isScrollable = false,
       this.underLineInsets = const EdgeInsets.symmetric(horizontal: 8),
       this.underIndicatorSize = TabBarIndicatorSize.label,
-      this.headerBuilder,
+      this.topWidgetBuilder,
       super.key});
 
   @override
@@ -48,6 +57,13 @@ class _JUITabBarScrollViewState extends State<JUITabBarScrollView>
     _tabController = TabController(vsync: this, length: widget.titles.length);
   }
 
+  int _selectedIndex = 0;
+  void _changeTab(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return NestedScrollView(
@@ -58,16 +74,18 @@ class _JUITabBarScrollViewState extends State<JUITabBarScrollView>
           })),
       headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
         return [
-          if (widget.headerBuilder != null)
+          if (widget.topWidgetBuilder != null)
             SliverToBoxAdapter(
-              child: widget.headerBuilder!(context),
+              child: widget.topWidgetBuilder!(context),
             ),
           SliverPersistentHeader(
               delegate: _SliverAppBarDelegate(
                 TabBar(
                   padding: EdgeInsets.zero,
-                  labelColor: const Color.fromRGBO(28, 31, 33, 1),
-                  unselectedLabelColor: const Color.fromRGBO(113, 119, 125, 1),
+                  labelColor:
+                      widget.labelColor ?? const Color.fromRGBO(28, 31, 33, 1),
+                  unselectedLabelColor: widget.unselectedLabelColor ??
+                      const Color.fromRGBO(113, 119, 125, 1),
                   labelStyle: widget.titleLabelStyle,
                   unselectedLabelStyle: widget.unselectedTitleLabelStyle,
                   isScrollable: widget.isScrollable,
@@ -75,11 +93,21 @@ class _JUITabBarScrollViewState extends State<JUITabBarScrollView>
                       insets: widget.underLineInsets,
                       borderSide: widget.underLineBorderSide),
                   indicatorSize: widget.underIndicatorSize,
-
                   controller: _tabController,
-                  // onTap: _changeTab,
+                  onTap: _changeTab,
                   tabs: List.generate(widget.titles.length, (index) {
                     var str = widget.titles[index];
+
+                    if (widget.headerTitleWidgetBuilder != null) {
+                      final title = widget.headerTitleWidgetBuilder!(
+                          context, str, index, _selectedIndex == index);
+                      return Tab(
+                        child: Container(
+                            alignment: Alignment.center,
+                            width: title.width,
+                            child: title.title),
+                      );
+                    }
 
                     var tp = TextPainter(
                         textDirection: TextDirection.ltr,
