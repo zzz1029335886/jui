@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'jui_text.dart';
-
 enum JUIButtonLabelPostion { labelTop, labelBottom, labelLeft, labelRight }
 
 class JUIButton extends StatelessWidget {
@@ -14,7 +12,7 @@ class JUIButton extends StatelessWidget {
   final TextAlign? titleAlign;
   final double? fontSize;
   final FontWeight? fontWeight;
-  final JUIText? text;
+  final Widget? text;
   final double? iconSize;
   final double middlePadding;
 
@@ -70,7 +68,7 @@ class JUIButton extends StatelessWidget {
         tapTargetSize: MaterialTapTargetSize.shrinkWrap, //外边距
       ),
       onPressed: onPressed,
-      child: isOneWidget ? children.first : Expanded(child: child),
+      child: isOneWidget ? children.first : Container(child: child),
     );
   }
 
