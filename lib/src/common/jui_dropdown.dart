@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 
 /// JUIDropdownController use to show and hide drop-down menus.
-/// Used for GZXDropdownHeader and JUIDropdown passing[dropDownMenuTop], [_showedIndex], [_isShow] and [_isShowHideAnimation].
+/// Used for GZXDropdownHeader and JUIDropdown passing[dropdownMenuTop], [_showedIndex], [_isShow] and [_isShowHideAnimation].
 class JUIDropdownController extends ChangeNotifier {
   GlobalKey? stackKey;
 
-  /// [dropDownMenuTop] that the JUIDropdown top edge is inset from the top of the stack.
+  /// [dropdownMenuTop] that the JUIDropdown top edge is inset from the top of the stack.
   ///
   /// Since the JUIDropdown actually returns a Positioned widget, the JUIDropdown must be inside the Stack
   /// vertically.
-  double? dropDownMenuTop;
+  double? dropdownMenuTop;
 
   /// Current or last dropdown menu index, default is 0.
   int? _showedIndex = 0;
@@ -51,9 +51,9 @@ class JUIDropdownController extends ChangeNotifier {
       var size = dropDownItemRenderBox.size;
 //        print("SIZE : $size");
 
-      dropDownMenuTop = size.height + position.dy;
+      dropdownMenuTop = size.height + position.dy;
     } else {
-      dropDownMenuTop = 0;
+      dropdownMenuTop = 0;
     }
 
     notifyListeners();
@@ -249,7 +249,7 @@ class _JUIDropdownState extends State<JUIDropdown>
     }
 
     return Positioned(
-        top: widget.controller.dropDownMenuTop,
+        top: widget.controller.dropdownMenuTop,
         left: 0,
         right: 0,
         child: Column(
