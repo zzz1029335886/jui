@@ -1,6 +1,7 @@
 import 'package:example/common/jui_form_page.dart';
 import 'package:example/common/jui_shrink_widget_page.dart';
 import 'package:example/common/section_title_page.dart';
+import 'package:example/common/top_sheet_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:jui/jui.dart';
@@ -89,12 +90,21 @@ class _JUICommonPageState extends State<JUICommonPage> {
               },
             ),
             ListButton(
-              title: 'modal_bottom_sheet',
+              title: 'bottomSheet',
               onPressed: () {
                 Navigator.of(context).pushNamed('/bottom_sheet');
               },
             ),
 
+            ListButton(
+              title: 'topSheet',
+              onPressed: () {
+                Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (context) {
+                  return TopSheetPage();
+                }));
+              },
+            ),
             // modal_bottom_sheet
           ],
         )),

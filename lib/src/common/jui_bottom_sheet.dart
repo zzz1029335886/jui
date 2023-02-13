@@ -67,7 +67,8 @@ class JUIBottomSheet {
       {required BuildContext context,
       required List<String> titles,
       JUIBottomClickTitleCallback? callback,
-      bool isPop = true}) {
+      bool isPop = true,
+      bool showCancel = true}) {
     showMaterialModalBottomSheet(
         context: context,
         backgroundColor: Colors.transparent,
@@ -89,19 +90,21 @@ class JUIBottomSheet {
                       isPop: isPop,
                       callback: callback,
                     ),
-                    Container(
-                      height: 8,
-                      color: Color.fromRGBO(246, 248, 249, 1),
-                    ),
-                    ListTile(
-                      title: Center(
-                        child: JUIText(
-                          '取消',
-                          fontWeight: FontWeight.w500,
-                        ),
+                    if (showCancel)
+                      Container(
+                        height: 8,
+                        color: const Color.fromRGBO(246, 248, 249, 1),
                       ),
-                      onTap: () => Navigator.of(context).pop(),
-                    )
+                    if (showCancel)
+                      ListTile(
+                        title: const Center(
+                          child: JUIText(
+                            '取消',
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        onTap: () => Navigator.of(context).pop(),
+                      )
                   ],
                 ),
               ),

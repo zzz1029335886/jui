@@ -38,6 +38,8 @@ dependencies:
   cupertino_icons: ^1.0.2
   jui: 
     path: ../
+  supercharged: ^2.1.1
+  simple_animations: ^5.0.0+3
 
 dev_dependencies:
   flutter_test:
