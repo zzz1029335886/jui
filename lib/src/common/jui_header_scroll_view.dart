@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 typedef JUIHeaderScrollViewBuilder = PreferredSize Function(
@@ -8,6 +7,7 @@ class JUIHeaderScrollView extends StatefulWidget {
   final WidgetBuilder bodyWidgetBuilder;
   final JUIHeaderScrollViewBuilder headerWidgetBuilder;
   final WidgetBuilder? topWidgetBuilder;
+  final ScrollController? scrollController;
 
   /// 是否全屏滚动
   final bool isScrollFullScreen;
@@ -18,6 +18,7 @@ class JUIHeaderScrollView extends StatefulWidget {
   const JUIHeaderScrollView(
       {required this.headerWidgetBuilder,
       required this.bodyWidgetBuilder,
+      this.scrollController,
       this.pinned = true,
       this.isScrollFullScreen = true,
       this.topWidgetBuilder,
@@ -38,6 +39,7 @@ class _JUIHeaderScrollViewState extends State<JUIHeaderScrollView> {
   Widget build(BuildContext context) {
     if (widget.isScrollFullScreen) {
       return CustomScrollView(
+        controller: widget.scrollController,
         slivers: [
           if (widget.topWidgetBuilder != null)
             SliverToBoxAdapter(
@@ -56,6 +58,7 @@ class _JUIHeaderScrollViewState extends State<JUIHeaderScrollView> {
 
     return NestedScrollView(
       body: widget.bodyWidgetBuilder(context),
+      controller: widget.scrollController,
       headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
         return [
           if (widget.topWidgetBuilder != null)

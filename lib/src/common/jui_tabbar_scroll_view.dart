@@ -16,6 +16,7 @@ class JUITabBarScrollView extends StatefulWidget {
   final TextStyle? unselectedTitleLabelStyle;
   final Color? labelColor;
   final Color? unselectedLabelColor;
+  final ScrollController? scrollController;
 
   final IndexedWidgetBuilder bodyWidgetBuilder;
   final JUITabBarScrollViewHeaderTitleBuilder? headerTitleWidgetBuilder;
@@ -28,6 +29,7 @@ class JUITabBarScrollView extends StatefulWidget {
   const JUITabBarScrollView(
       {required this.titles,
       required this.bodyWidgetBuilder,
+      this.scrollController,
       this.headerTitleWidgetBuilder,
       this.labelColor,
       this.unselectedLabelColor,
@@ -67,6 +69,7 @@ class _JUITabBarScrollViewState extends State<JUITabBarScrollView>
   @override
   Widget build(BuildContext context) {
     return NestedScrollView(
+      controller: widget.scrollController,
       body: TabBarView(
           controller: _tabController,
           children: List.generate(widget.titles.length, (index) {

@@ -20,6 +20,9 @@ class JUIDropdownController extends ChangeNotifier {
   /// Whether to display animations when hiding dropdown menu.
   bool _isShowHideAnimation = false;
 
+  Size? headerSize;
+  Offset? headerOffset;
+
   JUIDropdownController({this.stackKey});
 
   /// Use to display JUIDropdown specified dropdown menu index.
@@ -50,9 +53,12 @@ class JUIDropdownController extends ChangeNotifier {
 //        print("POSITION : $position ");
       var size = dropDownItemRenderBox.size;
 //        print("SIZE : $size");
-
+      headerSize = size;
+      headerOffset = position;
       dropdownMenuTop = size.height + position.dy;
     } else {
+      headerSize = null;
+      headerOffset = null;
       dropdownMenuTop = 0;
     }
 

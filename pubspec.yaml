@@ -11,7 +11,12 @@ dependencies:
   flutter:
     sdk: flutter
 
-  modal_bottom_sheet: ^3.0.0-pre
+  jui_modal_bottom_sheet: 
+    git:
+        url: "https://gitee.com/helixlife-app/modal_bottom_sheet.git"
+        ref: 0.0.2
+        path: 'modal_bottom_sheet'
+        
 
 dev_dependencies:
   flutter_test:
