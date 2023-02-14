@@ -117,13 +117,17 @@ class JUIBottomSheet {
       bool isCupertino = true,
       bool expand = true,
       bool enableDrag = true,
-      String? title}) {
+      String? title,
+      Widget? trailingWidget,
+      Widget? leadingWidget}) {
     showPage(
         context: context,
         contentBuilder: contentBuilder,
         isCupertino: isCupertino,
         expand: expand,
         enableDrag: enableDrag,
+        trailingWidget: trailingWidget,
+        leadingWidget: leadingWidget,
         title: title);
   }
 }

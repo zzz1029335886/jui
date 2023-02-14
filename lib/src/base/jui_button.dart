@@ -6,6 +6,7 @@ class JUIButton extends StatelessWidget {
   final VoidCallback? onPressed;
   final JUIButtonLabelPostion labelPostion;
   final IconData? icon;
+  final Widget? iconWidget;
   final Color? color;
   final Color? tintColor;
   final String? title;
@@ -20,8 +21,9 @@ class JUIButton extends StatelessWidget {
       {this.onPressed,
       this.labelPostion = JUIButtonLabelPostion.labelRight,
       this.icon,
+      this.iconWidget,
       this.iconSize,
-      this.color,
+      this.color = const Color.fromRGBO(49, 58, 67, 1),
       this.tintColor,
       this.title,
       this.titleAlign,
@@ -34,6 +36,7 @@ class JUIButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<Widget> children = [
+      if (iconWidget != null) iconWidget!,
       if (icon != null)
         Icon(
           icon,
@@ -73,8 +76,8 @@ class JUIButton extends StatelessWidget {
   }
 
   get isOneWidget =>
-      icon == null && (title != null || text != null) ||
-      icon != null && title == null && text == null;
+      (icon == null && iconWidget == null) && (title != null || text != null) ||
+      (icon != null || iconWidget != null) && title == null && text == null;
   get isVertical =>
       labelPostion == JUIButtonLabelPostion.labelBottom ||
       labelPostion == JUIButtonLabelPostion.labelTop;
@@ -118,5 +121,33 @@ class JUIButton extends StatelessWidget {
             )
           ],
         ));
+  }
+
+  static Widget customButton(
+      {required VoidCallback onPressed,
+      String? title,
+      double? width,
+      EdgeInsets? padding,
+      EdgeInsets? margin,
+      double? height,
+      Color? titleColor = Colors.white,
+      double? radius,
+      Color? backgroundColor = const Color.fromRGBO(129, 216, 208, 1)}) {
+    return Container(
+      width: width,
+      padding: padding,
+      margin: margin,
+      height: height,
+      decoration: BoxDecoration(
+          color: backgroundColor,
+          borderRadius: radius != null
+              ? BorderRadius.all(Radius.circular(radius))
+              : null),
+      child: JUIButton(
+        title: title,
+        color: titleColor,
+        onPressed: onPressed,
+      ),
+    );
   }
 }

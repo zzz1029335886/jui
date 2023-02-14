@@ -14,6 +14,7 @@ class JUIHeaderScrollView extends StatefulWidget {
 
   /// 是否固定
   final bool pinned;
+  final Key? scrollViewKey;
 
   const JUIHeaderScrollView(
       {required this.headerWidgetBuilder,
@@ -22,6 +23,7 @@ class JUIHeaderScrollView extends StatefulWidget {
       this.pinned = true,
       this.isScrollFullScreen = true,
       this.topWidgetBuilder,
+      this.scrollViewKey,
       super.key});
 
   @override
@@ -39,6 +41,7 @@ class _JUIHeaderScrollViewState extends State<JUIHeaderScrollView> {
   Widget build(BuildContext context) {
     if (widget.isScrollFullScreen) {
       return CustomScrollView(
+        key: widget.scrollViewKey,
         controller: widget.scrollController,
         slivers: [
           if (widget.topWidgetBuilder != null)
@@ -57,6 +60,7 @@ class _JUIHeaderScrollViewState extends State<JUIHeaderScrollView> {
     }
 
     return NestedScrollView(
+      key: widget.scrollViewKey,
       body: widget.bodyWidgetBuilder(context),
       controller: widget.scrollController,
       headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {

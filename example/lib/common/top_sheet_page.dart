@@ -73,23 +73,18 @@ class _TopSheetPageState extends State<TopSheetPage> {
               animationMilliseconds: 250,
 
               // 下拉菜单，高度自定义，你想显示什么就显示什么，完全由你决定，你只需要在选择后调用_dropdownMenuController.hide();即可
-              builders: [
-                JUIDropdownBuilder(
-                    dropDownHeight: 40 * 8.0,
-                    dropDownWidget: Container(
-                      color: Colors.amber,
-                    )),
-                JUIDropdownBuilder(
-                  dropDownHeight: 40 * 8.0,
-                  dropDownWidget: Container(
-                    color: Colors.redAccent,
-                  ),
+              widgets: [
+                Container(
+                  height: 200,
+                  color: Colors.amber,
                 ),
-                JUIDropdownBuilder(
-                  dropDownHeight: 40 * 8.0,
-                  dropDownWidget: Container(
-                    color: Colors.blueAccent,
-                  ),
+                Container(
+                  height: 300,
+                  color: Colors.redAccent,
+                ),
+                Container(
+                  height: 400,
+                  color: Colors.blueAccent,
                 ),
               ],
             ),

@@ -9,3 +9,4 @@ export 'jui_bottom_input.dart';
 export 'jui_bottom_sheet.dart';
 export 'jui_dropdown.dart';
 export 'jui_section_title.dart';
+export 'jui_share.dart';

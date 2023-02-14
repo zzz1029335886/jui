@@ -16,6 +16,10 @@ dependencies:
         url: "https://gitee.com/helixlife-app/modal_bottom_sheet.git"
         ref: 0.0.2
         path: 'modal_bottom_sheet'
+
+  jieluoxuan_resource_assets:
+    git:
+      url: "git@gitee.com:helixlife-app/jieluoxuan_resource_assets.git"
         
 
 dev_dependencies:

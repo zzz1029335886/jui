@@ -6,9 +6,11 @@ class JUIText extends StatelessWidget {
   final double fontSize;
   final FontWeight? fontWeight;
   final int? maxLines;
+  final TextAlign? textAlign;
 
   const JUIText(this.title,
       {this.color,
+      this.textAlign,
       this.maxLines,
       this.fontSize = 16,
       this.fontWeight,
@@ -19,6 +21,7 @@ class JUIText extends StatelessWidget {
     return Text(
       title,
       maxLines: maxLines,
+      textAlign: textAlign,
       style: TextStyle(
         color: color,
         fontSize: fontSize,
