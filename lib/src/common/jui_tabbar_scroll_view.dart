@@ -57,6 +57,9 @@ class _JUITabBarScrollViewState extends State<JUITabBarScrollView>
     super.initState();
 
     _tabController = TabController(vsync: this, length: widget.titles.length);
+    _tabController.addListener(() {
+      _changeTab(_tabController.index);
+    });
   }
 
   int _selectedIndex = 0;

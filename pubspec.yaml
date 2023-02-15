@@ -14,7 +14,7 @@ dependencies:
   jui_modal_bottom_sheet: 
     git:
         url: "https://gitee.com/helixlife-app/modal_bottom_sheet.git"
-        ref: 0.0.2
+        ref: 0.0.3
         path: 'modal_bottom_sheet'
 
   jieluoxuan_resource_assets:
