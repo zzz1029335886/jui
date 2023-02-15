@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:jieluoxuan_resource_assets/jieluoxuan_resource_assets.dart';
+import 'package:jieluoxuan_bundle_base/jieluoxuan_bundle_base.dart';
 import 'package:jui/jui.dart';
 
 class JUIShare {

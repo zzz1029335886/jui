@@ -6,7 +6,6 @@ import 'package:example/common/top_sheet_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:jui/jui.dart';
-import 'package:jieluoxuan_resource_assets/jieluoxuan_resource_assets.dart';
 
 import '../list_button.dart';
 import 'jui_page_container_page.dart';

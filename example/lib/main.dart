@@ -2,12 +2,14 @@ import 'package:example/base/jui_base_page.dart';
 import 'package:example/common/bottom_sheet_page.dart';
 import 'package:example/school/school_page.dart';
 import 'package:flutter/material.dart';
+import 'package:jui/bundle_jui_component.dart';
 import 'package:jui/jui.dart';
 
 import 'common/jui_common_page.dart';
 import 'list_button.dart';
 
 void main() {
+  JUIComponentBundle().onBundleLoad();
   runApp(const MyApp());
 }
 

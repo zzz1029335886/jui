@@ -17,10 +17,13 @@ dependencies:
         ref: 0.0.3
         path: 'modal_bottom_sheet'
 
-  jieluoxuan_resource_assets:
+  # jieluoxuan_resource_assets:
+  #   git:
+  #     url: "git@gitee.com:helixlife-app/jieluoxuan_resource_assets.git"
+  jieluoxuan_bundle_base:
     git:
-      url: "git@gitee.com:helixlife-app/jieluoxuan_resource_assets.git"
-        
+      url: "git@gitee.com:helixlife-app/jieluoxuan_bundle_base.git"
+      ref: 1.0.0
 
 dev_dependencies:
   flutter_test:
