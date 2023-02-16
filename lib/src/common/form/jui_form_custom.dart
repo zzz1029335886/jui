@@ -4,7 +4,7 @@ import 'jui_form_base.dart';
 
 class JUIFormCustom extends JUIFormBase {
   final Widget child;
-  const JUIFormCustom(this.child, {super.key, required super.config});
+  JUIFormCustom(this.child, {super.key, super.config, super.configBuilder});
 
   @override
   JUIFormBaseState<JUIFormBase> createState() => _JUIFormCustomState();

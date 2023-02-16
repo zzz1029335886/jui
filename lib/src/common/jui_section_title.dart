@@ -4,25 +4,38 @@ import 'package:jui/jui.dart';
 class JUISectionTitleContainer extends StatefulWidget {
   final String title;
   final Widget child;
-  final VoidCallback? moreCallbackAction;
-  const JUISectionTitleContainer(this.title,
-      {required this.child, this.moreCallbackAction, super.key});
+  Widget? titleRightChild;
+  JUISectionTitleContainer(this.title,
+      {required this.child,
+      VoidCallback? moreCallbackAction,
+      this.titleRightChild,
+      super.key}) {
+    if (moreCallbackAction != null) {
+      var titleRightChild =
+          JUIButton.moreButton(onPressed: moreCallbackAction, title: '查看更多');
+      this.titleRightChild = titleRightChild;
+    }
+  }
 
   @override
   State<JUISectionTitleContainer> createState() =>
       _JUISectionTitleContainerState();
 
   static Widget defaultStyle(String title,
-      {required Widget child, VoidCallback? moreCallbackAction}) {
+      {required Widget child,
+      double marginMiddle = 20,
+      VoidCallback? moreCallbackAction,
+      Widget? titleRightChild}) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
       color: Colors.white,
       child: JUISectionTitleContainer(
         title,
+        titleRightChild: titleRightChild,
         moreCallbackAction: moreCallbackAction,
         child: Container(
           child: child,
-          margin: EdgeInsets.only(top: 20),
+          margin: EdgeInsets.only(top: marginMiddle),
         ),
       ),
     );
@@ -55,12 +68,10 @@ class _JUISectionTitleContainerState extends State<JUISectionTitleContainer> {
                   fontSize: 16,
                   fontWeight: FontWeight.w500,
                   color: Color.fromRGBO(28, 31, 33, 1),
-                )
+                ),
               ],
             ),
-            if (widget.moreCallbackAction != null)
-              JUIButton.moreButton(
-                  onPressed: widget.moreCallbackAction!, title: '查看更多')
+            if (widget.titleRightChild != null) widget.titleRightChild!
           ],
         ),
         widget.child

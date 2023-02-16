@@ -16,9 +16,9 @@ class JUIComponentBundle extends IBundleRegister {
 
   @override
   Future? onBundleLoad() {
-    FunctionRegistry.register<State<PagingListWidget>, RequestAction>(
+    FunctionRegistry.register<State<PagingListWidget>, void>(
         AppComponentConfig.PagingListWidgetState, (action) {
-      return JUIPagingListWidgetState(action);
+      return JUIPagingListWidgetState();
     });
 
     return super.onBundleLoad();

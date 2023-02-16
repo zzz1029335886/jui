@@ -13,7 +13,7 @@ class JUIButton extends StatelessWidget {
   final TextAlign? titleAlign;
   final double? fontSize;
   final FontWeight? fontWeight;
-  final Widget? text;
+  final Widget? child;
   final double? iconSize;
   final double middlePadding;
 
@@ -30,7 +30,7 @@ class JUIButton extends StatelessWidget {
       this.middlePadding = 8,
       this.fontSize,
       this.fontWeight,
-      this.text,
+      this.child,
       super.key});
 
   @override
@@ -48,7 +48,7 @@ class JUIButton extends StatelessWidget {
           width: isVertical ? null : middlePadding,
           height: isVertical ? middlePadding : null,
         ),
-      if (text != null) text!,
+      if (child != null) child!,
       if (title != null)
         Text(
           title!,
@@ -60,7 +60,7 @@ class JUIButton extends StatelessWidget {
         )
     ];
 
-    Widget child = _child(
+    Widget showChild = _child(
       children: children,
     );
 
@@ -71,13 +71,14 @@ class JUIButton extends StatelessWidget {
         tapTargetSize: MaterialTapTargetSize.shrinkWrap, //外边距
       ),
       onPressed: onPressed,
-      child: isOneWidget ? children.first : Container(child: child),
+      child: isOneWidget ? children.first : Container(child: showChild),
     );
   }
 
   get isOneWidget =>
-      (icon == null && iconWidget == null) && (title != null || text != null) ||
-      (icon != null || iconWidget != null) && title == null && text == null;
+      (icon == null && iconWidget == null) &&
+          (title != null || child != null) ||
+      (icon != null || iconWidget != null) && title == null && child == null;
   get isVertical =>
       labelPostion == JUIButtonLabelPostion.labelBottom ||
       labelPostion == JUIButtonLabelPostion.labelTop;
@@ -123,15 +124,17 @@ class JUIButton extends StatelessWidget {
         ));
   }
 
-  static Widget customButton(
+  static Widget custom(
       {required VoidCallback onPressed,
       String? title,
       double? width,
+      Widget? clild,
       EdgeInsets? padding,
       EdgeInsets? margin,
       double? height,
       Color? titleColor = Colors.white,
       double? radius,
+      Color? borderColor,
       Color? backgroundColor = const Color.fromRGBO(129, 216, 208, 1)}) {
     return Container(
       width: width,
@@ -140,11 +143,13 @@ class JUIButton extends StatelessWidget {
       height: height,
       decoration: BoxDecoration(
           color: backgroundColor,
+          border: borderColor != null ? Border.all(color: borderColor) : null,
           borderRadius: radius != null
               ? BorderRadius.all(Radius.circular(radius))
               : null),
       child: JUIButton(
         title: title,
+        child: clild,
         color: titleColor,
         onPressed: onPressed,
       ),

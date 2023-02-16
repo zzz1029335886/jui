@@ -6,12 +6,20 @@ import 'jui_form_content.dart';
 class JUIFormSelect extends JUIFormContent {
   final bool hiddenArrow;
   final VoidCallback? clickCallback;
-  const JUIFormSelect(
+  final String? placeholder;
+  final TextStyle? contentTextStyle;
+  final TextStyle? placeholderTextStyle;
+  JUIFormSelect(
       {super.key,
       super.content,
+      this.contentTextStyle,
+      this.placeholderTextStyle = const TextStyle(
+          color: Color.fromRGBO(183, 187, 191, 1), fontSize: 14),
+      this.placeholder,
       this.clickCallback,
       this.hiddenArrow = false,
-      required super.config});
+      super.config,
+      super.configBuilder});
 
   @override
   JUIFormBaseState<JUIFormBase> createState() => _JUIFormSelectState();
@@ -22,7 +30,16 @@ class _JUIFormSelectState extends JUIFormBaseState<JUIFormSelect> {
   Widget contentBuild(BuildContext context) {
     return Row(
       children: [
-        if (widget.content != null) Text(widget.content!),
+        if (widget.content != null)
+          Text(
+            widget.content!,
+            style: widget.contentTextStyle,
+          ),
+        if (widget.content == null && widget.placeholder != null)
+          Text(
+            widget.placeholder!,
+            style: widget.placeholderTextStyle,
+          ),
         Offstage(
           offstage: widget.hiddenArrow,
           child: const Icon(Icons.arrow_forward_ios,

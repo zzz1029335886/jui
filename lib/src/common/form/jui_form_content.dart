@@ -5,11 +5,12 @@ import 'jui_form_base.dart';
 abstract class JUIFormContent extends JUIFormBase {
   final String? content;
   final TextStyle contentStyle;
-  const JUIFormContent(
+  JUIFormContent(
       {super.key,
       required this.content,
       this.contentStyle = const TextStyle(),
-      required super.config});
+      super.config,
+      super.configBuilder});
 }
 
 // abstract class ZZFormContentCellState<T extends ZZFormContentCell>

@@ -28,7 +28,7 @@ class _JUIBasePageState extends State<JUIBasePage> {
             onPressed: () {},
           ),
           JUIButton(
-            text: JUIText(
+            child: JUIText(
               'title是widget',
               fontSize: 15,
             ),
@@ -61,6 +61,42 @@ class _JUIBasePageState extends State<JUIBasePage> {
             title: '文本在下',
             tintColor: Colors.redAccent,
             onPressed: () {},
+          ),
+          // FormBuilderRadioGroup<String>(
+          //   initialValue: 'Kotlin',
+          //   onChanged: (value) {
+          //     print(value);
+          //   },
+          //   activeColor: Color.fromRGBO(129, 216, 208, 1),
+          //   // validator: (value) {
+          //   //   return '123';
+          //   // },
+          //   options: ['Dart', 'Kotlin', 'Java', 'Swift', 'Objective-C']
+          //       .map((lang) => FormBuilderFieldOption(
+          //             value: lang,
+          //             child: Text(lang),
+          //           ))
+          //       .toList(growable: true),
+          //   controlAffinity: ControlAffinity.leading,
+          // ),
+          JUIFormRadioGroup<String>(
+            initialValue: 'Kotlin',
+            onChanged: (value) {
+              print(value);
+            },
+            activeColor: Color.fromRGBO(129, 216, 208, 1),
+            configBuilder: (config) {
+              config.title = '12333231';
+              config.height = null;
+              config.titleHeight = 44;
+              return config;
+            },
+            options: ['Dart', 'Kotlin', 'Java', 'Swift', 'Objective-C']
+                .map((lang) => JUIFormRadioGroupOption(
+                      value: lang,
+                      child: Text(lang),
+                    ))
+                .toList(growable: true),
           ),
         ],
       )),

@@ -14,6 +14,7 @@ class JUIFormInput extends JUIFormContent {
   final EdgeInsets? contentPadding; // 内容padding
   final String? hintText; // 占位字符
   final TextStyle? hintTextStyle; // 占位字符样式
+  final TextStyle? textStyle; // 占位字符样式
   final bool showMaxLength; // 是否显示最大数字长度
   final bool isEdit; // 是否可编辑
   final List<TextInputFormatter>? inputFormatters; // 输入框formatter
@@ -21,7 +22,7 @@ class JUIFormInput extends JUIFormContent {
   final Widget? leftWidget;
   final TextAlign? textAlign;
   final bool isShowCleanButton;
-  const JUIFormInput(
+  JUIFormInput(
       {super.key,
       this.isEdit = true,
       this.textAlign,
@@ -29,7 +30,11 @@ class JUIFormInput extends JUIFormContent {
       this.maxLines,
       this.hintText,
       this.keyboardType,
-      this.hintTextStyle,
+      this.hintTextStyle = const TextStyle(
+        color: Color.fromRGBO(183, 187, 191, 1),
+        fontSize: 14,
+      ),
+      this.textStyle,
       this.contentPadding = const EdgeInsets.only(top: 3),
       this.contentDecoration,
       this.maxLength = 9999,
@@ -39,7 +44,8 @@ class JUIFormInput extends JUIFormContent {
       super.content,
       this.inputFormatters,
       this.isShowCleanButton = false,
-      required super.config});
+      super.config,
+      super.configBuilder});
 
   @override
   JUIFormBaseState<JUIFormBase> createState() => _JUIFormInputState();
@@ -64,6 +70,7 @@ class _JUIFormInputState extends JUIFormBaseState<JUIFormInput> {
           text: widget.content,
           maxLength: widget.maxLength,
           maxLines: widget.maxLines,
+          textStyle: widget.textStyle,
           hintText: widget.hintText ?? '请输入',
           inputFormatters: widget.inputFormatters,
           hintTextStyle: widget.hintTextStyle,
@@ -78,7 +85,7 @@ class _JUIFormInputState extends JUIFormBaseState<JUIFormInput> {
   }
 
   Widget _mainWidget({required Widget child}) {
-    if (widget.config.isTopTitle) {
+    if (widget.config != null && widget.config!.isTopTitle) {
       return child;
     } else {
       return Expanded(child: child);

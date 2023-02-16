@@ -42,7 +42,10 @@ dependencies:
     path: ../
   supercharged: ^2.1.1
   simple_animations: ^5.0.0+3
-  easy_refresh: ^3.3.0+1
+  jieluoxuan_bundle_base:
+    git:
+      url: "git@gitee.com:helixlife-app/jieluoxuan_bundle_base.git"
+      ref: 1.0.1
 
 dev_dependencies:
   flutter_test:

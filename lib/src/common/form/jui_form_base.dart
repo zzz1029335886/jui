@@ -1,26 +1,27 @@
 import 'package:flutter/material.dart';
 
 class JUIFormConfig {
-  final bool isTopTitle;
-  final String? title; // 标题
-  final double? titleWidth; // 标题宽度，默认100
-  final double? titleHeight; // 标题宽度，默认空，居中
-  final TextStyle titleStyle; // 标题字体样式，默认颜色black87
-  final Color bgColor; // 背景颜色，默认白色
-  final double? height;
-  final EdgeInsets padding;
-  final EdgeInsets margin;
-  final bool isHiddenBottomLine; // 隐藏底部横线
-  final bool isHiddenTopLine; // 隐藏底部横线
-  final bool isShowRedStar;
-  final Icon? icon;
-  final Widget? leftWidget;
-  final String? tip;
-  final Color? tipBgColor; // 背景颜色，默认白色
-  final TextStyle tipStyle;
-  final double linePadding;
+  late bool isTopTitle;
+  late String? title; // 标题
+  late double? titleWidth; // 标题宽度，默认100
+  late double? titleHeight; // 标题宽度，默认空，居中
+  late TextStyle titleStyle; // 标题字体样式，默认颜色black87
+  late Color bgColor; // 背景颜色，默认白色
+  late double? height;
+  late EdgeInsets padding;
+  late EdgeInsets margin;
+  late bool isHiddenBottomLine; // 隐藏底部横线
+  late bool isHiddenTopLine; // 隐藏底部横线
+  late bool isShowRedStar;
+  late Icon? icon;
+  late Widget? leftWidget;
+  late Widget? tipWidget;
+  late String? tip;
+  late Color? tipBgColor; // 背景颜色，默认白色
+  late TextStyle tipStyle;
+  late double linePadding;
 
-  const JUIFormConfig(
+  JUIFormConfig(
       {this.isTopTitle = false,
       this.title,
       this.leftWidget,
@@ -38,13 +39,47 @@ class JUIFormConfig {
       this.titleStyle = const TextStyle(color: Colors.black87),
       this.bgColor = Colors.white,
       this.tipBgColor,
+      this.tipWidget,
       this.padding = EdgeInsets.zero,
       this.margin = EdgeInsets.zero});
+
+  Widget getTipWidget() {
+    var config = this;
+
+    return Container(
+      color: config.tipBgColor,
+      child: Padding(
+        padding: EdgeInsets.only(
+            left: config.padding.left,
+            right: config.padding.right,
+            top: 8,
+            bottom: 8),
+        child: Text(
+          config.tip!,
+          style: config.tipStyle,
+        ),
+      ),
+    );
+  }
 }
 
+/// [configBuilder] 默认高度44，为输入框时需置空
+typedef JUIFormConfigBuilder = JUIFormConfig Function(JUIFormConfig config);
+
+// ignore: must_be_immutable
 abstract class JUIFormBase extends StatefulWidget {
-  final JUIFormConfig config;
-  const JUIFormBase({required this.config, super.key});
+  JUIFormConfig? config;
+
+  /// [configBuilder] 默认高度44，为输入框时需置空
+  JUIFormBase({this.config, JUIFormConfigBuilder? configBuilder, super.key})
+      : super() {
+    assert(configBuilder != null || config != null);
+    if (config == null && configBuilder != null) {
+      JUIFormConfig defaultConfig = JUIFormConfig();
+      defaultConfig.height = 44;
+      config = configBuilder.call(defaultConfig);
+    }
+  }
 
   @override
   JUIFormBaseState createState();
@@ -58,22 +93,23 @@ abstract class JUIFormBaseState<T extends JUIFormBase> extends State<T> {
    */
   double get contentWidth {
     var screenWidth = MediaQuery.of(context).size.width;
+    var config = widget.config!;
 
     var width = screenWidth -
-        widget.config.padding.left -
-        widget.config.padding.right -
-        widget.config.margin.left -
-        widget.config.margin.right;
+        config.padding.left -
+        config.padding.right -
+        config.margin.left -
+        config.margin.right;
 
-    if (!widget.config.isTopTitle) {
+    if (!config.isTopTitle) {
       double titleWidth = 0;
-      if (widget.config.title != null && widget.config.titleWidth == null) {
-        titleWidth = _textWidth(widget.config.title!, widget.config.titleStyle);
-        if (widget.config.isShowRedStar) {
+      if (config.title != null && config.titleWidth == null) {
+        titleWidth = _textWidth(config.title!, config.titleStyle);
+        if (config.isShowRedStar) {
           titleWidth += 3 + _textWidth('*', _redStarTextStyle);
         }
       } else {
-        titleWidth = widget.config.titleWidth ?? 0;
+        titleWidth = config.titleWidth ?? 0;
       }
 
       width -= titleWidth;
@@ -96,9 +132,10 @@ abstract class JUIFormBaseState<T extends JUIFormBase> extends State<T> {
 
   @override
   Widget build(BuildContext context) {
-    var config = widget.config;
+    var config = this.widget.config!;
 
     Widget contentWidget = Container(
+      color: config.bgColor,
       padding: config.padding,
       margin: config.margin,
       height: config.height != null
@@ -139,38 +176,23 @@ abstract class JUIFormBaseState<T extends JUIFormBase> extends State<T> {
       );
     }
 
-    if (config.tip != null) {
-      contentWidget = Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          contentWidget,
-          Container(
-            color: config.tipBgColor,
-            width: double.infinity,
-            child: Padding(
-              padding: EdgeInsets.only(
-                  left: config.padding.left,
-                  right: config.padding.right,
-                  top: 8,
-                  bottom: 8),
-              child: Text(
-                config.tip!,
-                style: config.tipStyle,
-              ),
-            ),
-          )
-        ],
-      );
+    if (config.tip == null && config.tipWidget == null) {
+      return cellContainer(child: contentWidget);
     }
 
-    return cellContainer(child: contentWidget);
+    Widget tip = config.tipWidget ?? config.getTipWidget();
+
+    Widget widget = cellContainer(child: contentWidget);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [widget, tip],
+    );
   }
 
   Widget mainWidget(
     isRow,
   ) {
-    var config = widget.config;
+    var config = widget.config!;
     Widget res;
     if (isRow) {
       res = Row(
@@ -179,7 +201,7 @@ abstract class JUIFormBaseState<T extends JUIFormBase> extends State<T> {
             ? CrossAxisAlignment.center
             : CrossAxisAlignment.start,
         children: [
-          if (widget.config.title != null) titleWidget(),
+          if (config.title != null) titleWidget(),
           contentBuild(context)
         ],
       );
@@ -191,7 +213,7 @@ abstract class JUIFormBaseState<T extends JUIFormBase> extends State<T> {
         //     ? CrossAxisAlignment.center
         //     : CrossAxisAlignment.start,
         children: [
-          if (widget.config.title != null) titleWidget(),
+          if (config.title != null) titleWidget(),
           contentBuild(context)
         ],
       );
@@ -201,7 +223,7 @@ abstract class JUIFormBaseState<T extends JUIFormBase> extends State<T> {
   }
 
   Widget titleWidget() {
-    var config = widget.config;
+    var config = widget.config!;
 
     return Container(
       alignment: Alignment.center,
@@ -214,7 +236,7 @@ abstract class JUIFormBaseState<T extends JUIFormBase> extends State<T> {
           if (config.leftWidget != null) config.leftWidget!,
           if (config.icon != null) config.icon!,
           Text(
-            widget.config.title!,
+            config.title!,
             style: config.titleStyle,
           ),
           if (config.isShowRedStar)
@@ -226,7 +248,7 @@ abstract class JUIFormBaseState<T extends JUIFormBase> extends State<T> {
     );
   }
 
-  final TextStyle _redStarTextStyle =
+  late TextStyle _redStarTextStyle =
       const TextStyle(fontSize: 18.0, color: Colors.red);
 
   @protected

@@ -10,6 +10,7 @@ import 'package:jui/jui.dart';
 import '../list_button.dart';
 import 'jui_page_container_page.dart';
 import 'jui_tabbar_scroll_view_page.dart';
+import 'refresh_view_page.dart';
 
 class JUICommonPage extends StatefulWidget {
   const JUICommonPage({super.key});
@@ -120,6 +121,15 @@ class _JUICommonPageState extends State<JUICommonPage> {
                 title: 'Share',
                 onPressed: () {
                   JUIShare.sheetShow(context);
+                }),
+
+            ListButton(
+                title: 'Refresh',
+                onPressed: () {
+                  Navigator.of(context)
+                      .push(MaterialPageRoute(builder: (context) {
+                    return RefreshPage();
+                  }));
                 }),
             // modal_bottom_sheet
           ],

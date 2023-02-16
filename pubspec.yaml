@@ -24,6 +24,7 @@ dependencies:
     git:
       url: "git@gitee.com:helixlife-app/jieluoxuan_bundle_base.git"
       ref: 1.0.1
+  easy_refresh: ^3.3.0+1
 dev_dependencies:
   flutter_test:
     sdk: flutter
