@@ -6,20 +6,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_picker/flutter_picker.dart';
 
-const String _titleNormalText = '请选择';
+const String _titleNormalText = '';
 const String _cancelText = '取消';
 const String _confirmText = '确定';
 const String _yearSuffix = '年';
 const String _monthSuffix = '月';
 const String _daySuffix = '日';
 const List<String> _strAMPM = ['上午', '下午'];
-const double _kPickerHeight = 216.0;
+const double _kPickerHeight = 280.0;
 const double _kItemHeight = 50.0;
 const double _kHeaderLineHeight = 0.25;
 const double _kHeaderRadius = 10.0;
 const double _kTitleFontSize = 18.0;
-const double _kBtnFontSize = 17.0;
-const double _selectTextFontSize = 20.0;
+const double _kBtnFontSize = 15.0;
+const double _selectTextFontSize = 16.0;
 
 /// 选择回调
 /// 单列选择器返回选中行对象和index
@@ -43,13 +43,14 @@ enum JUIPickerType {
 
 class JUIPicker {
   /// 单列
-  static void showStringPicker<T>(
+  static void showStringPicker(
     BuildContext context, {
     required List data,
     String? title,
     String? labelKey, // 对象数组的文字字段
     int selectIndex = 0,
-    required JUIPickerClickCallBack? clickCallBack,
+    required void Function(String selectValue, int selectIndexArr)?
+        clickCallBack,
   }) {
     if (data.isEmpty) {
       return;
@@ -63,7 +64,9 @@ class JUIPicker {
       adapter: labelKey != null
           ? PickerDataAdapter(pickerData: data.map((e) => e[labelKey]).toList())
           : PickerDataAdapter(pickerData: data),
-      clickCallBack: clickCallBack,
+      clickCallBack: (selectValue, selectIndexArr) {
+        clickCallBack?.call(selectValue, selectIndexArr);
+      },
     );
   }
 
@@ -146,19 +149,19 @@ class JUIPicker {
 }
 
 /// 自定义picker
-_showPicker(
+_showPicker<T>(
   context, {
+  required PickerAdapter adapter,
   List? data,
   String? title,
   List<int>? selecteds,
   JUIPickerType? pickerType,
-  required PickerAdapter adapter,
   JUIPickerClickCallBack? clickCallBack,
 }) {
   // 默认颜色
   var isDark = Theme.of(context).brightness == Brightness.dark;
-  var _bgColor = const Color.fromRGBO(0, 0, 0,
-      0.5); //isDark ? KColors.kPickerBgDarkColor : KColors.kPickerBgColor;
+  var _bgColor = Colors.white; // const Color.fromRGBO(0, 0, 0,0.5);
+  //isDark ? KColors.kPickerBgDarkColor : KColors.kPickerBgColor;
   var _headerColor = Colors.white;
   //isDark ? KColors.kPickerHeaderDarkColor : KColors.kPickerHeaderColor;
   var _kHeaderLineColor = Color.fromRGBO(235, 239, 242, 1);
@@ -184,6 +187,8 @@ _showPicker(
       confirmText: _confirmText,
       confirmTextStyle: TextStyle(color: _btnColor, fontSize: _kBtnFontSize),
       textAlign: TextAlign.center,
+      textStyle: const TextStyle(
+          color: Color.fromRGBO(147, 153, 159, 1), fontSize: 14),
       selectedTextStyle:
           TextStyle(color: _selectTextColor, fontSize: _selectTextFontSize),
       selectionOverlay:

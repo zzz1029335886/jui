@@ -124,6 +124,20 @@ class _JUICommonPageState extends State<JUICommonPage> {
                 }),
 
             ListButton(
+                title: 'Picker',
+                onPressed: () {
+                  JUIPicker.showStringPicker(
+                    context,
+                    selectIndex: 2,
+                    data: ['明细', '类目', '培训费', '类目', '明细'],
+                    clickCallBack: (selectValue, selectIndexArr) {
+                      print(selectValue);
+                      print(selectIndexArr);
+                    },
+                  );
+                }),
+
+            ListButton(
                 title: 'Refresh',
                 onPressed: () {
                   Navigator.of(context)
@@ -131,6 +145,7 @@ class _JUICommonPageState extends State<JUICommonPage> {
                     return RefreshPage();
                   }));
                 }),
+
             // modal_bottom_sheet
           ],
         )),
