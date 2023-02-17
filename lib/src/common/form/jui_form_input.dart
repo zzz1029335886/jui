@@ -20,6 +20,7 @@ class JUIFormInput extends JUIFormContent {
   final List<TextInputFormatter>? inputFormatters; // 输入框formatter
   final TextInputType? keyboardType; // 键盘类型
   final Widget? leftWidget;
+  final Widget? rightWidget;
   final TextAlign? textAlign;
   final bool isShowCleanButton;
   JUIFormInput(
@@ -27,6 +28,7 @@ class JUIFormInput extends JUIFormContent {
       this.isEdit = true,
       this.textAlign,
       this.leftWidget,
+      this.rightWidget,
       this.maxLines,
       this.hintText,
       this.keyboardType,
@@ -71,6 +73,8 @@ class _JUIFormInputState extends JUIFormBaseState<JUIFormInput> {
           maxLength: widget.maxLength,
           maxLines: widget.maxLines,
           textStyle: widget.textStyle,
+          leftWidget: widget.leftWidget,
+          rightWidget: widget.rightWidget,
           hintText: widget.hintText ?? '请输入',
           inputFormatters: widget.inputFormatters,
           hintTextStyle: widget.hintTextStyle,

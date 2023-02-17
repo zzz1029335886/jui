@@ -170,7 +170,7 @@ class _CFTextFieldState extends State<CFTextField> {
     // 设置的颜色优先级高于暗黑模式
     labelTextStyle = widget.labelTextStyle ?? labelTextStyle;
 
-    return TextField(
+    TextField textField = TextField(
       enabled: widget.enabled,
       focusNode: _focusNode,
       controller: _textController,
@@ -237,5 +237,16 @@ class _CFTextFieldState extends State<CFTextField> {
         widget.inputCompletionCallBack?.call(_textController.text, true);
       },
     );
+
+    if (widget.leftWidget != null || widget.rightWidget != null) {
+      return Row(
+        children: [
+          if (widget.leftWidget != null) widget.leftWidget!,
+          Expanded(child: textField),
+          if (widget.rightWidget != null) widget.rightWidget!,
+        ],
+      );
+    }
+    return textField;
   }
 }
