@@ -12,13 +12,14 @@ class JUITabBarScrollViewTitle {
 
 class JUITabBarScrollView extends StatefulWidget {
   final List<String> titles;
+  final List<Widget>? widgets;
   final TextStyle? titleLabelStyle;
   final TextStyle? unselectedTitleLabelStyle;
   final Color? labelColor;
   final Color? unselectedLabelColor;
   final ScrollController? scrollController;
 
-  final IndexedWidgetBuilder bodyWidgetBuilder;
+  final IndexedWidgetBuilder? bodyWidgetBuilder;
   final JUITabBarScrollViewHeaderTitleBuilder? headerTitleWidgetBuilder;
   final WidgetBuilder? topWidgetBuilder;
   final BorderSide underLineBorderSide;
@@ -28,7 +29,8 @@ class JUITabBarScrollView extends StatefulWidget {
 
   const JUITabBarScrollView(
       {required this.titles,
-      required this.bodyWidgetBuilder,
+      this.bodyWidgetBuilder,
+      this.widgets,
       this.scrollController,
       this.headerTitleWidgetBuilder,
       this.labelColor,
@@ -42,6 +44,22 @@ class JUITabBarScrollView extends StatefulWidget {
       this.underIndicatorSize = TabBarIndicatorSize.label,
       this.topWidgetBuilder,
       super.key});
+
+  static Widget defaultStyle(
+      {required List<String> titles,
+      required List<Widget> widgets,
+      ScrollController? scrollController,
+      WidgetBuilder? topWidgetBuilder}) {
+    return JUITabBarScrollView(
+      titleLabelStyle:
+          const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+      unselectedTitleLabelStyle: const TextStyle(fontSize: 14),
+      titles: titles,
+      scrollController: scrollController,
+      topWidgetBuilder: topWidgetBuilder,
+      widgets: widgets,
+    );
+  }
 
   @override
   State<JUITabBarScrollView> createState() => _JUITabBarScrollViewState();
@@ -75,9 +93,11 @@ class _JUITabBarScrollViewState extends State<JUITabBarScrollView>
       controller: widget.scrollController,
       body: TabBarView(
           controller: _tabController,
-          children: List.generate(widget.titles.length, (index) {
-            return widget.bodyWidgetBuilder(context, index);
-          })),
+          children: widget.widgets ??
+              List.generate(widget.titles.length, (index) {
+                return widget.bodyWidgetBuilder?.call(context, index) ??
+                    Container();
+              })),
       headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
         return [
           if (widget.topWidgetBuilder != null)

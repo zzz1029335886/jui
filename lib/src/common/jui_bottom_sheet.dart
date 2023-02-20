@@ -12,7 +12,7 @@ class JUIBottomSheetModalsPageRoute extends MaterialWithModalsPageRoute {
 }
 
 class JUIBottomSheet {
-  static show({
+  static Future show({
     required BuildContext context,
     required WidgetBuilder builder,
     bool isCupertino = true,
@@ -20,13 +20,13 @@ class JUIBottomSheet {
     bool enableDrag = true,
   }) {
     if (isCupertino) {
-      showCupertinoModalBottomSheet(
+      return showCupertinoModalBottomSheet(
           context: context,
           builder: builder,
           expand: expand,
           enableDrag: enableDrag);
     } else {
-      showMaterialModalBottomSheet(
+      return showMaterialModalBottomSheet(
           context: context,
           builder: builder,
           expand: expand,
@@ -38,7 +38,7 @@ class JUIBottomSheet {
     return ModalScrollController.of(context);
   }
 
-  static showPage(
+  static Future showPage(
       {required BuildContext context,
       required WidgetBuilder contentBuilder,
       bool isCupertino = true,
@@ -47,7 +47,7 @@ class JUIBottomSheet {
       String? title,
       Widget? trailingWidget,
       Widget? leadingWidget}) {
-    show(
+    return show(
       context: context,
       expand: expand,
       enableDrag: enableDrag,
@@ -63,13 +63,13 @@ class JUIBottomSheet {
     );
   }
 
-  static select(
+  static Future select(
       {required BuildContext context,
       required List<String> titles,
       JUIBottomClickTitleCallback? callback,
       bool isPop = true,
       bool showCancel = true}) {
-    showMaterialModalBottomSheet(
+    return showMaterialModalBottomSheet(
         context: context,
         backgroundColor: Colors.transparent,
         builder: (_) => Container(
@@ -111,7 +111,7 @@ class JUIBottomSheet {
             ));
   }
 
-  static showPageContent(
+  static Future showPageContent(
       {required BuildContext context,
       required WidgetBuilder contentBuilder,
       bool isCupertino = true,
@@ -120,7 +120,7 @@ class JUIBottomSheet {
       String? title,
       Widget? trailingWidget,
       Widget? leadingWidget}) {
-    showPage(
+    return showPage(
         context: context,
         contentBuilder: contentBuilder,
         isCupertino: isCupertino,
@@ -175,7 +175,6 @@ class _JUIBottomSheetPageState extends State<JUIBottomSheetPage> {
             )
           : null,
       child: SafeArea(
-        bottom: false,
         child: widget.contentBuilder(context),
       ),
     ));
