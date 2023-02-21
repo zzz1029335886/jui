@@ -1,14 +1,9 @@
 import 'package:flutter/material.dart';
 
-typedef JUITabBarScrollViewHeaderTitleBuilder = JUITabBarScrollViewTitle
-    Function(BuildContext context, String title, int index, bool isSelected);
+import '../base/jui_tab_bar.dart';
 
-class JUITabBarScrollViewTitle {
-  final Widget title;
-  final double? width;
-
-  JUITabBarScrollViewTitle({required this.title, this.width});
-}
+typedef JUITabBarScrollViewHeaderTitleBuilder = JUITabBarTitleBuilder;
+typedef JUITabBarScrollViewTitle = JUITabBarTitle;
 
 class JUITabBarScrollView extends StatefulWidget {
   final List<String> titles;
@@ -106,51 +101,22 @@ class _JUITabBarScrollViewState extends State<JUITabBarScrollView>
             ),
           SliverPersistentHeader(
               delegate: _SliverAppBarDelegate(
-                TabBar(
-                  padding: EdgeInsets.zero,
+                JUITabBar(
                   labelColor:
                       widget.labelColor ?? const Color.fromRGBO(28, 31, 33, 1),
                   unselectedLabelColor: widget.unselectedLabelColor ??
                       const Color.fromRGBO(113, 119, 125, 1),
-                  labelStyle: widget.titleLabelStyle,
-                  unselectedLabelStyle: widget.unselectedTitleLabelStyle,
+                  titleLabelStyle: widget.titleLabelStyle,
+                  unselectedTitleLabelStyle: widget.unselectedTitleLabelStyle,
                   isScrollable: widget.isScrollable,
-                  indicator: _RoundUnderlineTabIndicator(
-                      insets: widget.underLineInsets,
-                      borderSide: widget.underLineBorderSide),
-                  indicatorSize: widget.underIndicatorSize,
-                  controller: _tabController,
+                  underLineInsets: widget.underLineInsets,
+                  underLineBorderSide: widget.underLineBorderSide,
+                  underIndicatorSize: widget.underIndicatorSize,
+                  tabController: _tabController,
                   onTap: _changeTab,
-                  tabs: List.generate(widget.titles.length, (index) {
-                    var str = widget.titles[index];
-
-                    if (widget.headerTitleWidgetBuilder != null) {
-                      final title = widget.headerTitleWidgetBuilder!(
-                          context, str, index, _selectedIndex == index);
-                      return Tab(
-                        child: Container(
-                            alignment: Alignment.center,
-                            width: title.width,
-                            child: title.title),
-                      );
-                    }
-
-                    var tp = TextPainter(
-                        textDirection: TextDirection.ltr,
-                        text: TextSpan(
-                            text: str,
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                            )))
-                      ..layout();
-                    return Tab(
-                      child: Container(
-                          alignment: Alignment.center,
-                          width: tp.width + 6,
-                          child: Text(str)),
-                    );
-                  }),
+                  titles: widget.titles,
+                  selectedIndex: _selectedIndex,
+                  headerTitleWidgetBuilder: widget.headerTitleWidgetBuilder,
                 ),
               ),
               pinned: true,
@@ -162,21 +128,22 @@ class _JUITabBarScrollViewState extends State<JUITabBarScrollView>
 }
 
 class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
-  _SliverAppBarDelegate(this._tabBar);
+  _SliverAppBarDelegate(this.sizeWidget);
 
-  final TabBar _tabBar;
+  final PreferredSizeWidget sizeWidget;
 
   @override
-  double get minExtent => _tabBar.preferredSize.height;
+  double get minExtent => sizeWidget.preferredSize.height;
   @override
-  double get maxExtent => _tabBar.preferredSize.height;
+  double get maxExtent => sizeWidget.preferredSize.height;
 
   @override
   Widget build(
       BuildContext context, double shrinkOffset, bool overlapsContent) {
+    print(sizeWidget.preferredSize.height);
     return Container(
       color: Colors.white,
-      child: _tabBar,
+      child: sizeWidget,
     );
   }
 

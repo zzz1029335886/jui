@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 
-import '../base/jui_base.dart';
+import 'jui_input.dart';
+
+typedef JUIBottomInputOnEditingComplete = JUIInputOnEditingComplete;
 
 class JUIBottomInput extends StatelessWidget {
-  final ValueChanged onEditingCompleteText;
+  final JUIBottomInputOnEditingComplete onEditingCompleteText;
   final TextEditingController controller = TextEditingController();
   final String? content;
   final String placeHolder;
@@ -36,63 +38,22 @@ class JUIBottomInput extends StatelessWidget {
             },
           )),
           Container(
-              padding:
-                  const EdgeInsets.only(left: 16, top: 8, bottom: 8, right: 0),
-              decoration: const BoxDecoration(
-                  color: Color.fromARGB(255, 209, 209, 205)),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Container(
-                    decoration: const BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.all(Radius.circular(5))),
-                    width: inputWidth,
-                    margin: const EdgeInsets.only(bottom: 8),
-                    child: TextField(
-                      controller: controller,
-                      autofocus: true,
-                      style: textStyle,
-                      //设置键盘按钮为发送
-                      textInputAction: TextInputAction.send,
-                      keyboardType: TextInputType.multiline,
-                      onEditingComplete: () {
-                        //点击发送调用
-                        onEditingCompleteText(controller.text);
-                        Navigator.pop(context);
-                      },
-                      decoration: InputDecoration(
-                        hintText: placeHolder,
-                        isDense: true,
-                        contentPadding: EdgeInsets.only(
-                            left: 10, top: 5, bottom: 5, right: 10),
-                        border: OutlineInputBorder(
-                          gapPadding: 0,
-                          borderSide: BorderSide(
-                            width: 0,
-                            style: BorderStyle.none,
-                          ),
-                        ),
-                      ),
-
-                      minLines: 1,
-                      maxLines: 5,
-                    ),
-                  ),
-                  Container(
-                    width: buttonWidth,
-                    margin: const EdgeInsets.only(bottom: 12),
-                    child: JUIButton(
-                      title: '发送',
-                      onPressed: () {
-                        onEditingCompleteText(controller.text);
-                        Navigator.pop(context);
-                      },
-                    ),
-                  )
-                ],
-              ))
+            color: Colors.white,
+            child: JUIInput(
+                contentMinHeight: 34,
+                contentBorderRadius: 17,
+                inputWidth: inputWidth,
+                textStyle: textStyle,
+                onEditingCompleteText: (value) {
+                  bool? res = onEditingCompleteText.call(value);
+                  if (res != null && res == true) {
+                    Navigator.pop(context);
+                  }
+                  return res;
+                },
+                placeHolder: placeHolder,
+                buttonWidth: buttonWidth),
+          )
         ],
       ),
     );
@@ -100,7 +61,7 @@ class JUIBottomInput extends StatelessWidget {
 
   static show({
     required BuildContext context,
-    required ValueChanged completeText,
+    required JUIBottomInputOnEditingComplete completeText,
     String? content,
     String placeholder = '请输入内容',
   }) {

@@ -124,8 +124,22 @@ class JUIButton extends StatelessWidget {
         ));
   }
 
+  static Widget themeBackground({
+    required VoidCallback onPressed,
+    double? width,
+    String? title,
+    double? height = 44,
+  }) {
+    return custom(
+        onPressed: onPressed,
+        width: width,
+        height: height,
+        radius: 7,
+        title: title);
+  }
+
   static Widget custom(
-      {required VoidCallback onPressed,
+      {VoidCallback? onPressed,
       String? title,
       double? width,
       Widget? clild,
@@ -149,9 +163,9 @@ class JUIButton extends StatelessWidget {
               : null),
       child: JUIButton(
         title: title,
-        child: clild,
         color: titleColor,
         onPressed: onPressed,
+        child: clild,
       ),
     );
   }
