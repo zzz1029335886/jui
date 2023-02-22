@@ -1,3 +1,4 @@
+import 'package:example/common/input_page.dart';
 import 'package:example/common/jui_form_page.dart';
 import 'package:example/common/jui_header_scroll_view_page.dart';
 import 'package:example/common/jui_shrink_widget_page.dart';
@@ -11,6 +12,7 @@ import '../list_button.dart';
 import 'jui_page_container_page.dart';
 import 'jui_tabbar_scroll_view_page.dart';
 import 'refresh_view_page.dart';
+import 'tab_bar_page.dart';
 
 class JUICommonPage extends StatefulWidget {
   const JUICommonPage({super.key});
@@ -63,6 +65,15 @@ class _JUICommonPageState extends State<JUICommonPage> {
                 Navigator.of(context)
                     .push(MaterialPageRoute(builder: (context) {
                   return TabBarScrollViewPage();
+                }));
+              },
+            ),
+            ListButton(
+              title: 'TabBar',
+              onPressed: () {
+                Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (context) {
+                  return TabBarPage();
                 }));
               },
             ),
@@ -143,6 +154,14 @@ class _JUICommonPageState extends State<JUICommonPage> {
                   Navigator.of(context)
                       .push(MaterialPageRoute(builder: (context) {
                     return RefreshPage();
+                  }));
+                }),
+            ListButton(
+                title: 'InputPage',
+                onPressed: () {
+                  Navigator.of(context)
+                      .push(MaterialPageRoute(builder: (context) {
+                    return InputPage();
                   }));
                 }),
 

@@ -35,7 +35,7 @@ class JUITabBar extends StatelessWidget implements PreferredSizeWidget {
     this.isScrollable = false,
     this.onTap,
     this.selectedIndex = 0,
-    this.height = 44,
+    this.height = 49,
     this.hasBottomLine = true,
     required this.tabController,
     this.titleLabelStyle,
@@ -54,6 +54,7 @@ class JUITabBar extends StatelessWidget implements PreferredSizeWidget {
       required TabController tabController,
       TextStyle? titleLabelStyle,
       TextStyle? unselectedTitleLabelStyle,
+      bool hasBottomLine = true,
       required int selectedIndex}) {
     return JUITabBar(
       labelColor: const Color.fromRGBO(28, 31, 33, 1),
@@ -65,6 +66,7 @@ class JUITabBar extends StatelessWidget implements PreferredSizeWidget {
       tabController: tabController,
       onTap: onTap,
       underLineInsets: underLineInsets,
+      hasBottomLine: hasBottomLine,
       titles: titles,
       selectedIndex: selectedIndex,
     );
@@ -72,58 +74,61 @@ class JUITabBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        TabBar(
-          padding: EdgeInsets.zero,
-          labelColor: labelColor ?? const Color.fromRGBO(28, 31, 33, 1),
-          unselectedLabelColor:
-              unselectedLabelColor ?? const Color.fromRGBO(113, 119, 125, 1),
-          labelStyle: titleLabelStyle,
-          unselectedLabelStyle: unselectedTitleLabelStyle,
-          isScrollable: isScrollable,
-          indicator: _RoundUnderlineTabIndicator(
-              insets: underLineInsets, borderSide: underLineBorderSide),
-          indicatorSize: underIndicatorSize,
-          controller: tabController,
-          onTap: onTap,
-          tabs: List.generate(titles.length, (index) {
-            var str = titles[index];
+    return Container(
+      height: height,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          TabBar(
+            padding: EdgeInsets.zero,
+            labelColor: labelColor ?? const Color.fromRGBO(28, 31, 33, 1),
+            unselectedLabelColor:
+                unselectedLabelColor ?? const Color.fromRGBO(113, 119, 125, 1),
+            labelStyle: titleLabelStyle,
+            unselectedLabelStyle: unselectedTitleLabelStyle,
+            isScrollable: isScrollable,
+            indicator: _RoundUnderlineTabIndicator(
+                insets: underLineInsets, borderSide: underLineBorderSide),
+            indicatorSize: underIndicatorSize,
+            controller: tabController,
+            onTap: onTap,
+            tabs: List.generate(titles.length, (index) {
+              var str = titles[index];
 
-            if (headerTitleWidgetBuilder != null) {
-              final title = headerTitleWidgetBuilder!(
-                  context, str, index, selectedIndex == index);
+              if (headerTitleWidgetBuilder != null) {
+                final title = headerTitleWidgetBuilder!(
+                    context, str, index, selectedIndex == index);
+                return Tab(
+                  child: Container(
+                      alignment: Alignment.center,
+                      width: title.width,
+                      child: title.title),
+                );
+              }
+
+              var tp = TextPainter(
+                  textDirection: TextDirection.ltr,
+                  text: TextSpan(
+                      text: str,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                      )))
+                ..layout();
               return Tab(
                 child: Container(
                     alignment: Alignment.center,
-                    width: title.width,
-                    child: title.title),
+                    width: tp.width + 6,
+                    child: Text(str)),
               );
-            }
-
-            var tp = TextPainter(
-                textDirection: TextDirection.ltr,
-                text: TextSpan(
-                    text: str,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                    )))
-              ..layout();
-            return Tab(
-              child: Container(
-                  alignment: Alignment.center,
-                  width: tp.width + 6,
-                  child: Text(str)),
-            );
-          }),
-        ),
-        if (hasBottomLine)
-          const Divider(
-            height: 0.5,
+            }),
           ),
-      ],
+          if (hasBottomLine)
+            const Divider(
+              height: 0.5,
+            ),
+        ],
+      ),
     );
   }
 

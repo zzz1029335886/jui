@@ -193,6 +193,7 @@ class _CFTextFieldState extends State<CFTextField> {
                   padding: const EdgeInsets.all(0.0),
                   icon: const Icon(
                     Icons.cancel,
+                    color: Color.fromRGBO(183, 187, 191, 1),
                   ),
                   onPressed: () {
                     setState(() {

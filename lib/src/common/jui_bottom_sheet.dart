@@ -67,7 +67,6 @@ class JUIBottomSheet {
       {required BuildContext context,
       required List<String> titles,
       JUIBottomClickTitleCallback? callback,
-      bool isPop = true,
       bool showCancel = true}) {
     return showMaterialModalBottomSheet(
         context: context,
@@ -87,7 +86,6 @@ class JUIBottomSheet {
                   children: [
                     _SelectedTitleContent(
                       titles: titles,
-                      isPop: isPop,
                       callback: callback,
                     ),
                     if (showCancel)
@@ -181,15 +179,17 @@ class _JUIBottomSheetPageState extends State<JUIBottomSheetPage> {
   }
 }
 
-typedef void JUIBottomClickTitleCallback(String title, int index);
+typedef JUIBottomClickTitleCallback = Future<bool>? Function(
+  BuildContext context,
+  String title,
+  int index,
+);
 
 class _SelectedTitleContent extends StatelessWidget {
   final List<String> titles;
   final JUIBottomClickTitleCallback? callback;
-  final bool isPop;
 
-  const _SelectedTitleContent(
-      {required this.titles, this.callback, this.isPop = true});
+  const _SelectedTitleContent({required this.titles, this.callback});
 
   @override
   Widget build(BuildContext context) {
@@ -208,8 +208,14 @@ class _SelectedTitleContent extends StatelessWidget {
                   ),
                 ),
                 onTap: () {
-                  callback?.call(titles[index], index);
-                  if (isPop) {
+                  var res = callback?.call(context, titles[index], index);
+                  if (res != null) {
+                    res.then((value) {
+                      if (value) {
+                        Navigator.of(context).pop();
+                      }
+                    });
+                  } else {
                     Navigator.of(context).pop();
                   }
                 }),

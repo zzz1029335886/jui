@@ -140,7 +140,6 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
   @override
   Widget build(
       BuildContext context, double shrinkOffset, bool overlapsContent) {
-    print(sizeWidget.preferredSize.height);
     return Container(
       color: Colors.white,
       child: sizeWidget,

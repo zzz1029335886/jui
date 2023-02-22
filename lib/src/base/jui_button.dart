@@ -124,17 +124,23 @@ class JUIButton extends StatelessWidget {
         ));
   }
 
-  static Widget themeBackground({
-    required VoidCallback onPressed,
-    double? width,
-    String? title,
-    double? height = 44,
-  }) {
+  static Widget themeBackground(
+      {VoidCallback? onPressed,
+      double? width,
+      EdgeInsets? padding,
+      EdgeInsets? margin,
+      String? title,
+      double? radius = 7,
+      double? height = 44,
+      bool isShowOnAppBar = false}) {
     return custom(
         onPressed: onPressed,
         width: width,
+        padding: padding,
+        margin: margin,
         height: height,
-        radius: 7,
+        radius: radius,
+        isShowOnAppBar: isShowOnAppBar,
         title: title);
   }
 
@@ -147,10 +153,12 @@ class JUIButton extends StatelessWidget {
       EdgeInsets? margin,
       double? height,
       Color? titleColor = Colors.white,
+      double? fontSize,
       double? radius,
       Color? borderColor,
-      Color? backgroundColor = const Color.fromRGBO(129, 216, 208, 1)}) {
-    return Container(
+      Color? backgroundColor = const Color.fromRGBO(129, 216, 208, 1),
+      bool isShowOnAppBar = false}) {
+    Widget res = Container(
       width: width,
       padding: padding,
       margin: margin,
@@ -164,9 +172,29 @@ class JUIButton extends StatelessWidget {
       child: JUIButton(
         title: title,
         color: titleColor,
-        onPressed: onPressed,
+        fontSize: fontSize,
+        onPressed: padding == null ? onPressed : null,
         child: clild,
       ),
     );
+
+    if (padding != null) {
+      res = InkWell(
+        child: res,
+        onTap: onPressed,
+      );
+    }
+
+    if (isShowOnAppBar) {
+      return Row(
+        children: [
+          res,
+          SizedBox(
+            width: 16,
+          )
+        ],
+      );
+    }
+    return res;
   }
 }

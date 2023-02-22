@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 
-import 'jui_input.dart';
+import 'jui_auto_warp_input.dart';
 
-typedef JUIBottomInputOnEditingComplete = JUIInputOnEditingComplete;
+typedef JUIBottomInputOnEditingComplete = JUIAutoWarpInputOnEditingComplete;
 
 class JUIBottomInput extends StatelessWidget {
   final JUIBottomInputOnEditingComplete onEditingCompleteText;
-  final TextEditingController controller = TextEditingController();
   final String? content;
   final String placeHolder;
   final TextStyle textStyle;
@@ -16,9 +15,7 @@ class JUIBottomInput extends StatelessWidget {
       this.content,
       this.textStyle = const TextStyle(fontSize: 16),
       this.placeHolder = '请输入内容'})
-      : super(key: key) {
-    controller.text = content ?? '';
-  }
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +36,7 @@ class JUIBottomInput extends StatelessWidget {
           )),
           Container(
             color: Colors.white,
-            child: JUIInput(
+            child: JUIAutoWarpInput(
                 contentMinHeight: 34,
                 contentBorderRadius: 17,
                 inputWidth: inputWidth,

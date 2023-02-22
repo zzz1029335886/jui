@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 
 import '../base/jui_button.dart';
 
-typedef JUIInputOnEditingComplete = bool? Function(String value);
+typedef JUIAutoWarpInputOnEditingComplete = bool? Function(String value);
 
-class JUIInput extends StatelessWidget {
+class JUIAutoWarpInput extends StatelessWidget {
   final TextEditingController controller = TextEditingController();
 
-  JUIInput(
+  JUIAutoWarpInput(
       {Key? key,
       this.inputWidth,
       this.textStyle,
@@ -26,7 +26,7 @@ class JUIInput extends StatelessWidget {
   final bool autofocus;
   final double? inputWidth;
   final TextStyle? textStyle;
-  final JUIInputOnEditingComplete onEditingCompleteText;
+  final JUIAutoWarpInputOnEditingComplete onEditingCompleteText;
   final String placeHolder;
   final String content;
   final double? buttonWidth;

@@ -55,7 +55,7 @@ class _BottomSheetPageState extends State<BottomSheetPage> {
                   JUIBottomSheet.select(
                       context: context,
                       titles: ['1', '2', '3', '4', '5', '6'],
-                      callback: (_, value) {
+                      callback: (_, __, value) {
                         print(value);
                       });
                 },
