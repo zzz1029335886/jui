@@ -16,7 +16,7 @@ extension ScrollControllerExtension on ScrollController {
     var position =
         dropDownItemRenderBox.localToGlobal(Offset.zero, ancestor: overlay);
     var dy = position.dy + offset - padding;
-    scrollTo(dy);
+    return scrollTo(dy);
   }
 
   Future<void> scrollToBottom() {

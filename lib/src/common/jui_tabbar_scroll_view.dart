@@ -5,6 +5,9 @@ import '../base/jui_tab_bar.dart';
 typedef JUITabBarScrollViewHeaderTitleBuilder = JUITabBarTitleBuilder;
 typedef JUITabBarScrollViewTitle = JUITabBarTitle;
 
+typedef JUITabBarScrollViewHeaderContainer = Widget Function(
+    PreferredSizeWidget sizeWidget);
+
 class JUITabBarScrollView extends StatefulWidget {
   final List<String> titles;
   final List<Widget>? widgets;
@@ -22,11 +25,13 @@ class JUITabBarScrollView extends StatefulWidget {
   final TabBarIndicatorSize underIndicatorSize;
   final bool isScrollable;
   final Decoration? headerDecoration;
+  final JUITabBarScrollViewHeaderContainer? headerContainer;
 
   const JUITabBarScrollView(
       {required this.titles,
       this.bodyWidgetBuilder,
       this.headerDecoration,
+      this.headerContainer,
       this.widgets,
       this.scrollController,
       this.headerTitleWidgetBuilder,
@@ -120,6 +125,7 @@ class _JUITabBarScrollViewState extends State<JUITabBarScrollView>
                     selectedIndex: _selectedIndex,
                     headerTitleWidgetBuilder: widget.headerTitleWidgetBuilder,
                   ),
+                  headerContainer: widget.headerContainer,
                   decoration: widget.headerDecoration),
               pinned: true,
               floating: false),
@@ -130,8 +136,9 @@ class _JUITabBarScrollViewState extends State<JUITabBarScrollView>
 }
 
 class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
-  _SliverAppBarDelegate(this.sizeWidget, {this.decoration});
-
+  _SliverAppBarDelegate(this.sizeWidget,
+      {this.decoration, this.headerContainer});
+  final JUITabBarScrollViewHeaderContainer? headerContainer;
   final PreferredSizeWidget sizeWidget;
   final Decoration? decoration;
 
@@ -143,6 +150,14 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
   @override
   Widget build(
       BuildContext context, double shrinkOffset, bool overlapsContent) {
+    if (headerContainer != null) {
+      var container = headerContainer!(sizeWidget);
+      return Container(
+        color: decoration == null ? Colors.white : null,
+        decoration: decoration,
+        child: container,
+      );
+    }
     return Container(
       color: decoration == null ? Colors.white : null,
       decoration: decoration,

@@ -2,9 +2,14 @@ import 'package:flutter/material.dart';
 
 import 'jui_form_base.dart';
 
+// ignore: must_be_immutable
 class JUIFormCustom extends JUIFormBase {
   final Widget child;
-  JUIFormCustom(this.child, {super.key, super.config, super.configBuilder});
+  JUIFormCustom(this.child,
+      {super.key,
+      super.config,
+      super.configBuilder,
+      super.parentConfigBuilder});
 
   @override
   JUIFormBaseState<JUIFormBase> createState() => _JUIFormCustomState();

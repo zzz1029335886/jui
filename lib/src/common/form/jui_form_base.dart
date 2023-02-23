@@ -80,7 +80,7 @@ abstract class JUIFormBase extends StatefulWidget {
       this.parentConfigBuilder,
       super.key})
       : super() {
-    assert(configBuilder != null || config != null);
+    // assert(configBuilder != null || config != null);
     if (config == null && configBuilder != null) {
       JUIFormConfig defaultConfig = JUIFormConfig();
       defaultConfig.height = 44;
@@ -94,8 +94,28 @@ abstract class JUIFormBase extends StatefulWidget {
 
 @optionalTypeArgs
 abstract class JUIFormBaseState<T extends JUIFormBase> extends State<T> {
+  JUIFormConfig? _cacheConfig;
   JUIFormConfig getConfig() {
-    return widget.config ?? JUIFormConfig();
+    if (widget.config != null) {
+      return widget.config!;
+    }
+    // if (_cacheConfig != null) {
+    //   return _cacheConfig!;
+    // }
+    if (formBuilderState?.widget.config != null) {
+      JUIFormConfig config;
+      if (widget.parentConfigBuilder != null) {
+        config =
+            widget.parentConfigBuilder!.call(formBuilderState!.widget.config!);
+      } else {
+        config = formBuilderState!.widget.config!;
+      }
+
+      _cacheConfig = config;
+      return config;
+    }
+
+    return JUIFormConfig();
   }
 
   // ignore: slash_for_doc_comments

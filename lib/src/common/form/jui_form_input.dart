@@ -47,7 +47,8 @@ class JUIFormInput extends JUIFormContent {
       this.inputFormatters,
       this.isShowCleanButton = false,
       super.config,
-      super.configBuilder});
+      super.configBuilder,
+      super.parentConfigBuilder});
 
   @override
   JUIFormBaseState<JUIFormBase> createState() => _JUIFormInputState();

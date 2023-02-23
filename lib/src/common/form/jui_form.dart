@@ -1,3 +1,4 @@
+export 'jui_form_builder.dart';
 export 'jui_form_input.dart';
 export 'jui_form_select.dart';
 export 'jui_form_base.dart';

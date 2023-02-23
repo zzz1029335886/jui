@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'jui_form_base.dart';
 import 'jui_form_content.dart';
 
+// ignore: must_be_immutable
 class JUIFormSelect extends JUIFormContent {
   final bool hiddenArrow;
   final VoidCallback? clickCallback;
@@ -19,7 +20,9 @@ class JUIFormSelect extends JUIFormContent {
       this.clickCallback,
       this.hiddenArrow = false,
       super.config,
-      super.configBuilder});
+      super.configBuilder,
+      super.contentStyle,
+      super.parentConfigBuilder});
 
   @override
   JUIFormBaseState<JUIFormBase> createState() => _JUIFormSelectState();

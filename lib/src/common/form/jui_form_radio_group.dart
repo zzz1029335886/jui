@@ -6,6 +6,7 @@ import 'radio_group/form_builder_radio_group.dart';
 
 typedef JUIFormRadioGroupOption<T> = FormBuilderFieldOption<T>;
 
+// ignore: must_be_immutable
 class JUIFormRadioGroup<T> extends JUIFormBase {
   final List<JUIFormRadioGroupOption<T>> options;
   final T? initialValue;
@@ -21,7 +22,8 @@ class JUIFormRadioGroup<T> extends JUIFormBase {
       this.wrapDirection = Axis.horizontal,
       super.key,
       super.config,
-      super.configBuilder});
+      super.configBuilder,
+      super.parentConfigBuilder});
 
   @override
   JUIFormBaseState<JUIFormRadioGroup> createState() =>
