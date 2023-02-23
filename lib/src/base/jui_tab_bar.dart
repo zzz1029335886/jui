@@ -53,6 +53,7 @@ class JUITabBar extends StatelessWidget implements PreferredSizeWidget {
       EdgeInsetsGeometry underLineInsets = EdgeInsets.zero,
       required TabController tabController,
       TextStyle? titleLabelStyle,
+      bool isScrollable = false,
       TextStyle? unselectedTitleLabelStyle,
       bool hasBottomLine = true,
       required int selectedIndex}) {
@@ -65,6 +66,7 @@ class JUITabBar extends StatelessWidget implements PreferredSizeWidget {
           unselectedTitleLabelStyle ?? const TextStyle(fontSize: 14),
       tabController: tabController,
       onTap: onTap,
+      isScrollable: isScrollable,
       underLineInsets: underLineInsets,
       hasBottomLine: hasBottomLine,
       titles: titles,
@@ -74,7 +76,7 @@ class JUITabBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    Widget widget = SizedBox(
       height: height,
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -130,6 +132,14 @@ class JUITabBar extends StatelessWidget implements PreferredSizeWidget {
         ],
       ),
     );
+
+    if (isScrollable) {
+      return Row(
+        children: [widget],
+      );
+    }
+
+    return widget;
   }
 
   @override

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'jui_form_base.dart';
 
+// ignore: must_be_immutable
 abstract class JUIFormContent extends JUIFormBase {
   final String? content;
   final TextStyle contentStyle;

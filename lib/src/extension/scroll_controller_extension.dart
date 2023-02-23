@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 extension ScrollControllerExtension on ScrollController {
@@ -39,5 +41,22 @@ extension ScrollControllerExtension on ScrollController {
 
     animateTo(dy, duration: duration, curve: Curves.ease);
     await Future.delayed(duration);
+  }
+
+  void addListenerReturnProgress(
+      {required double height,
+      required ValueChanged<double> valueChanged,
+      double maxValue = 1,
+      double minValue = 0}) {
+    addListener(() {
+      double alpha = 0;
+      if (offset > 0) {
+        alpha = 1 - (height - offset) / height;
+      } else {
+        alpha = 0;
+      }
+      double value = max(min(alpha, maxValue), minValue);
+      valueChanged(value);
+    });
   }
 }

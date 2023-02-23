@@ -132,6 +132,7 @@ class JUIButton extends StatelessWidget {
       String? title,
       double? radius = 7,
       double? height = 44,
+      Color? backgroundColor = const Color.fromRGBO(129, 216, 208, 1),
       bool isShowOnAppBar = false}) {
     return custom(
         onPressed: onPressed,
@@ -140,6 +141,7 @@ class JUIButton extends StatelessWidget {
         margin: margin,
         height: height,
         radius: radius,
+        backgroundColor: backgroundColor,
         isShowOnAppBar: isShowOnAppBar,
         title: title);
   }
@@ -147,6 +149,8 @@ class JUIButton extends StatelessWidget {
   static Widget custom(
       {VoidCallback? onPressed,
       String? title,
+      IconData? icon,
+      Color? tintColor,
       double? width,
       Widget? clild,
       EdgeInsets? padding,
@@ -156,7 +160,7 @@ class JUIButton extends StatelessWidget {
       double? fontSize,
       double? radius,
       Color? borderColor,
-      Color? backgroundColor = const Color.fromRGBO(129, 216, 208, 1),
+      Color? backgroundColor,
       bool isShowOnAppBar = false}) {
     Widget res = Container(
       width: width,
@@ -172,6 +176,8 @@ class JUIButton extends StatelessWidget {
       child: JUIButton(
         title: title,
         color: titleColor,
+        icon: icon,
+        tintColor: tintColor,
         fontSize: fontSize,
         onPressed: padding == null ? onPressed : null,
         child: clild,

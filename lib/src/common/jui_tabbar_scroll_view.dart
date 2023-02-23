@@ -21,10 +21,12 @@ class JUITabBarScrollView extends StatefulWidget {
   final EdgeInsetsGeometry underLineInsets;
   final TabBarIndicatorSize underIndicatorSize;
   final bool isScrollable;
+  final Decoration? headerDecoration;
 
   const JUITabBarScrollView(
       {required this.titles,
       this.bodyWidgetBuilder,
+      this.headerDecoration,
       this.widgets,
       this.scrollController,
       this.headerTitleWidgetBuilder,
@@ -101,24 +103,24 @@ class _JUITabBarScrollViewState extends State<JUITabBarScrollView>
             ),
           SliverPersistentHeader(
               delegate: _SliverAppBarDelegate(
-                JUITabBar(
-                  labelColor:
-                      widget.labelColor ?? const Color.fromRGBO(28, 31, 33, 1),
-                  unselectedLabelColor: widget.unselectedLabelColor ??
-                      const Color.fromRGBO(113, 119, 125, 1),
-                  titleLabelStyle: widget.titleLabelStyle,
-                  unselectedTitleLabelStyle: widget.unselectedTitleLabelStyle,
-                  isScrollable: widget.isScrollable,
-                  underLineInsets: widget.underLineInsets,
-                  underLineBorderSide: widget.underLineBorderSide,
-                  underIndicatorSize: widget.underIndicatorSize,
-                  tabController: _tabController,
-                  onTap: _changeTab,
-                  titles: widget.titles,
-                  selectedIndex: _selectedIndex,
-                  headerTitleWidgetBuilder: widget.headerTitleWidgetBuilder,
-                ),
-              ),
+                  JUITabBar(
+                    labelColor: widget.labelColor ??
+                        const Color.fromRGBO(28, 31, 33, 1),
+                    unselectedLabelColor: widget.unselectedLabelColor ??
+                        const Color.fromRGBO(113, 119, 125, 1),
+                    titleLabelStyle: widget.titleLabelStyle,
+                    unselectedTitleLabelStyle: widget.unselectedTitleLabelStyle,
+                    isScrollable: widget.isScrollable,
+                    underLineInsets: widget.underLineInsets,
+                    underLineBorderSide: widget.underLineBorderSide,
+                    underIndicatorSize: widget.underIndicatorSize,
+                    tabController: _tabController,
+                    onTap: _changeTab,
+                    titles: widget.titles,
+                    selectedIndex: _selectedIndex,
+                    headerTitleWidgetBuilder: widget.headerTitleWidgetBuilder,
+                  ),
+                  decoration: widget.headerDecoration),
               pinned: true,
               floating: false),
         ];
@@ -128,9 +130,10 @@ class _JUITabBarScrollViewState extends State<JUITabBarScrollView>
 }
 
 class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
-  _SliverAppBarDelegate(this.sizeWidget);
+  _SliverAppBarDelegate(this.sizeWidget, {this.decoration});
 
   final PreferredSizeWidget sizeWidget;
+  final Decoration? decoration;
 
   @override
   double get minExtent => sizeWidget.preferredSize.height;
@@ -141,7 +144,8 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
   Widget build(
       BuildContext context, double shrinkOffset, bool overlapsContent) {
     return Container(
-      color: Colors.white,
+      color: decoration == null ? Colors.white : null,
+      decoration: decoration,
       child: sizeWidget,
     );
   }

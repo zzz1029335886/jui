@@ -5,8 +5,10 @@ enum JUISchoolListLessonStyle { mainImgLeft, mainImgTop }
 class JUISchoolListLesson extends StatelessWidget {
   final JUISchoolListLessonStyle style;
   final Size mainImgSize;
+  final Widget? customRightBottomWidget;
   const JUISchoolListLesson(
       {super.key,
+      this.customRightBottomWidget,
       this.style = JUISchoolListLessonStyle.mainImgLeft,
       this.mainImgSize = const Size(128, 72)});
 
@@ -160,29 +162,30 @@ class JUISchoolListLesson extends StatelessWidget {
             Column(
               children: [
                 if (style == JUISchoolListLessonStyle.mainImgTop)
-                  SizedBox(
+                  const SizedBox(
                     height: 12,
                   ),
                 tagRow(),
               ],
             ),
           if (style == JUISchoolListLessonStyle.mainImgTop)
-            SizedBox(
+            const SizedBox(
               height: 12,
             ),
           style == JUISchoolListLessonStyle.mainImgLeft
-              ? Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      '5420人已学',
-                      style: TextStyle(
-                          color: Color.fromRGBO(147, 153, 159, 1),
-                          fontSize: 12),
-                    ),
-                    priceWidget()
-                  ],
-                )
+              ? customRightBottomWidget ??
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        '5420人已学',
+                        style: TextStyle(
+                            color: Color.fromRGBO(147, 153, 159, 1),
+                            fontSize: 12),
+                      ),
+                      priceWidget()
+                    ],
+                  )
               : priceWidget()
         ],
       ),

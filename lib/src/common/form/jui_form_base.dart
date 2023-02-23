@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'jui_form_builder.dart';
+
 class JUIFormConfig {
   late bool isTopTitle;
   late String? title; // 标题
@@ -69,9 +71,14 @@ typedef JUIFormConfigBuilder = JUIFormConfig Function(JUIFormConfig config);
 // ignore: must_be_immutable
 abstract class JUIFormBase extends StatefulWidget {
   JUIFormConfig? config;
+  final JUIFormConfigBuilder? parentConfigBuilder;
 
   /// [configBuilder] 默认高度44，为输入框时需置空
-  JUIFormBase({this.config, JUIFormConfigBuilder? configBuilder, super.key})
+  JUIFormBase(
+      {this.config,
+      JUIFormConfigBuilder? configBuilder,
+      this.parentConfigBuilder,
+      super.key})
       : super() {
     assert(configBuilder != null || config != null);
     if (config == null && configBuilder != null) {
@@ -87,13 +94,17 @@ abstract class JUIFormBase extends StatefulWidget {
 
 @optionalTypeArgs
 abstract class JUIFormBaseState<T extends JUIFormBase> extends State<T> {
+  JUIFormConfig getConfig() {
+    return widget.config ?? JUIFormConfig();
+  }
+
   // ignore: slash_for_doc_comments
   /**
    * 获取content内容宽度，去掉边距与标题宽度
    */
   double get contentWidth {
     var screenWidth = MediaQuery.of(context).size.width;
-    var config = widget.config!;
+    var config = getConfig();
 
     var width = screenWidth -
         config.padding.left -
@@ -130,9 +141,17 @@ abstract class JUIFormBaseState<T extends JUIFormBase> extends State<T> {
     return tp.width;
   }
 
+  JUIFormBuilderState? formBuilderState;
+
+  @override
+  void initState() {
+    formBuilderState = JUIFormBuilder.of(context);
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    var config = this.widget.config!;
+    var config = getConfig();
 
     Widget contentWidget = Container(
       color: config.bgColor,
@@ -192,7 +211,7 @@ abstract class JUIFormBaseState<T extends JUIFormBase> extends State<T> {
   Widget mainWidget(
     isRow,
   ) {
-    var config = widget.config!;
+    var config = getConfig();
     Widget res;
     if (isRow) {
       res = Row(
@@ -223,7 +242,7 @@ abstract class JUIFormBaseState<T extends JUIFormBase> extends State<T> {
   }
 
   Widget titleWidget() {
-    var config = widget.config!;
+    var config = getConfig();
 
     return Container(
       alignment: Alignment.center,

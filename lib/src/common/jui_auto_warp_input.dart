@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jui/jui.dart';
 
 import '../base/jui_button.dart';
 
@@ -14,6 +15,7 @@ class JUIAutoWarpInput extends StatelessWidget {
       required this.onEditingCompleteText,
       this.content = '',
       this.placeHolder = '请输入',
+      this.buttonChild,
       this.buttonWidth,
       this.backgroundColor = const Color.fromRGBO(246, 248, 249, 1),
       this.contentBorderRadius = 5,
@@ -29,6 +31,7 @@ class JUIAutoWarpInput extends StatelessWidget {
   final JUIAutoWarpInputOnEditingComplete onEditingCompleteText;
   final String placeHolder;
   final String content;
+  final Widget? buttonChild;
   final double? buttonWidth;
   final Color? backgroundColor;
   final double contentBorderRadius;
@@ -73,6 +76,7 @@ class JUIAutoWarpInput extends StatelessWidget {
                 },
                 decoration: InputDecoration(
                   hintText: placeHolder,
+                  hintStyle: TextStyle(fontSize: 13),
                   isDense: true,
                   // fillColor: backgroundColor,
                   contentPadding:
@@ -94,10 +98,15 @@ class JUIAutoWarpInput extends StatelessWidget {
               width: buttonWidth,
               height: contentMinHeight,
               margin: contentMinHeight == null
-                  ? const EdgeInsets.only(bottom: 12)
-                  : EdgeInsets.only(bottom: contentMinHeight! - 28),
+                  ? const EdgeInsets.only(bottom: 14)
+                  : EdgeInsets.only(bottom: contentMinHeight! - 26.5),
               child: JUIButton(
-                title: '发送',
+                child: buttonChild ??
+                    const JUIText(
+                      '发布',
+                      color: Color.fromRGBO(129, 216, 208, 1),
+                      fontSize: 14,
+                    ),
                 onPressed: () {
                   bool? res = onEditingCompleteText(controller.text);
                   if (res != null && res == true) {
