@@ -57,7 +57,7 @@ class JUIFormConfig {
 }
 
 /// [configBuilder] 默认高度44，为输入框时需置空
-typedef JUIFormStyleBuilder = JUIFormStyle Function(JUIFormStyle style);
+typedef JUIFormStyleBuilder = void Function(JUIFormStyle style);
 
 // ignore: must_be_immutable
 abstract class JUIFormBase extends StatefulWidget {
@@ -84,7 +84,7 @@ abstract class JUIFormBaseState<T extends JUIFormBase> extends State<T> {
       defaultStyle = style.deepCopy();
     }
     if (widget.styleBuilder != null) {
-      return widget.styleBuilder!.call(defaultStyle);
+      widget.styleBuilder!.call(defaultStyle);
     }
     return defaultStyle;
   }
