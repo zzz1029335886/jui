@@ -24,10 +24,12 @@ class JUISectionTitleContainer extends StatefulWidget {
   static Widget defaultStyle(String title,
       {required Widget child,
       double marginMiddle = 20,
+      double bottomPadding = 20,
       VoidCallback? moreCallbackAction,
       Widget? titleRightChild}) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+      padding:
+          EdgeInsets.only(top: 20, left: 16, right: 16, bottom: bottomPadding),
       color: Colors.white,
       child: JUISectionTitleContainer(
         title,

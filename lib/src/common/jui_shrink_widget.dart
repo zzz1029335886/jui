@@ -82,7 +82,7 @@ class _JUIShrinkWidgetState extends State<JUIShrinkWidget>
             children: [
               Expanded(child: widget.parent),
               Padding(
-                padding: EdgeInsets.only(left: 20),
+                padding: EdgeInsets.only(left: 20, bottom: 10),
                 child: Row(
                   children: [
                     if (widget.openTitle != null || widget.closeTitle != null)

@@ -11,8 +11,8 @@ abstract class JUIFormContent extends JUIFormBase {
       required this.content,
       this.contentStyle = const TextStyle(),
       super.config,
-      super.configBuilder,
-      super.parentConfigBuilder});
+      super.style,
+      super.styleBuilder});
 }
 
 // abstract class ZZFormContentCellState<T extends ZZFormContentCell>

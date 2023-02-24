@@ -10,19 +10,20 @@ class JUIFormSelect extends JUIFormContent {
   final String? placeholder;
   final TextStyle? contentTextStyle;
   final TextStyle? placeholderTextStyle;
-  JUIFormSelect(
-      {super.key,
-      super.content,
-      this.contentTextStyle,
-      this.placeholderTextStyle = const TextStyle(
-          color: Color.fromRGBO(183, 187, 191, 1), fontSize: 14),
-      this.placeholder,
-      this.clickCallback,
-      this.hiddenArrow = false,
-      super.config,
-      super.configBuilder,
-      super.contentStyle,
-      super.parentConfigBuilder});
+  JUIFormSelect({
+    super.key,
+    super.content,
+    this.contentTextStyle,
+    this.placeholderTextStyle =
+        const TextStyle(color: Color.fromRGBO(183, 187, 191, 1), fontSize: 14),
+    this.placeholder,
+    this.clickCallback,
+    this.hiddenArrow = false,
+    super.config,
+    super.style,
+    super.styleBuilder,
+    super.contentStyle,
+  });
 
   @override
   JUIFormBaseState<JUIFormBase> createState() => _JUIFormSelectState();

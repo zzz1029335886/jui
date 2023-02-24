@@ -22,8 +22,8 @@ class JUIFormRadioGroup<T> extends JUIFormBase {
       this.wrapDirection = Axis.horizontal,
       super.key,
       super.config,
-      super.configBuilder,
-      super.parentConfigBuilder});
+      super.style,
+      super.styleBuilder});
 
   @override
   JUIFormBaseState<JUIFormRadioGroup> createState() =>

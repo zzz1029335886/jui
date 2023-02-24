@@ -85,11 +85,11 @@ class _JUIBasePageState extends State<JUIBasePage> {
               print(value);
             },
             activeColor: Color.fromRGBO(129, 216, 208, 1),
-            configBuilder: (config) {
-              config.title = '12333231';
-              config.height = null;
-              config.titleHeight = 44;
-              return config;
+            config: JUIFormConfig(title: '123'),
+            styleBuilder: (style) {
+              style.height = null;
+              style.titleHeight = 44;
+              return style;
             },
             options: ['Dart', 'Kotlin', 'Java', 'Swift', 'Objective-C']
                 .map((lang) => JUIFormRadioGroupOption(

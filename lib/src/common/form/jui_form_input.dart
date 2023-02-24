@@ -1,54 +1,52 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:jui/jui.dart';
 
-import '../../other/cf_text_field.dart';
-import 'jui_form_base.dart';
 import 'jui_form_content.dart';
 
+// ignore: must_be_immutable
 class JUIFormInput extends JUIFormContent {
   final double? minHeight; // input最小高度
   final double? maxHeight; // input最大高度
-  final int maxLength; // 最大长度
+  final int? maxLength; // 最大长度
   final int? maxLines; // 最大行数
   final Decoration? contentDecoration; // 内容背景
   final EdgeInsets? contentPadding; // 内容padding
   final String? hintText; // 占位字符
   final TextStyle? hintTextStyle; // 占位字符样式
   final TextStyle? textStyle; // 占位字符样式
-  final bool showMaxLength; // 是否显示最大数字长度
-  final bool isEdit; // 是否可编辑
+  final bool? showMaxLength; // 是否显示最大数字长度
+  final bool? isEdit; // 是否可编辑
   final List<TextInputFormatter>? inputFormatters; // 输入框formatter
   final TextInputType? keyboardType; // 键盘类型
   final Widget? leftWidget;
   final Widget? rightWidget;
   final TextAlign? textAlign;
-  final bool isShowCleanButton;
+  final bool? isShowCleanButton;
   JUIFormInput(
       {super.key,
-      this.isEdit = true,
+      this.isEdit,
       this.textAlign,
       this.leftWidget,
       this.rightWidget,
       this.maxLines,
       this.hintText,
       this.keyboardType,
-      this.hintTextStyle = const TextStyle(
-        color: Color.fromRGBO(183, 187, 191, 1),
-        fontSize: 14,
-      ),
+      this.hintTextStyle,
       this.textStyle,
-      this.contentPadding = const EdgeInsets.only(top: 3),
+      this.contentPadding,
       this.contentDecoration,
-      this.maxLength = 9999,
+      this.maxLength,
       this.minHeight,
       this.maxHeight,
-      this.showMaxLength = false,
+      this.showMaxLength,
       super.content,
       this.inputFormatters,
-      this.isShowCleanButton = false,
+      this.isShowCleanButton,
       super.config,
-      super.configBuilder,
-      super.parentConfigBuilder});
+      super.style,
+      super.styleBuilder,
+      super.contentStyle});
 
   @override
   JUIFormBaseState<JUIFormBase> createState() => _JUIFormInputState();
@@ -57,40 +55,58 @@ class JUIFormInput extends JUIFormContent {
 class _JUIFormInputState extends JUIFormBaseState<JUIFormInput> {
   @override
   Widget contentBuild(BuildContext context) {
+    JUIFormInputStyle? inputStyle = formBuilderState?.inputStyle;
+    var contentPadding = widget.contentPadding ?? inputStyle?.contentPadding;
+    var contentDecoration =
+        widget.contentDecoration ?? inputStyle?.contentDecoration;
+    var minHeight = widget.minHeight ?? inputStyle?.minHeight;
+    var maxHeight = widget.maxHeight ?? inputStyle?.maxHeight;
+    var maxLength = widget.maxLength ?? inputStyle?.maxLength ?? 100;
+    var maxLines = widget.maxLines ?? inputStyle?.maxLines;
+    var textStyle = widget.textStyle ?? inputStyle?.textStyle;
+    var leftWidget = widget.leftWidget ?? inputStyle?.leftWidget;
+    var rightWidget = widget.rightWidget ?? inputStyle?.rightWidget;
+    var hintText = widget.hintText ?? inputStyle?.hintText;
+    var inputFormatters = widget.inputFormatters ?? inputStyle?.inputFormatters;
+    var hintTextStyle = widget.hintTextStyle ?? inputStyle?.hintTextStyle;
+    var textAlign = widget.textAlign ?? inputStyle?.textAlign;
+    var keyboardType = widget.keyboardType ?? inputStyle?.keyboardType;
+    var showMaxLength = widget.showMaxLength ?? inputStyle?.showMaxLength;
+    var isEdit = widget.isEdit ?? inputStyle?.isEdit;
+    var isShowCleanButton =
+        widget.isShowCleanButton ?? inputStyle?.isShowCleanButton;
+
     return _mainWidget(
       child: Container(
-        padding: widget.contentPadding,
-        decoration: widget.contentDecoration,
+        padding: contentPadding,
+        decoration: contentDecoration,
         // color: Colors.amber,
-        height: widget.minHeight == widget.maxHeight && widget.minHeight != null
-            ? widget.minHeight
-            : null,
-        constraints: widget.minHeight != null && widget.maxHeight != null
-            ? BoxConstraints(
-                minHeight: widget.minHeight!, maxHeight: widget.maxHeight!)
+        height: minHeight == maxHeight && minHeight != null ? minHeight : null,
+        constraints: minHeight != null && maxHeight != null
+            ? BoxConstraints(minHeight: minHeight, maxHeight: maxHeight)
             : null,
         child: CFTextField(
           text: widget.content,
-          maxLength: widget.maxLength,
-          maxLines: widget.maxLines,
-          textStyle: widget.textStyle,
-          leftWidget: widget.leftWidget,
-          rightWidget: widget.rightWidget,
-          hintText: widget.hintText ?? '请输入',
-          inputFormatters: widget.inputFormatters,
-          hintTextStyle: widget.hintTextStyle,
-          textAlign: widget.textAlign ?? TextAlign.left,
-          keyboardType: widget.keyboardType ?? TextInputType.text,
-          showMaxLength: widget.showMaxLength,
-          enabled: widget.isEdit,
-          isShowCleanButton: widget.isShowCleanButton,
+          maxLength: maxLength,
+          maxLines: maxLines,
+          textStyle: textStyle,
+          leftWidget: leftWidget,
+          rightWidget: rightWidget,
+          hintText: hintText ?? '请输入',
+          inputFormatters: inputFormatters,
+          hintTextStyle: hintTextStyle,
+          textAlign: textAlign ?? TextAlign.left,
+          keyboardType: keyboardType ?? TextInputType.text,
+          showMaxLength: showMaxLength ?? false,
+          enabled: isEdit ?? true,
+          isShowCleanButton: isShowCleanButton ?? false,
         ),
       ),
     );
   }
 
   Widget _mainWidget({required Widget child}) {
-    if (widget.config != null && widget.config!.isTopTitle) {
+    if (getStyle().isTopTitle) {
       return child;
     } else {
       return Expanded(child: child);

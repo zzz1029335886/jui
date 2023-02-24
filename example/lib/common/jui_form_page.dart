@@ -18,7 +18,7 @@ class _JUIFormPageState extends State<JUIFormPage> {
         body: Scrollbar(
             child: SingleChildScrollView(
                 child: JUIFormBuilder(
-          config: JUIFormConfig(titleWidth: 100, title: '123'),
+          style: JUIFormStyle(titleWidth: 100),
           child: Column(
             children: <Widget>[
               JUIFormInput(
@@ -28,21 +28,8 @@ class _JUIFormPageState extends State<JUIFormPage> {
                   color: Colors.amber,
                 ),
                 hintText: '最小高度和titleHeight一致',
-
                 hintTextStyle: TextStyle(color: Colors.white, fontSize: 14),
                 contentPadding: EdgeInsets.all(3),
-                // parentConfigBuilder: (config) {
-                //   config.title = '123';
-                //   return config;
-                // },
-
-                // config: JUIFormConfig(
-                //   title: '无边框输入框',
-                //   titleHeight: 44,
-                //   titleWidth: null,
-                //   isShowRedStar: true,
-                //   // isTopTitle: true,
-                // ),
               ),
               JUIFormInput(
                 content: '15551529399',
@@ -56,6 +43,8 @@ class _JUIFormPageState extends State<JUIFormPage> {
                 ],
                 config: JUIFormConfig(
                   title: '输入手机号',
+                ),
+                style: JUIFormStyle(
                   titleHeight: 44,
                   padding: EdgeInsets.symmetric(horizontal: 16),
                 ),
@@ -67,6 +56,8 @@ class _JUIFormPageState extends State<JUIFormPage> {
                 },
                 config: JUIFormConfig(
                   title: '选择框',
+                ),
+                style: JUIFormStyle(
                   height: 44,
                   padding: EdgeInsets.symmetric(horizontal: 16),
                 ),
@@ -84,9 +75,11 @@ class _JUIFormPageState extends State<JUIFormPage> {
                   ],
                 ),
                 config: JUIFormConfig(
+                  title: '自定义',
+                ),
+                style: JUIFormStyle(
                   height: 61,
                   titleHeight: 44,
-                  title: '自定义',
                   padding: EdgeInsets.symmetric(horizontal: 16),
                 ),
               ),
@@ -102,6 +95,8 @@ class _JUIFormPageState extends State<JUIFormPage> {
                     borderRadius: BorderRadius.all(Radius.circular(5))),
                 config: JUIFormConfig(
                   title: "title在上",
+                ),
+                style: JUIFormStyle(
                   titleHeight: 44,
                   // isTopTitle: true,
                   padding: EdgeInsets.fromLTRB(16, 0, 16, 16),
@@ -119,22 +114,15 @@ class _JUIFormPageState extends State<JUIFormPage> {
                       Icons.abc,
                     ),
                     isShowRedStar: true,
-                    height: 44,
                     title: '带图标自定义之Switch',
-                    titleWidth: 180,
-                    padding: EdgeInsets.symmetric(horizontal: 6),
                     tip: '这是tip',
                     tipBgColor: Colors.amber),
+                style: JUIFormStyle(
+                  height: 44,
+                  titleWidth: 180,
+                  padding: EdgeInsets.symmetric(horizontal: 6),
+                ),
               ),
-              // ZZFormImagesCell(
-              //   isUpload: true,
-              //   config: JUIFormConfig(
-              //     title: "上传图片",
-              //     titleHeight: 44,
-              //     isHiddenTopLine: false,
-              //     padding: EdgeInsets.all(16),
-              //   ),
-              // ),
             ],
           ),
         ))));
