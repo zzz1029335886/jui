@@ -89,7 +89,6 @@ class _JUIBasePageState extends State<JUIBasePage> {
             styleBuilder: (style) {
               style.height = null;
               style.titleHeight = 44;
-              return style;
             },
             options: ['Dart', 'Kotlin', 'Java', 'Swift', 'Objective-C']
                 .map((lang) => JUIFormRadioGroupOption(
