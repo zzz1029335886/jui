@@ -26,6 +26,11 @@ class JUIInputPage extends StatefulWidget {
 
   final String? buttonTitle;
 
+  final double? textFieldHeight;
+
+  final bool showMaxLength;
+  final bool autofocus;
+
   const JUIInputPage(
       {super.key,
       required this.title,
@@ -36,6 +41,9 @@ class JUIInputPage extends StatefulWidget {
       this.hintText,
       this.hintTextStyle,
       this.maxLength = 9999,
+      this.textFieldHeight,
+      this.showMaxLength = false,
+      this.autofocus = false,
       this.maxLines = 1,
       this.buttonTitle,
       this.onEditingComplete,
@@ -54,6 +62,9 @@ class JUIInputPage extends StatefulWidget {
       TextStyle? tipTextStyle,
       int maxLength = 9999,
       int maxLines = 1,
+      double? textFieldHeight,
+      bool showMaxLength = false,
+      bool autofocus = false,
       String? buttonTitle,
       JUIInputPageOnEditingComplete? onEditingComplete,
       bool isShowCleanButton = true}) {
@@ -70,6 +81,9 @@ class JUIInputPage extends StatefulWidget {
           hintTextStyle: hintTextStyle,
           maxLength: maxLength,
           maxLines: maxLines,
+          autofocus: autofocus,
+          showMaxLength: showMaxLength,
+          textFieldHeight: textFieldHeight,
           buttonTitle: buttonTitle,
           onEditingComplete: onEditingComplete,
           isShowCleanButton: isShowCleanButton);
@@ -100,7 +114,12 @@ class _JUIInputPageState extends State<JUIInputPage> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              height: widget.textFieldHeight,
+              padding: EdgeInsets.only(
+                  right: 16,
+                  left: 16,
+                  top: 5,
+                  bottom: widget.showMaxLength ? 16 : 4),
               decoration: BoxDecoration(
                   borderRadius: const BorderRadius.all(
                     Radius.circular(7),
@@ -114,8 +133,10 @@ class _JUIInputPageState extends State<JUIInputPage> {
                         fontSize: 14, color: Color.fromRGBO(113, 119, 125, 1)),
                 hintText: widget.hintText ?? '请输入',
                 maxLength: widget.maxLength,
+                autofocus: widget.autofocus,
                 maxLines: widget.maxLines,
                 controller: controller,
+                showMaxLength: widget.showMaxLength,
                 isShowCleanButton: widget.isShowCleanButton,
                 hintTextStyle: widget.hintTextStyle ??
                     const TextStyle(

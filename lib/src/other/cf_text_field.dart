@@ -33,6 +33,7 @@ class CFTextField extends StatefulWidget {
     this.maxLength = _maxLength,
     this.showMaxLength = false,
     this.enabled = true,
+    this.autofocus = false,
     this.inputFormatters,
     this.inputCallBack,
     this.inputCompletionCallBack,
@@ -58,6 +59,8 @@ class CFTextField extends StatefulWidget {
   final int maxLength; // 最大长度，默认_maxLength
   final bool showMaxLength; // 是否显示右侧最大长度文字，默认不显示
   final bool enabled; // 是否可编辑，默认true
+  final bool autofocus; // 是否可编辑，默认true
+
   final List<TextInputFormatter>? inputFormatters;
   final _InputCallBack? inputCallBack;
   final _InputCompletionCallBack? inputCompletionCallBack;
@@ -171,6 +174,7 @@ class _CFTextFieldState extends State<CFTextField> {
     labelTextStyle = widget.labelTextStyle ?? labelTextStyle;
 
     TextField textField = TextField(
+      autofocus: widget.autofocus,
       enabled: widget.enabled,
       focusNode: _focusNode,
       controller: _textController,
