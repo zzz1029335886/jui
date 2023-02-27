@@ -113,7 +113,7 @@ class JUIDropdown extends StatefulWidget {
       padding: padding,
       height: height,
       width: width,
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.only(
               bottomLeft: Radius.circular(10),

@@ -21,12 +21,16 @@ class JUIBottomSheet {
   }) {
     if (isCupertino) {
       return showCupertinoModalBottomSheet(
+          backgroundColor: Colors.red.withOpacity(0.6),
+          transitionBackgroundColor: Colors.blue.withOpacity(0.6),
           context: context,
           builder: builder,
           expand: expand,
           enableDrag: enableDrag);
     } else {
       return showMaterialModalBottomSheet(
+          backgroundColor: Colors.red.withOpacity(0.6),
+          // transitionBackgroundColor: Colors.blue.withOpacity(0.6),
           context: context,
           builder: builder,
           expand: expand,

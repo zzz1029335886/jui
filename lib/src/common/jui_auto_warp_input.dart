@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:jui/jui.dart';
 
-import '../base/jui_button.dart';
-
 typedef JUIAutoWarpInputOnEditingComplete = bool? Function(String value);
 
 class JUIAutoWarpInput extends StatelessWidget {

@@ -5,6 +5,12 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "custom_nested_scroll_view Example",
+            "type": "dart",
+            "request": "launch",
+            "program": "package/custom_nested_scroll_view/example/lib/main.dart"
+        },
+        {
             "name": "jieluoxuan_ui-components",
             "request": "launch",
             "type": "dart"

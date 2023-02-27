@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../jui.dart';
 import '../base/jui_tab_bar.dart';
 
 typedef JUITabBarScrollViewHeaderTitleBuilder = JUITabBarTitleBuilder;
@@ -26,12 +27,15 @@ class JUITabBarScrollView extends StatefulWidget {
   final bool isScrollable;
   final Decoration? headerDecoration;
   final JUITabBarScrollViewHeaderContainer? headerContainer;
-
+  final Widget? underHeaderSliver;
+  final ValueChanged<int>? tabBarClick;
   const JUITabBarScrollView(
       {required this.titles,
+      this.tabBarClick,
       this.bodyWidgetBuilder,
       this.headerDecoration,
       this.headerContainer,
+      this.underHeaderSliver,
       this.widgets,
       this.scrollController,
       this.headerTitleWidgetBuilder,
@@ -84,6 +88,7 @@ class _JUITabBarScrollViewState extends State<JUITabBarScrollView>
 
   int _selectedIndex = 0;
   void _changeTab(int index) {
+    widget.tabBarClick?.call(index);
     setState(() {
       _selectedIndex = index;
     });
@@ -129,6 +134,7 @@ class _JUITabBarScrollViewState extends State<JUITabBarScrollView>
                   decoration: widget.headerDecoration),
               pinned: true,
               floating: false),
+          if (widget.underHeaderSliver != null) widget.underHeaderSliver!
         ];
       },
     );
@@ -166,9 +172,8 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
   }
 
   @override
-  bool shouldRebuild(_SliverAppBarDelegate oldDelegate) {
-    return false;
-  }
+  bool shouldRebuild(_SliverAppBarDelegate oldDelegate) =>
+      oldDelegate.maxExtent != maxExtent || oldDelegate.minExtent != minExtent;
 }
 
 class _RoundUnderlineTabIndicator extends Decoration {

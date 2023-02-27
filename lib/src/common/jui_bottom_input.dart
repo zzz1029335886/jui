@@ -9,7 +9,7 @@ class JUIBottomInput extends StatelessWidget {
   final String? content;
   final String placeHolder;
   final TextStyle textStyle;
-  JUIBottomInput(
+  const JUIBottomInput(
       {Key? key,
       required this.onEditingCompleteText,
       this.content,

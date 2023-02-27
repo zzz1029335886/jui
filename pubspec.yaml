@@ -12,11 +12,7 @@ dependencies:
     sdk: flutter
 
   jui_modal_bottom_sheet: 
-    git:
-        url: "https://gitee.com/helixlife-app/modal_bottom_sheet.git"
-        ref: 0.0.3
-        path: 'modal_bottom_sheet'
-
+    path: package/modal_bottom_sheet
   # jieluoxuan_resource_assets:
   #   git:
   #     url: "git@gitee.com:helixlife-app/jieluoxuan_resource_assets.git"

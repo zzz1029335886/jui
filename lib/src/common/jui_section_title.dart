@@ -4,18 +4,13 @@ import 'package:jui/jui.dart';
 class JUISectionTitleContainer extends StatefulWidget {
   final String title;
   final Widget child;
-  Widget? titleRightChild;
-  JUISectionTitleContainer(this.title,
+  final Widget? titleRightChild;
+  final VoidCallback? moreCallbackAction;
+  const JUISectionTitleContainer(this.title,
       {required this.child,
-      VoidCallback? moreCallbackAction,
+      this.moreCallbackAction,
       this.titleRightChild,
-      super.key}) {
-    if (moreCallbackAction != null) {
-      var titleRightChild =
-          JUIButton.moreButton(onPressed: moreCallbackAction, title: '查看更多');
-      this.titleRightChild = titleRightChild;
-    }
-  }
+      super.key});
 
   @override
   State<JUISectionTitleContainer> createState() =>
@@ -36,8 +31,8 @@ class JUISectionTitleContainer extends StatefulWidget {
         titleRightChild: titleRightChild,
         moreCallbackAction: moreCallbackAction,
         child: Container(
-          child: child,
           margin: EdgeInsets.only(top: marginMiddle),
+          child: child,
         ),
       ),
     );
@@ -45,6 +40,19 @@ class JUISectionTitleContainer extends StatefulWidget {
 }
 
 class _JUISectionTitleContainerState extends State<JUISectionTitleContainer> {
+  Widget? titleRightChild;
+
+  @override
+  void initState() {
+    titleRightChild = widget.titleRightChild;
+    if (widget.moreCallbackAction != null) {
+      titleRightChild = JUIButton.moreButton(
+          onPressed: widget.moreCallbackAction!, title: '查看更多');
+    }
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
