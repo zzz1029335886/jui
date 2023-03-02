@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:jieluoxuan_bundle_base/jieluoxuan_bundle_base.dart';
 
 class JUIPagingListWidgetState extends State<PagingListWidget> {
-  er.EasyRefreshController _controller = er.EasyRefreshController(
+  er.EasyRefreshController controller = er.EasyRefreshController(
     controlFinishRefresh: true,
     controlFinishLoad: true,
   );
@@ -13,19 +13,19 @@ class JUIPagingListWidgetState extends State<PagingListWidget> {
   @override
   Widget build(BuildContext context) {
     return er.EasyRefresh(
-      controller: _controller,
+      controller: controller,
       refreshOnStart: true,
       onLoad: () async {
         index++;
         var res = await widget.onLoad.call(index, pageSize);
-        _controller.finishLoad(res.length == pageSize
+        controller.finishLoad(res.length == pageSize
             ? er.IndicatorResult.success
             : er.IndicatorResult.noMore);
       },
       onRefresh: () async {
         index = 1;
         var res = await widget.onLoad.call(index, pageSize);
-        _controller.finishRefresh(er.IndicatorResult.success);
+        controller.finishRefresh(er.IndicatorResult.success);
       },
       header: const er.ClassicHeader(
         dragText: '下拉刷新',

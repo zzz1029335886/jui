@@ -3,12 +3,22 @@ import 'package:jieluoxuan_bundle_base/jieluoxuan_bundle_base.dart';
 import 'package:jui/jui.dart';
 
 class JUIShare {
-  static void sheetShow(BuildContext context) {
+  static void sheetShow({BuildContext? context}) {
+    BuildContext? realContext = context ??
+        FunctionRegistry.callMaybe<BuildContext?, void>(
+            AppComponentConfig.CURRENT_CONTEXT);
+
+    if (realContext == null) {
+      assert(context != null, 'context 不能为空');
+      return;
+    }
+
     JUIBottomSheet.showPageContent(
       trailingWidget: Container(
         width: 0,
       ),
-      context: context,
+      barrierColor: Colors.black.withOpacity(0.6),
+      context: realContext,
       expand: false,
       title: '分享给好友',
       contentBuilder: (context) {

@@ -38,8 +38,8 @@ class JUIAutoWarpInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double buttonWidth = this.buttonWidth ?? 56;
-    double inputWidth =
-        this.inputWidth ?? MediaQuery.of(context).size.width - 16 - buttonWidth;
+    double inputWidth = this.inputWidth ??
+        MediaQuery.of(context).size.width - 16 - 16 - buttonWidth;
 
     return Container(
         padding: const EdgeInsets.only(left: 16, top: 8, bottom: 8, right: 0),

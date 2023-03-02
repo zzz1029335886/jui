@@ -43,7 +43,7 @@ class JUITabBar extends StatelessWidget implements PreferredSizeWidget {
     this.underLineBorderSide =
         const BorderSide(width: 3, color: Color.fromRGBO(129, 216, 208, 1)),
     this.unselectedTitleLabelStyle,
-    this.underLineInsets = EdgeInsets.zero,
+    this.underLineInsets = const EdgeInsets.only(bottom: 5),
     this.unselectedLabelColor,
   });
 

@@ -17,7 +17,8 @@ extension ScrollControllerExtension on ScrollController {
       required GlobalKey targetKey,
       double padding = 0,
       ScrollControllerChildPosition scrollPosition =
-          ScrollControllerChildPosition.top}) async {
+          ScrollControllerChildPosition.top,
+      bool isAnimated = true}) async {
     final RenderBox? scrollRenderBox =
         scrollKey.currentContext!.findRenderObject() as RenderBox?;
     if (scrollRenderBox == null) {
@@ -106,21 +107,21 @@ extension ScrollControllerExtension on ScrollController {
         return;
     }
 
-    return scrollTo(dy - padding);
+    return scrollTo(dy - padding, isAnimated: isAnimated);
   }
 
   bool get isVertical => position.axis == Axis.vertical;
 
-  Future<void> scrollToBottom() {
+  Future<void> scrollToBottom({bool isAnimated = true}) {
     var maxScrollExtent = position.maxScrollExtent;
-    return scrollTo(maxScrollExtent);
+    return scrollTo(maxScrollExtent, isAnimated: isAnimated);
   }
 
-  Future<void> scrollToTop() {
-    return scrollTo(0);
+  Future<void> scrollToTop({bool isAnimated = true}) {
+    return scrollTo(0, isAnimated: isAnimated);
   }
 
-  Future<void> scrollTo(double dy) async {
+  Future<void> scrollTo(double dy, {bool isAnimated = true}) async {
     var maxScrollExtent = position.maxScrollExtent;
 
     if (dy > maxScrollExtent) {
@@ -132,6 +133,10 @@ extension ScrollControllerExtension on ScrollController {
     final value = (offset - dy) * 0.5;
     if (value == 0) {
       return;
+    }
+
+    if (!isAnimated) {
+      jumpTo(dy);
     }
     final milliseconds = value.toInt().abs() + 100;
 

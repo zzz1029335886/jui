@@ -144,7 +144,7 @@ class _JUICommonPageState extends State<JUICommonPage> {
             ListButton(
                 title: 'Share',
                 onPressed: () {
-                  JUIShare.sheetShow(context);
+                  JUIShare.sheetShow(context: context);
                 }),
 
             ListButton(

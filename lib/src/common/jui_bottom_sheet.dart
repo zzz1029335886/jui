@@ -131,7 +131,7 @@ class JUIBottomSheet {
         contentBuilder: contentBuilder,
         isCupertino: isCupertino,
         expand: expand,
-        barrierColor: barrierColor ?? Colors.black.withOpacity(0.2),
+        barrierColor: barrierColor ?? Colors.black.withOpacity(0.6),
         enableDrag: enableDrag,
         trailingWidget: trailingWidget,
         leadingWidget: leadingWidget,

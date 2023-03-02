@@ -16,8 +16,10 @@ class JUITabBarScrollViewSliver {
   final List<Widget> slivers;
   final ScrollController? scrollController;
   final bool isPageStorage;
+  final TransitionBuilder? builder;
   const JUITabBarScrollViewSliver(
       {required this.slivers,
+      this.builder,
       this.scrollController,
       this.isPageStorage = true});
 }
@@ -66,7 +68,8 @@ class JUITabBarScrollView extends StatefulWidget {
       this.underLineBorderSide =
           const BorderSide(width: 3, color: Color.fromRGBO(129, 216, 208, 1)),
       this.isScrollable = false,
-      this.underLineInsets = const EdgeInsets.symmetric(horizontal: 8),
+      this.underLineInsets =
+          const EdgeInsets.only(left: 8, right: 8, bottom: 5),
       this.underIndicatorSize = TabBarIndicatorSize.label,
       this.topWidgetBuilder,
       super.key});
@@ -117,15 +120,27 @@ class _JUITabBarScrollViewState extends State<JUITabBarScrollView>
     if (widget.sliversBuilder != null) {
       children = List.generate(widget.titles.length, (index) {
         var sliverRes = widget.sliversBuilder!.call(context, index);
-        return CustomScrollView(
+
+        Widget scrollView = CustomScrollView(
           key: sliverRes.isPageStorage ? PageStorageKey(index) : null,
           slivers: [
-            const SliverToBoxAdapter(
-              child: SizedBox(height: 44),
-            ),
+            // const SliverToBoxAdapter(
+            //   child: SizedBox(
+            //     height: 44,
+            //   ),
+            // ),
             ...sliverRes.slivers
           ],
           controller: sliverRes.scrollController,
+        );
+
+        if (sliverRes.builder != null) {
+          scrollView = sliverRes.builder!(context, scrollView);
+        }
+
+        return Padding(
+          padding: const EdgeInsets.only(top: 44),
+          child: scrollView,
         );
       });
     }
@@ -146,36 +161,42 @@ class _JUITabBarScrollViewState extends State<JUITabBarScrollView>
             SliverToBoxAdapter(
               child: widget.topWidgetBuilder!(context),
             ),
-          SliverOverlapAbsorber(
-            handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
-            sliver: SliverPersistentHeader(
-                delegate: _SliverAppBarDelegate(
-                    JUITabBar(
-                      labelColor: widget.labelColor ??
-                          const Color.fromRGBO(28, 31, 33, 1),
-                      unselectedLabelColor: widget.unselectedLabelColor ??
-                          const Color.fromRGBO(113, 119, 125, 1),
-                      titleLabelStyle: widget.titleLabelStyle,
-                      unselectedTitleLabelStyle:
-                          widget.unselectedTitleLabelStyle,
-                      isScrollable: widget.isScrollable,
-                      underLineInsets: widget.underLineInsets,
-                      underLineBorderSide: widget.underLineBorderSide,
-                      underIndicatorSize: widget.underIndicatorSize,
-                      tabController: _tabController,
-                      // onTap: _changeTab,
-                      titles: widget.titles,
-                      headerTitleWidgetBuilder: widget.headerTitleWidgetBuilder,
-                    ),
-                    headerContainer: widget.headerContainer,
-                    decoration: widget.headerDecoration),
-                pinned: true,
-                floating: false),
-          ),
+          if (widget.sliversBuilder != null)
+            SliverOverlapAbsorber(
+              handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+              sliver: headerWidget(),
+            ),
+          if (widget.sliversBuilder == null) headerWidget(),
+          // headerWidget(),
           if (widget.underHeaderSliver != null) widget.underHeaderSliver!
         ];
       },
     );
+  }
+
+  Widget headerWidget() {
+    return SliverPersistentHeader(
+        delegate: _SliverAppBarDelegate(
+            JUITabBar(
+              labelColor:
+                  widget.labelColor ?? const Color.fromRGBO(28, 31, 33, 1),
+              unselectedLabelColor: widget.unselectedLabelColor ??
+                  const Color.fromRGBO(113, 119, 125, 1),
+              titleLabelStyle: widget.titleLabelStyle,
+              unselectedTitleLabelStyle: widget.unselectedTitleLabelStyle,
+              isScrollable: widget.isScrollable,
+              underLineInsets: widget.underLineInsets,
+              underLineBorderSide: widget.underLineBorderSide,
+              underIndicatorSize: widget.underIndicatorSize,
+              tabController: _tabController,
+              // onTap: _changeTab,
+              titles: widget.titles,
+              headerTitleWidgetBuilder: widget.headerTitleWidgetBuilder,
+            ),
+            headerContainer: widget.headerContainer,
+            decoration: widget.headerDecoration),
+        pinned: true,
+        floating: false);
   }
 }
 
