@@ -9,14 +9,31 @@ typedef JUITabBarScrollViewTitle = JUITabBarTitle;
 typedef JUITabBarScrollViewHeaderContainer = Widget Function(
     PreferredSizeWidget sizeWidget);
 
+typedef JUITabBarScrollViewSliversBuilder = JUITabBarScrollViewSliver Function(
+    BuildContext context, int index);
+
+class JUITabBarScrollViewSliver {
+  final List<Widget> slivers;
+  final ScrollController? scrollController;
+  final bool isPageStorage;
+  const JUITabBarScrollViewSliver(
+      {required this.slivers,
+      this.scrollController,
+      this.isPageStorage = true});
+}
+
 class JUITabBarScrollView extends StatefulWidget {
   final List<String> titles;
   final List<Widget>? widgets;
+  final JUITabBarScrollViewSliversBuilder? sliversBuilder;
+  final ScrollController? sliverScrollController;
+
   final TextStyle? titleLabelStyle;
   final TextStyle? unselectedTitleLabelStyle;
   final Color? labelColor;
   final Color? unselectedLabelColor;
   final ScrollController? scrollController;
+  final TabController? tabController;
 
   final IndexedWidgetBuilder? bodyWidgetBuilder;
   final JUITabBarScrollViewHeaderTitleBuilder? headerTitleWidgetBuilder;
@@ -37,7 +54,10 @@ class JUITabBarScrollView extends StatefulWidget {
       this.headerContainer,
       this.underHeaderSliver,
       this.widgets,
+      this.sliversBuilder,
+      this.sliverScrollController,
       this.scrollController,
+      this.tabController,
       this.headerTitleWidgetBuilder,
       this.labelColor,
       this.unselectedLabelColor,
@@ -80,27 +100,42 @@ class _JUITabBarScrollViewState extends State<JUITabBarScrollView>
   void initState() {
     super.initState();
 
-    _tabController = TabController(vsync: this, length: widget.titles.length);
-    _tabController.addListener(() {
-      _changeTab(_tabController.index);
-    });
-  }
+    _tabController = widget.tabController ??
+        TabController(vsync: this, length: widget.titles.length);
+    //   _tabController.addListener(() {
+    //     _changeTab(_tabController.index);
+    //   });
+    // }
 
-  int _selectedIndex = 0;
-  void _changeTab(int index) {
-    widget.tabBarClick?.call(index);
-    setState(() {
-      _selectedIndex = index;
-    });
+    // void _changeTab(int index) {
+    //   widget.tabBarClick?.call(index);
   }
 
   @override
   Widget build(BuildContext context) {
+    List<Widget>? children;
+    if (widget.sliversBuilder != null) {
+      children = List.generate(widget.titles.length, (index) {
+        var sliverRes = widget.sliversBuilder!.call(context, index);
+        return CustomScrollView(
+          key: sliverRes.isPageStorage ? PageStorageKey(index) : null,
+          slivers: [
+            const SliverToBoxAdapter(
+              child: SizedBox(height: 44),
+            ),
+            ...sliverRes.slivers
+          ],
+          controller: sliverRes.scrollController,
+        );
+      });
+    }
+
     return NestedScrollView(
       controller: widget.scrollController,
       body: TabBarView(
           controller: _tabController,
-          children: widget.widgets ??
+          children: children ??
+              widget.widgets ??
               List.generate(widget.titles.length, (index) {
                 return widget.bodyWidgetBuilder?.call(context, index) ??
                     Container();
@@ -111,29 +146,32 @@ class _JUITabBarScrollViewState extends State<JUITabBarScrollView>
             SliverToBoxAdapter(
               child: widget.topWidgetBuilder!(context),
             ),
-          SliverPersistentHeader(
-              delegate: _SliverAppBarDelegate(
-                  JUITabBar(
-                    labelColor: widget.labelColor ??
-                        const Color.fromRGBO(28, 31, 33, 1),
-                    unselectedLabelColor: widget.unselectedLabelColor ??
-                        const Color.fromRGBO(113, 119, 125, 1),
-                    titleLabelStyle: widget.titleLabelStyle,
-                    unselectedTitleLabelStyle: widget.unselectedTitleLabelStyle,
-                    isScrollable: widget.isScrollable,
-                    underLineInsets: widget.underLineInsets,
-                    underLineBorderSide: widget.underLineBorderSide,
-                    underIndicatorSize: widget.underIndicatorSize,
-                    tabController: _tabController,
-                    onTap: _changeTab,
-                    titles: widget.titles,
-                    selectedIndex: _selectedIndex,
-                    headerTitleWidgetBuilder: widget.headerTitleWidgetBuilder,
-                  ),
-                  headerContainer: widget.headerContainer,
-                  decoration: widget.headerDecoration),
-              pinned: true,
-              floating: false),
+          SliverOverlapAbsorber(
+            handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+            sliver: SliverPersistentHeader(
+                delegate: _SliverAppBarDelegate(
+                    JUITabBar(
+                      labelColor: widget.labelColor ??
+                          const Color.fromRGBO(28, 31, 33, 1),
+                      unselectedLabelColor: widget.unselectedLabelColor ??
+                          const Color.fromRGBO(113, 119, 125, 1),
+                      titleLabelStyle: widget.titleLabelStyle,
+                      unselectedTitleLabelStyle:
+                          widget.unselectedTitleLabelStyle,
+                      isScrollable: widget.isScrollable,
+                      underLineInsets: widget.underLineInsets,
+                      underLineBorderSide: widget.underLineBorderSide,
+                      underIndicatorSize: widget.underIndicatorSize,
+                      tabController: _tabController,
+                      // onTap: _changeTab,
+                      titles: widget.titles,
+                      headerTitleWidgetBuilder: widget.headerTitleWidgetBuilder,
+                    ),
+                    headerContainer: widget.headerContainer,
+                    decoration: widget.headerDecoration),
+                pinned: true,
+                floating: false),
+          ),
           if (widget.underHeaderSliver != null) widget.underHeaderSliver!
         ];
       },
@@ -172,8 +210,7 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
   }
 
   @override
-  bool shouldRebuild(_SliverAppBarDelegate oldDelegate) =>
-      oldDelegate.maxExtent != maxExtent || oldDelegate.minExtent != minExtent;
+  bool shouldRebuild(_SliverAppBarDelegate oldDelegate) => false;
 }
 
 class _RoundUnderlineTabIndicator extends Decoration {

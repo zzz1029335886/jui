@@ -147,7 +147,8 @@ class JUIButton extends StatelessWidget {
   }
 
   static Widget custom(
-      {VoidCallback? onPressed,
+      {Key? key,
+      VoidCallback? onPressed,
       String? title,
       IconData? icon,
       Color? tintColor,
@@ -192,7 +193,7 @@ class JUIButton extends StatelessWidget {
     }
 
     if (isShowOnAppBar) {
-      return Row(
+      res = Row(
         children: [
           res,
           SizedBox(
@@ -201,6 +202,9 @@ class JUIButton extends StatelessWidget {
         ],
       );
     }
-    return res;
+    return Container(
+      key: key,
+      child: res,
+    );
   }
 }

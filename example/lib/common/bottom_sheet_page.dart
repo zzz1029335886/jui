@@ -29,6 +29,7 @@ class _BottomSheetPageState extends State<BottomSheetPage> {
                 onPressed: () {
                   JUIBottomSheet.showPageContent(
                       context: context,
+                      barrierColor: Colors.black.withOpacity(0.2),
                       title: '章节目录',
                       contentBuilder: (context0) {
                         return ListView(

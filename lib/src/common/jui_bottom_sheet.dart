@@ -16,21 +16,21 @@ class JUIBottomSheet {
     required BuildContext context,
     required WidgetBuilder builder,
     bool isCupertino = true,
+    Color? barrierColor,
     bool expand = true,
     bool enableDrag = true,
   }) {
     if (isCupertino) {
       return showCupertinoModalBottomSheet(
-          backgroundColor: Colors.red.withOpacity(0.6),
-          transitionBackgroundColor: Colors.blue.withOpacity(0.6),
+          barrierColor: barrierColor ?? Colors.black.withOpacity(0.6),
           context: context,
           builder: builder,
           expand: expand,
           enableDrag: enableDrag);
     } else {
       return showMaterialModalBottomSheet(
-          backgroundColor: Colors.red.withOpacity(0.6),
-          // transitionBackgroundColor: Colors.blue.withOpacity(0.6),
+          barrierColor: barrierColor ?? Colors.black.withOpacity(0.6),
+          backgroundColor: Colors.transparent,
           context: context,
           builder: builder,
           expand: expand,
@@ -48,12 +48,14 @@ class JUIBottomSheet {
       bool isCupertino = true,
       bool expand = true,
       bool enableDrag = true,
+      Color? barrierColor,
       String? title,
       Widget? trailingWidget,
       Widget? leadingWidget}) {
     return show(
       context: context,
       expand: expand,
+      barrierColor: barrierColor,
       enableDrag: enableDrag,
       builder: (context) {
         return JUIBottomSheetPage(
@@ -75,6 +77,7 @@ class JUIBottomSheet {
     return showMaterialModalBottomSheet(
         context: context,
         backgroundColor: Colors.transparent,
+        barrierColor: Colors.black.withOpacity(0.6),
         builder: (_) => Container(
               decoration: const BoxDecoration(
                   color: Colors.white,
@@ -119,6 +122,7 @@ class JUIBottomSheet {
       bool isCupertino = true,
       bool expand = true,
       bool enableDrag = true,
+      Color? barrierColor,
       String? title,
       Widget? trailingWidget,
       Widget? leadingWidget}) {
@@ -127,6 +131,7 @@ class JUIBottomSheet {
         contentBuilder: contentBuilder,
         isCupertino: isCupertino,
         expand: expand,
+        barrierColor: barrierColor ?? Colors.black.withOpacity(0.2),
         enableDrag: enableDrag,
         trailingWidget: trailingWidget,
         leadingWidget: leadingWidget,
@@ -177,7 +182,10 @@ class _JUIBottomSheetPageState extends State<JUIBottomSheetPage> {
             )
           : null,
       child: SafeArea(
-        child: widget.contentBuilder(context),
+        child: Container(
+          child: widget.contentBuilder(context),
+          // color: Colors.black,
+        ),
       ),
     ));
   }

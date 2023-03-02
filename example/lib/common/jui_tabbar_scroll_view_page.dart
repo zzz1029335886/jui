@@ -44,6 +44,30 @@ class _TabBarScrollViewPageState extends State<TabBarScrollViewPage> {
             );
           },
           widgets: List.generate(3, (index) {
+            return CustomScrollView(
+              key: PageStorageKey<int>(index),
+              slivers: [
+                SliverToBoxAdapter(
+                  child: SizedBox(height: 44),
+                ),
+                SliverList(delegate: SliverChildBuilderDelegate(
+                  (context, index) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 5),
+                      child: Container(
+                        height: 100,
+                        margin: const EdgeInsets.symmetric(horizontal: 10),
+                        color: Colors.blue,
+                        child: JUIText(
+                          '$index',
+                          color: Colors.white,
+                        ),
+                      ),
+                    );
+                  },
+                ))
+              ],
+            );
             return ListView.builder(
               padding: const EdgeInsets.only(top: 10), //设置padding，避免默认的Padding
               itemExtent: 200,

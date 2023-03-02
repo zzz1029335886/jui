@@ -23,8 +23,11 @@ class JUIFormInput extends JUIFormContent {
   final Widget? rightWidget;
   final TextAlign? textAlign;
   final bool? isShowCleanButton;
+  final ValueChanged<String?>? valueChanged;
+
   JUIFormInput(
       {super.key,
+      this.valueChanged,
       this.isEdit,
       this.textAlign,
       this.leftWidget,
@@ -100,6 +103,9 @@ class _JUIFormInputState extends JUIFormBaseState<JUIFormInput> {
           showMaxLength: showMaxLength ?? false,
           enabled: isEdit ?? true,
           isShowCleanButton: isShowCleanButton ?? false,
+          inputCompletionCallBack: (value, isSubmitted) {
+            widget.valueChanged?.call(value);
+          },
         ),
       ),
     );

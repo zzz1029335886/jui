@@ -2,22 +2,114 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
+enum ScrollControllerChildPosition {
+  top,
+  bottom,
+  center,
+  leading,
+  traling,
+  inScreen
+}
+
 extension ScrollControllerExtension on ScrollController {
   Future<void> scrollToKey(
       {required GlobalKey scrollKey,
       required GlobalKey targetKey,
-      double padding = 0}) async {
-    final RenderBox? overlay =
+      double padding = 0,
+      ScrollControllerChildPosition scrollPosition =
+          ScrollControllerChildPosition.top}) async {
+    final RenderBox? scrollRenderBox =
         scrollKey.currentContext!.findRenderObject() as RenderBox?;
+    if (scrollRenderBox == null) {
+      return;
+    }
 
-    final RenderBox dropDownItemRenderBox =
+    final RenderBox targetRenderBox =
         targetKey.currentContext!.findRenderObject() as RenderBox;
+    double dy = 0;
 
-    var position =
-        dropDownItemRenderBox.localToGlobal(Offset.zero, ancestor: overlay);
-    var dy = position.dy + offset - padding;
-    return scrollTo(dy);
+    switch (scrollPosition) {
+      case ScrollControllerChildPosition.top:
+        Offset position = targetRenderBox.localToGlobal(Offset.zero,
+            ancestor: scrollRenderBox);
+        dy = position.dy + offset;
+        break;
+      case ScrollControllerChildPosition.bottom:
+        Offset position = targetRenderBox.localToGlobal(
+            Offset(0, targetRenderBox.size.height),
+            ancestor: scrollRenderBox);
+        dy = position.dy + offset - scrollRenderBox.size.height;
+        break;
+      case ScrollControllerChildPosition.center:
+        if (isVertical) {
+          Offset point = targetRenderBox.localToGlobal(
+              Offset(0, targetRenderBox.size.height * 0.5),
+              ancestor: scrollRenderBox);
+          dy = point.dy + offset - scrollRenderBox.size.height * 0.5;
+        } else {
+          Offset point = targetRenderBox.localToGlobal(
+              Offset(0, targetRenderBox.size.width * 0.5),
+              ancestor: scrollRenderBox);
+          dy = point.dx +
+              offset -
+              scrollRenderBox.size.width * 0.5 +
+              targetRenderBox.size.width * 0.5;
+        }
+
+        break;
+      case ScrollControllerChildPosition.leading:
+        Offset position = targetRenderBox.localToGlobal(Offset.zero,
+            ancestor: scrollRenderBox);
+        dy = position.dx + offset;
+        break;
+      case ScrollControllerChildPosition.traling:
+        Offset position = targetRenderBox.localToGlobal(
+            Offset(0, targetRenderBox.size.width),
+            ancestor: scrollRenderBox);
+        dy = position.dx +
+            offset -
+            scrollRenderBox.size.width +
+            targetRenderBox.size.width;
+        break;
+
+      default:
+        Offset position = targetRenderBox.localToGlobal(Offset.zero,
+            ancestor: scrollRenderBox);
+        var targetSizeValue = 0.0;
+        var scrollSizeValue = 0.0;
+        if (isVertical) {
+          dy = position.dy;
+          targetSizeValue = targetRenderBox.size.height;
+          scrollSizeValue = scrollRenderBox.size.height;
+        } else {
+          dy = position.dx;
+          targetSizeValue = targetRenderBox.size.width;
+          scrollSizeValue = scrollRenderBox.size.width;
+        }
+        if (dy < 0) {
+          scrollToKey(
+              scrollKey: scrollKey,
+              targetKey: targetKey,
+              padding: padding,
+              scrollPosition: isVertical
+                  ? ScrollControllerChildPosition.top
+                  : ScrollControllerChildPosition.leading);
+        } else if (dy + targetSizeValue > scrollSizeValue) {
+          scrollToKey(
+              scrollKey: scrollKey,
+              targetKey: targetKey,
+              padding: -padding,
+              scrollPosition: isVertical
+                  ? ScrollControllerChildPosition.bottom
+                  : ScrollControllerChildPosition.traling);
+        }
+        return;
+    }
+
+    return scrollTo(dy - padding);
   }
+
+  bool get isVertical => position.axis == Axis.vertical;
 
   Future<void> scrollToBottom() {
     var maxScrollExtent = position.maxScrollExtent;
@@ -30,11 +122,17 @@ extension ScrollControllerExtension on ScrollController {
 
   Future<void> scrollTo(double dy) async {
     var maxScrollExtent = position.maxScrollExtent;
+
     if (dy > maxScrollExtent) {
       dy = maxScrollExtent;
+    } else if (dy < 0) {
+      dy = 0;
     }
 
     final value = (offset - dy) * 0.5;
+    if (value == 0) {
+      return;
+    }
     final milliseconds = value.toInt().abs() + 100;
 
     final duration = Duration(milliseconds: milliseconds);

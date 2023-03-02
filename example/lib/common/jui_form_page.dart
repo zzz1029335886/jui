@@ -30,6 +30,9 @@ class _JUIFormPageState extends State<JUIFormPage> {
                 hintText: '最小高度和titleHeight一致',
                 hintTextStyle: TextStyle(color: Colors.white, fontSize: 14),
                 contentPadding: EdgeInsets.all(3),
+                valueChanged: (value) {
+                  print(value);
+                },
               ),
               JUIFormInput(
                 content: '15551529399',
