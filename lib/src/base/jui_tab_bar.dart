@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jui/jui.dart';
 
 typedef JUITabBarTitleBuilder = JUITabBarTitle Function(
     BuildContext context, String title, int index, bool isSelected);
@@ -8,9 +9,22 @@ class JUITabBarTitle {
   final double? width;
 
   JUITabBarTitle({required this.title, this.width});
+
+  static double textWidth(String text,
+      {TextStyle style = const TextStyle(
+        fontSize: 16,
+        fontWeight: FontWeight.w500,
+      )}) {
+    var tp = TextPainter(
+        textDirection: TextDirection.ltr,
+        text: TextSpan(text: text, style: style))
+      ..layout();
+
+    return tp.width;
+  }
 }
 
-class JUITabBar extends StatelessWidget implements PreferredSizeWidget {
+class JUITabBar extends StatefulWidget implements PreferredSizeWidget {
   final Color? labelColor;
   final Color? unselectedLabelColor;
   final TextStyle? titleLabelStyle;
@@ -38,11 +52,12 @@ class JUITabBar extends StatelessWidget implements PreferredSizeWidget {
     this.height = 49,
     this.hasBottomLine = true,
     required this.tabController,
-    this.titleLabelStyle,
+    this.titleLabelStyle =
+        const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
     required this.titles,
     this.underLineBorderSide =
         const BorderSide(width: 3, color: Color.fromRGBO(129, 216, 208, 1)),
-    this.unselectedTitleLabelStyle,
+    this.unselectedTitleLabelStyle = const TextStyle(fontSize: 14),
     this.underLineInsets = const EdgeInsets.only(bottom: 5),
     this.unselectedLabelColor,
   });
@@ -52,6 +67,7 @@ class JUITabBar extends StatelessWidget implements PreferredSizeWidget {
       ValueChanged<int>? onTap,
       EdgeInsetsGeometry underLineInsets = EdgeInsets.zero,
       required TabController tabController,
+      JUITabBarTitleBuilder? headerTitleWidgetBuilder,
       TextStyle? titleLabelStyle,
       bool isScrollable = false,
       TextStyle? unselectedTitleLabelStyle,
@@ -65,6 +81,7 @@ class JUITabBar extends StatelessWidget implements PreferredSizeWidget {
       unselectedTitleLabelStyle:
           unselectedTitleLabelStyle ?? const TextStyle(fontSize: 14),
       tabController: tabController,
+      headerTitleWidgetBuilder: headerTitleWidgetBuilder,
       onTap: onTap,
       isScrollable: isScrollable,
       underLineInsets: underLineInsets,
@@ -75,57 +92,81 @@ class JUITabBar extends StatelessWidget implements PreferredSizeWidget {
   }
 
   @override
+  State<JUITabBar> createState() => _JUITabBarState();
+
+  @override
+  Size get preferredSize => Size.fromHeight(height);
+}
+
+class _JUITabBarState extends State<JUITabBar> {
+  int selectedIndex = 0;
+
+  @override
+  void initState() {
+    selectedIndex = widget.selectedIndex;
+    widget.tabController?.addListener(() {
+      onTap(widget.tabController!.index);
+    });
+    super.initState();
+  }
+
+  void onTap(value) {
+    if (selectedIndex == value) {
+      return;
+    }
+    print('onTap $value');
+    setState(() {
+      selectedIndex = value;
+    });
+    widget.onTap?.call(value);
+  }
+
+  @override
   Widget build(BuildContext context) {
     Widget widget = SizedBox(
-      height: height,
+      height: this.widget.height,
       child: Column(
-        mainAxisSize: MainAxisSize.min,
         children: [
           TabBar(
             padding: EdgeInsets.zero,
-            labelColor: labelColor ?? const Color.fromRGBO(28, 31, 33, 1),
-            unselectedLabelColor:
-                unselectedLabelColor ?? const Color.fromRGBO(113, 119, 125, 1),
-            labelStyle: titleLabelStyle,
-            unselectedLabelStyle: unselectedTitleLabelStyle,
-            isScrollable: isScrollable,
+            labelColor:
+                this.widget.labelColor ?? const Color.fromRGBO(28, 31, 33, 1),
+            unselectedLabelColor: this.widget.unselectedLabelColor ??
+                const Color.fromRGBO(113, 119, 125, 1),
+            labelStyle: this.widget.titleLabelStyle,
+            unselectedLabelStyle: this.widget.unselectedTitleLabelStyle,
+            isScrollable: this.widget.isScrollable,
             indicator: _RoundUnderlineTabIndicator(
-                insets: underLineInsets, borderSide: underLineBorderSide),
-            indicatorSize: underIndicatorSize,
-            controller: tabController,
+                insets: this.widget.underLineInsets,
+                borderSide: this.widget.underLineBorderSide),
+            indicatorSize: this.widget.underIndicatorSize,
+            controller: this.widget.tabController,
             onTap: onTap,
-            tabs: List.generate(titles.length, (index) {
-              var str = titles[index];
+            tabs: List.generate(this.widget.titles.length, (index) {
+              var str = this.widget.titles[index];
 
-              if (headerTitleWidgetBuilder != null) {
-                final title = headerTitleWidgetBuilder!(
+              if (this.widget.headerTitleWidgetBuilder != null) {
+                final title = this.widget.headerTitleWidgetBuilder!(
                     context, str, index, selectedIndex == index);
                 return Tab(
                   child: Container(
-                      alignment: Alignment.center,
-                      width: title.width,
-                      child: title.title),
+                    width: title.width,
+                    child: Center(
+                      child: title.title,
+                    ),
+                  ),
                 );
               }
 
-              var tp = TextPainter(
-                  textDirection: TextDirection.ltr,
-                  text: TextSpan(
-                      text: str,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                      )))
-                ..layout();
               return Tab(
                 child: Container(
                     alignment: Alignment.center,
-                    width: tp.width + 6,
+                    width: JUITabBarTitle.textWidth(str) + 6,
                     child: Text(str)),
               );
             }),
           ),
-          if (hasBottomLine)
+          if (this.widget.hasBottomLine)
             const Divider(
               height: 0.5,
             ),
@@ -133,7 +174,7 @@ class JUITabBar extends StatelessWidget implements PreferredSizeWidget {
       ),
     );
 
-    if (isScrollable) {
+    if (this.widget.isScrollable) {
       return Row(
         children: [widget],
       );
@@ -141,9 +182,6 @@ class JUITabBar extends StatelessWidget implements PreferredSizeWidget {
 
     return widget;
   }
-
-  @override
-  Size get preferredSize => Size.fromHeight(height);
 }
 
 class _RoundUnderlineTabIndicator extends Decoration {

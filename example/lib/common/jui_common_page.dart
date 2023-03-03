@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:jui/jui.dart';
 
 import '../list_button.dart';
+import 'gridview_page.dart';
 import 'jui_page_container_page.dart';
 import 'jui_tabbar_scroll_view_page.dart';
 import 'refresh_view_page.dart';
@@ -145,6 +146,15 @@ class _JUICommonPageState extends State<JUICommonPage> {
                 title: 'Share',
                 onPressed: () {
                   JUIShare.sheetShow(context: context);
+                }),
+
+            ListButton(
+                title: 'GridPhotoViewer',
+                onPressed: () {
+                  Navigator.of(context)
+                      .push(MaterialPageRoute(builder: (context) {
+                    return GridPhotoViewer();
+                  }));
                 }),
 
             ListButton(
