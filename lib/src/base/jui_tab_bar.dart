@@ -104,21 +104,25 @@ class _JUITabBarState extends State<JUITabBar> {
   @override
   void initState() {
     selectedIndex = widget.selectedIndex;
-    widget.tabController?.addListener(() {
-      onTap(widget.tabController!.index);
-    });
+
+    if (widget.headerTitleWidgetBuilder != null) {
+      widget.tabController?.addListener(() {
+        onTap(widget.tabController!.index);
+      });
+    }
+
     super.initState();
   }
 
   void onTap(value) {
+    widget.onTap?.call(value);
+
     if (selectedIndex == value) {
       return;
     }
-    print('onTap $value');
     setState(() {
       selectedIndex = value;
     });
-    widget.onTap?.call(value);
   }
 
   @override
@@ -149,7 +153,7 @@ class _JUITabBarState extends State<JUITabBar> {
                 final title = this.widget.headerTitleWidgetBuilder!(
                     context, str, index, selectedIndex == index);
                 return Tab(
-                  child: Container(
+                  child: SizedBox(
                     width: title.width,
                     child: Center(
                       child: title.title,
