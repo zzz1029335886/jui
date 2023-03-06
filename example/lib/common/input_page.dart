@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:jui/jui.dart';
 
 import '../list_button.dart';
@@ -26,8 +27,13 @@ class _InputPageState extends State<InputPage> {
                 context: context,
                 title: 'title',
                 hintText: 'hintText',
-                tip: 'tip',
+                tip: '0-10位字符可由中文,英文,数字及“—”,“-”组成',
                 buttonTitle: '确认',
+                inputFormatters: [
+                  FilteringTextInputFormatter.allow(
+                      RegExp('[\u4e00-\u9fa5a-zA-Z0-9\-]')),
+                  LengthLimitingTextInputFormatter(10)
+                ],
                 onEditingComplete: (value) {
                   print(value);
                   return Future.sync(() => false);

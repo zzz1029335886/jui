@@ -5,7 +5,7 @@ typedef JUIHeaderScrollViewBuilder = PreferredSize Function(
 
 class JUIHeaderScrollView extends StatefulWidget {
   final WidgetBuilder bodyWidgetBuilder;
-  final JUIHeaderScrollViewBuilder headerWidgetBuilder;
+  final JUIHeaderScrollViewBuilder? headerWidgetBuilder;
   final WidgetBuilder? topWidgetBuilder;
   final ScrollController? scrollController;
 
@@ -17,7 +17,7 @@ class JUIHeaderScrollView extends StatefulWidget {
   final Key? scrollViewKey;
 
   const JUIHeaderScrollView(
-      {required this.headerWidgetBuilder,
+      {this.headerWidgetBuilder,
       required this.bodyWidgetBuilder,
       this.scrollController,
       this.pinned = true,
@@ -48,12 +48,13 @@ class _JUIHeaderScrollViewState extends State<JUIHeaderScrollView> {
             SliverToBoxAdapter(
               child: widget.topWidgetBuilder!(context),
             ),
-          SliverPersistentHeader(
-              delegate: _SliverAppBarDelegate(
-                widget.headerWidgetBuilder(context),
-              ),
-              pinned: widget.pinned,
-              floating: false),
+          if (widget.headerWidgetBuilder != null)
+            SliverPersistentHeader(
+                delegate: _SliverAppBarDelegate(
+                  widget.headerWidgetBuilder!(context),
+                ),
+                pinned: widget.pinned,
+                floating: false),
           SliverToBoxAdapter(child: widget.bodyWidgetBuilder(context)),
         ],
       );
@@ -69,12 +70,13 @@ class _JUIHeaderScrollViewState extends State<JUIHeaderScrollView> {
             SliverToBoxAdapter(
               child: widget.topWidgetBuilder!(context),
             ),
-          SliverPersistentHeader(
-              delegate: _SliverAppBarDelegate(
-                widget.headerWidgetBuilder(context),
-              ),
-              pinned: widget.pinned,
-              floating: true),
+          if (widget.headerWidgetBuilder != null)
+            SliverPersistentHeader(
+                delegate: _SliverAppBarDelegate(
+                  widget.headerWidgetBuilder!(context),
+                ),
+                pinned: widget.pinned,
+                floating: true),
         ];
       },
     );

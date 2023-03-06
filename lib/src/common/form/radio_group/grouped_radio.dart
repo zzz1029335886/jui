@@ -225,6 +225,7 @@ class _GroupedRadioState<T> extends State<GroupedRadio<T?>> {
       case OptionsOrientation.wrap:
       default:
         return SingleChildScrollView(
+          physics: const NeverScrollableScrollPhysics(),
           child: Wrap(
             spacing: widget.wrapSpacing,
             runSpacing: widget.wrapRunSpacing,

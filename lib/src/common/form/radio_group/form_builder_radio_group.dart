@@ -77,7 +77,6 @@ class FormBuilderRadioGroup<T> extends FormBuilderField<T> {
           initialValue: initialValue,
           name: 'name',
           validator: (value) {
-            print(value);
             return null;
           },
           valueTransformer: valueTransformer,

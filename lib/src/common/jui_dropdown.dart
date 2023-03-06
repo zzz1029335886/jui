@@ -93,7 +93,7 @@ class JUIDropdown extends StatefulWidget {
     Key? key,
     required this.controller,
     required this.widgets,
-    this.animationMilliseconds = 500,
+    this.animationMilliseconds = 250,
     this.maskColor = const Color.fromRGBO(0, 0, 0, 0.5),
     this.dropdownChanging,
     this.dropdownChanged,

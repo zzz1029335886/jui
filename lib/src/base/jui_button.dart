@@ -146,6 +146,49 @@ class JUIButton extends StatelessWidget {
         title: title);
   }
 
+  static Widget pageBottomButtons({
+    required List<Widget> widgets,
+    VoidCallback? onPressed,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        const Divider(
+          height: 0.5,
+        ),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          color: Colors.white,
+          child: Row(
+            children: widgets,
+          ),
+        ),
+      ],
+    );
+  }
+
+  static Widget pageBottomButton({
+    required String title,
+    VoidCallback? onPressed,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        const Divider(
+          height: 0.5,
+        ),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          color: Colors.white,
+          child: JUIButton.themeBackground(
+            onPressed: onPressed,
+            title: title,
+          ),
+        ),
+      ],
+    );
+  }
+
   static Widget custom(
       {Key? key,
       VoidCallback? onPressed,

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:jui/jui.dart';
 
 typedef JUIInputPageOnEditingComplete = Future<bool>? Function(String? value);
@@ -31,9 +32,12 @@ class JUIInputPage extends StatefulWidget {
   final bool showMaxLength;
   final bool autofocus;
 
+  final List<TextInputFormatter>? inputFormatters;
+
   const JUIInputPage(
       {super.key,
       required this.title,
+      this.inputFormatters,
       this.tip,
       this.tipTextStyle,
       this.text,
@@ -51,9 +55,31 @@ class JUIInputPage extends StatefulWidget {
   @override
   State<JUIInputPage> createState() => _JUIInputPageState();
 
+  static Future<String?> pushTitleInputPage({
+    required BuildContext context,
+    required String title,
+    String? text,
+    String? hintText,
+    JUIInputPageOnEditingComplete? onEditingComplete,
+  }) {
+    return push(
+      context: context,
+      title: title,
+      hintText: hintText,
+      tip: '0-10个字符，可由中英文、数字、“_”、“-”组成 ',
+      buttonTitle: '确认',
+      tipTextStyle: const TextStyle(color: Color.fromRGBO(147, 153, 159, 1)),
+      inputFormatters: [
+        FilteringTextInputFormatter.allow(RegExp('[\u4e00-\u9fa5a-zA-Z0-9\-]')),
+        LengthLimitingTextInputFormatter(10)
+      ],
+    );
+  }
+
   static Future<String?> push(
       {required BuildContext context,
       required String title,
+      List<TextInputFormatter>? inputFormatters,
       String? text,
       TextStyle? textStyle,
       String? hintText,
@@ -81,6 +107,7 @@ class JUIInputPage extends StatefulWidget {
           hintTextStyle: hintTextStyle,
           maxLength: maxLength,
           maxLines: maxLines,
+          inputFormatters: inputFormatters,
           autofocus: autofocus,
           showMaxLength: showMaxLength,
           textFieldHeight: textFieldHeight,
@@ -136,6 +163,7 @@ class _JUIInputPageState extends State<JUIInputPage> {
                 autofocus: widget.autofocus,
                 maxLines: widget.maxLines,
                 controller: controller,
+                inputFormatters: widget.inputFormatters,
                 showMaxLength: widget.showMaxLength,
                 isShowCleanButton: widget.isShowCleanButton,
                 hintTextStyle: widget.hintTextStyle ??
