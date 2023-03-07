@@ -48,6 +48,9 @@ class JUITabBarScrollView extends StatefulWidget {
   final JUITabBarScrollViewHeaderContainer? headerContainer;
   final Widget? underHeaderSliver;
   final ValueChanged<int>? tabBarClick;
+  final double titleExtraWidth;
+  final EdgeInsetsGeometry titlePadding;
+
   const JUITabBarScrollView(
       {required this.titles,
       this.tabBarClick,
@@ -64,6 +67,8 @@ class JUITabBarScrollView extends StatefulWidget {
       this.labelColor,
       this.unselectedLabelColor,
       this.titleLabelStyle,
+      this.titleExtraWidth = 6,
+      this.titlePadding = const EdgeInsets.symmetric(horizontal: 16),
       this.unselectedTitleLabelStyle,
       this.underLineBorderSide =
           const BorderSide(width: 3, color: Color.fromRGBO(129, 216, 208, 1)),
@@ -76,14 +81,24 @@ class JUITabBarScrollView extends StatefulWidget {
 
   static Widget defaultStyle(
       {required List<String> titles,
-      required List<Widget> widgets,
+      List<Widget>? widgets,
       ScrollController? scrollController,
+      ScrollController? sliverScrollController,
+      bool isScrollable = false,
+      JUITabBarScrollViewSliversBuilder? sliversBuilder,
+      double titleExtraWidth = 6,
+      EdgeInsets titlePadding = const EdgeInsets.symmetric(horizontal: 16),
       WidgetBuilder? topWidgetBuilder}) {
     return JUITabBarScrollView(
       titleLabelStyle:
           const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
       unselectedTitleLabelStyle: const TextStyle(fontSize: 14),
       titles: titles,
+      isScrollable: isScrollable,
+      sliverScrollController: sliverScrollController,
+      sliversBuilder: sliversBuilder,
+      titleExtraWidth: titleExtraWidth,
+      titlePadding: titlePadding,
       scrollController: scrollController,
       topWidgetBuilder: topWidgetBuilder,
       widgets: widgets,
@@ -182,6 +197,8 @@ class _JUITabBarScrollViewState extends State<JUITabBarScrollView>
                   widget.labelColor ?? const Color.fromRGBO(28, 31, 33, 1),
               unselectedLabelColor: widget.unselectedLabelColor ??
                   const Color.fromRGBO(113, 119, 125, 1),
+              titleExtraWidth: widget.titleExtraWidth,
+              titlePadding: widget.titlePadding,
               titleLabelStyle: widget.titleLabelStyle,
               unselectedTitleLabelStyle: widget.unselectedTitleLabelStyle,
               isScrollable: widget.isScrollable,

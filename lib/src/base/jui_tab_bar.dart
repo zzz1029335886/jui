@@ -39,11 +39,15 @@ class JUITabBar extends StatefulWidget implements PreferredSizeWidget {
   final JUITabBarTitleBuilder? headerTitleWidgetBuilder;
   final int selectedIndex;
   final double height;
+  final double titleExtraWidth;
   final bool hasBottomLine;
+  final EdgeInsetsGeometry titlePadding;
 
   const JUITabBar({
     super.key,
     this.labelColor,
+    this.titleExtraWidth = 6,
+    this.titlePadding = const EdgeInsets.symmetric(horizontal: 16),
     this.underIndicatorSize,
     this.headerTitleWidgetBuilder,
     this.isScrollable = false,
@@ -72,6 +76,8 @@ class JUITabBar extends StatefulWidget implements PreferredSizeWidget {
       bool isScrollable = false,
       TextStyle? unselectedTitleLabelStyle,
       bool hasBottomLine = true,
+      double titleExtraWidth = 6,
+      EdgeInsets titlePadding = const EdgeInsets.symmetric(horizontal: 16),
       required int selectedIndex}) {
     return JUITabBar(
       labelColor: const Color.fromRGBO(28, 31, 33, 1),
@@ -86,6 +92,8 @@ class JUITabBar extends StatefulWidget implements PreferredSizeWidget {
       isScrollable: isScrollable,
       underLineInsets: underLineInsets,
       hasBottomLine: hasBottomLine,
+      titleExtraWidth: titleExtraWidth,
+      titlePadding: titlePadding,
       titles: titles,
       selectedIndex: selectedIndex,
     );
@@ -133,6 +141,7 @@ class _JUITabBarState extends State<JUITabBar> {
         children: [
           TabBar(
             padding: EdgeInsets.zero,
+            labelPadding: this.widget.titlePadding,
             labelColor:
                 this.widget.labelColor ?? const Color.fromRGBO(28, 31, 33, 1),
             unselectedLabelColor: this.widget.unselectedLabelColor ??
@@ -165,7 +174,8 @@ class _JUITabBarState extends State<JUITabBar> {
               return Tab(
                 child: Container(
                     alignment: Alignment.center,
-                    width: JUITabBarTitle.textWidth(str) + 6,
+                    width: JUITabBarTitle.textWidth(str) +
+                        this.widget.titleExtraWidth,
                     child: Text(str)),
               );
             }),

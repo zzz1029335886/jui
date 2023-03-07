@@ -7,14 +7,14 @@ class TabBarPage extends StatefulWidget {
   State<TabBarPage> createState() => _TabBarPageState();
 }
 
-class _TabBarPageState extends State<TabBarPage> {
+class _TabBarPageState extends State<TabBarPage> with TickerProviderStateMixin {
   late TabController tabController;
-  final List<String> titles = ['1', '2', '3', '4'];
+  final List<String> titles = ['待付款', '待付款', '待付款', '待付款', '待付款'];
 
   get vsync => null;
   @override
   void initState() {
-    tabController = TabController(length: titles.length, vsync: vsync);
+    tabController = TabController(length: titles.length, vsync: this);
     super.initState();
   }
 
@@ -26,8 +26,10 @@ class _TabBarPageState extends State<TabBarPage> {
       ),
       body: SafeArea(
           child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 16),
         child: JUITabBar(
-          titles: ['1', '2'],
+          titles: titles,
+          underLineInsets: EdgeInsets.symmetric(horizontal: 16),
           tabController: tabController,
         ),
       )),
