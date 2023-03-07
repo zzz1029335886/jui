@@ -6,15 +6,36 @@ class JUISchoolListLesson extends StatelessWidget {
   final JUISchoolListLessonStyle style;
   final Size mainImgSize;
   final Widget? customRightBottomWidget;
+  final int titleMaxLine;
+  final bool? isShowTagRow;
+  final bool? isShowStudyNum;
+  final bool? isShowOriginPrice;
   const JUISchoolListLesson(
       {super.key,
       this.customRightBottomWidget,
+      this.titleMaxLine = 2,
+      this.isShowTagRow,
+      this.isShowStudyNum,
+      this.isShowOriginPrice,
       this.style = JUISchoolListLessonStyle.mainImgLeft,
       this.mainImgSize = const Size(128, 72)});
 
+  bool get _isShowTagRow {
+    return isShowTagRow ??
+        false; //style == JUISchoolListLessonStyle.mainImgLeft;
+  }
+
+  bool get _isShowStudyNum {
+    return isShowStudyNum ??
+        true; // style == JUISchoolListLessonStyle.mainImgLeft;
+  }
+
+  bool get _isShowOriginPrice {
+    return isShowOriginPrice ?? style == JUISchoolListLessonStyle.mainImgLeft;
+  }
+
   Widget mainImg() {
     return Stack(
-      // alignment: Alignment.topRight,
       children: [
         Container(
           decoration: BoxDecoration(
@@ -76,11 +97,8 @@ class JUISchoolListLesson extends StatelessWidget {
       children: [
         if (style == JUISchoolListLessonStyle.mainImgLeft)
           Container(
-            child: Text(
-              '限时优惠',
-              style: TextStyle(fontSize: 11, color: Colors.white),
-            ),
-            padding: EdgeInsets.only(left: 6, right: 6, bottom: 3, top: 2),
+            padding:
+                const EdgeInsets.only(left: 6, right: 6, bottom: 3, top: 2),
             decoration: const BoxDecoration(
               borderRadius: BorderRadius.only(
                   bottomRight: Radius.circular(9),
@@ -91,29 +109,37 @@ class JUISchoolListLesson extends StatelessWidget {
                 Color.fromRGBO(255, 110, 106, 1),
               ], begin: Alignment.topCenter, end: Alignment.bottomCenter),
             ),
+            child: const Text(
+              '限时优惠',
+              style: TextStyle(fontSize: 11, color: Colors.white),
+            ),
           ),
-        style == JUISchoolListLessonStyle.mainImgLeft
-            ? SizedBox(
-                width: 5,
-              )
-            : Expanded(child: Text('')),
-        Text(
+        if (style == JUISchoolListLessonStyle.mainImgLeft)
+          const SizedBox(
+            width: 5,
+          ),
+        const Text(
           '￥99',
           style: TextStyle(
               fontSize: 14,
               color: Color.fromRGBO(240, 20, 20, 1),
               fontWeight: FontWeight.w500),
         ),
-        SizedBox(
-          width: 5,
-        ),
-        Text(
-          '￥199',
-          style: TextStyle(
-              fontSize: 12,
-              color: Color.fromRGBO(147, 153, 159, 1),
-              decoration: TextDecoration.lineThrough),
-        ),
+        if (_isShowOriginPrice)
+          Row(
+            children: const [
+              SizedBox(
+                width: 5,
+              ),
+              Text(
+                '￥199',
+                style: TextStyle(
+                    fontSize: 12,
+                    color: Color.fromRGBO(147, 153, 159, 1),
+                    decoration: TextDecoration.lineThrough),
+              ),
+            ],
+          )
       ],
     );
   }
@@ -140,25 +166,26 @@ class JUISchoolListLesson extends StatelessWidget {
 
   Widget mainInfo() {
     return Container(
-      height: this.style == JUISchoolListLessonStyle.mainImgTop
+      height: style == JUISchoolListLessonStyle.mainImgTop
           ? null
-          : this.mainImgSize.height,
-      padding: EdgeInsets.symmetric(vertical: 3),
+          : mainImgSize.height,
+      padding: const EdgeInsets.symmetric(vertical: 3),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Align(
             alignment: Alignment.centerLeft,
             child: Text(
               '医生做科研的最佳路医生做科研的最佳路医生做科研的生做科研的生做科研的最佳路医生做科研的最佳路医生做科研的最佳路医生做科研的最佳路',
-              maxLines: 2,
-              style: TextStyle(
+              maxLines: titleMaxLine,
+              style: const TextStyle(
                   color: Color.fromRGBO(49, 58, 67, 1),
                   fontSize: 15,
                   fontWeight: FontWeight.w500),
             ),
           ),
-          if (mainImgSize.height > 80)
+          if (_isShowTagRow)
             Column(
               children: [
                 if (style == JUISchoolListLessonStyle.mainImgTop)
@@ -172,8 +199,8 @@ class JUISchoolListLesson extends StatelessWidget {
             const SizedBox(
               height: 12,
             ),
-          style == JUISchoolListLessonStyle.mainImgLeft
-              ? customRightBottomWidget ??
+          _isShowStudyNum
+              ? (customRightBottomWidget ??
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -185,7 +212,7 @@ class JUISchoolListLesson extends StatelessWidget {
                       ),
                       priceWidget()
                     ],
-                  )
+                  ))
               : priceWidget()
         ],
       ),

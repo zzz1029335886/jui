@@ -159,7 +159,9 @@ extension ScrollControllerExtension on ScrollController {
         alpha = 0;
       }
       double value = max(min(alpha, maxValue), minValue);
-      valueChanged(value);
+      int intValue = (value * 1000).round();
+
+      valueChanged(intValue / 1000.0);
     });
   }
 }

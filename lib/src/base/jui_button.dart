@@ -103,10 +103,10 @@ class JUIButton extends StatelessWidget {
   }
 
   static Widget moreButton(
-      {required VoidCallback onPressed,
+      {required VoidCallback? onPressed,
       String? title,
       Color? color = const Color.fromRGBO(147, 153, 159, 1)}) {
-    return TextButton(
+    return JUIButton(
         onPressed: onPressed,
         child: Row(
           children: [

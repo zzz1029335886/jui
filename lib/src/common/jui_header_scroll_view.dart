@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 
 typedef JUIHeaderScrollViewBuilder = PreferredSize Function(
     BuildContext context);
@@ -40,6 +41,8 @@ class _JUIHeaderScrollViewState extends State<JUIHeaderScrollView> {
   @override
   Widget build(BuildContext context) {
     if (widget.isScrollFullScreen) {
+      Widget widget0 = widget.bodyWidgetBuilder(context);
+      bool isSliver = widget0 is SliverToBoxAdapter || widget0 is SliverList;
       return CustomScrollView(
         key: widget.scrollViewKey,
         controller: widget.scrollController,
@@ -55,7 +58,11 @@ class _JUIHeaderScrollViewState extends State<JUIHeaderScrollView> {
                 ),
                 pinned: widget.pinned,
                 floating: false),
-          SliverToBoxAdapter(child: widget.bodyWidgetBuilder(context)),
+          if (isSliver) widget,
+          if (!isSliver)
+            SliverToBoxAdapter(
+              child: widget0,
+            ),
         ],
       );
     }
