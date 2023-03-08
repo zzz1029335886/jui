@@ -174,7 +174,9 @@ class _JUIBottomSheetPageState extends State<JUIBottomSheetPage> {
               ),
               trailing: widget.trailingWidget ??
                   JUIButton(
-                    icon: Icons.close,
+                    icon: IconsJlx.icon_guanbi,
+                    iconSize: 16,
+                    padding: const EdgeInsets.all(3),
                     color: const Color.fromRGBO(28, 31, 33, 1),
                     onPressed: () => Navigator.of(context).pop(),
                   ),

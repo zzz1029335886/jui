@@ -19,6 +19,7 @@ class JUIButton extends StatelessWidget {
   final double? iconSize;
   final double middlePadding;
   final bool isEnabled;
+  final EdgeInsets padding;
 
   const JUIButton(
       {this.onPressed,
@@ -27,6 +28,7 @@ class JUIButton extends StatelessWidget {
       this.icon,
       this.iconWidget,
       this.iconSize,
+      this.padding = EdgeInsets.zero,
       this.color = const Color.fromRGBO(49, 58, 67, 1),
       this.tintColor,
       this.title,
@@ -68,6 +70,9 @@ class JUIButton extends StatelessWidget {
       children: children,
     );
 
+    Widget finalWidget =
+        isOneWidget ? children.first : Container(child: showChild);
+
     return JUIEnabled(
       isEnabled: isEnabled,
       child: TextButton(
@@ -77,7 +82,10 @@ class JUIButton extends StatelessWidget {
           tapTargetSize: MaterialTapTargetSize.shrinkWrap, //外边距
         ),
         onPressed: onPressed,
-        child: isOneWidget ? children.first : Container(child: showChild),
+        child: Container(
+          padding: padding,
+          child: finalWidget,
+        ),
       ),
     );
   }
@@ -236,9 +244,9 @@ class JUIButton extends StatelessWidget {
       Color? backgroundColor,
       bool isShowOnAppBar = false}) {
     var _padding = padding;
-    if (isShowOnAppBar && padding == null) {
-      _padding = const EdgeInsets.only(right: 16);
-    }
+    // if (isShowOnAppBar && padding == null) {
+    //   _padding = const EdgeInsets.only(right: 16);
+    // }
 
     Widget res = Container(
       width: width,
@@ -266,6 +274,17 @@ class JUIButton extends StatelessWidget {
       res = InkWell(
         onTap: onPressed,
         child: res,
+      );
+    }
+
+    if (isShowOnAppBar) {
+      res = Row(
+        children: [
+          res,
+          SizedBox(
+            width: 16,
+          )
+        ],
       );
     }
 

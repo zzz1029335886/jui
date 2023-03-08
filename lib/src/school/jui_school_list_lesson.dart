@@ -8,8 +8,13 @@ class JUISchoolListLesson extends StatelessWidget {
   final Widget? customRightBottomWidget;
   final int titleMaxLine;
   final bool? isShowTagRow;
+  final bool isShowLecturer;
   final bool? isShowStudyNum;
   final bool? isShowOriginPrice;
+  final bool isShowImageTopRightTag;
+  final bool isShowImageBottom;
+  final bool isShowPrice;
+  final Widget? imgBottomWidget;
   const JUISchoolListLesson(
       {super.key,
       this.customRightBottomWidget,
@@ -17,6 +22,11 @@ class JUISchoolListLesson extends StatelessWidget {
       this.isShowTagRow,
       this.isShowStudyNum,
       this.isShowOriginPrice,
+      this.isShowImageTopRightTag = true,
+      this.isShowPrice = true,
+      this.isShowImageBottom = true,
+      this.isShowLecturer = false,
+      this.imgBottomWidget,
       this.style = JUISchoolListLessonStyle.mainImgLeft,
       this.mainImgSize = const Size(128, 72)});
 
@@ -45,47 +55,55 @@ class JUISchoolListLesson extends StatelessWidget {
         Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Row(
-              children: [
-                Expanded(child: Text('')),
-                Container(
-                  child: Text(
-                    '会员课',
-                    style: TextStyle(
-                        fontSize: 12, color: Color.fromRGBO(135, 84, 40, 1)),
-                  ),
-                  padding: EdgeInsets.symmetric(horizontal: 4.5),
-                  height: 20,
-                  decoration: const BoxDecoration(
-                    borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(7),
-                        topRight: Radius.circular(7)),
-                    gradient: LinearGradient(colors: [
-                      Color.fromRGBO(252, 226, 185, 1),
-                      Color.fromRGBO(246, 198, 126, 1),
-                    ], begin: Alignment.centerLeft, end: Alignment.centerRight),
-                  ),
+            isShowImageTopRightTag
+                ? Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Container(
+                        child: Text(
+                          '会员课',
+                          style: const TextStyle(
+                              fontSize: 12,
+                              color: Color.fromRGBO(135, 84, 40, 1)),
+                        ),
+                        padding: EdgeInsets.symmetric(horizontal: 4.5),
+                        height: 20,
+                        decoration: const BoxDecoration(
+                          borderRadius: BorderRadius.only(
+                              bottomLeft: Radius.circular(7),
+                              topRight: Radius.circular(7)),
+                          gradient: LinearGradient(
+                              colors: [
+                                Color.fromRGBO(252, 226, 185, 1),
+                                Color.fromRGBO(246, 198, 126, 1),
+                              ],
+                              begin: Alignment.centerLeft,
+                              end: Alignment.centerRight),
+                        ),
+                      ),
+                    ],
+                  )
+                : Container(),
+            if (isShowImageBottom)
+              Container(
+                alignment: Alignment.centerLeft,
+                child: imgBottomWidget ??
+                    Text(
+                      '会员课',
+                      style: TextStyle(fontSize: 12, color: Colors.white),
+                    ),
+                padding: EdgeInsets.symmetric(horizontal: 10),
+                height: 20,
+                decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(7),
+                      topRight: Radius.circular(7)),
+                  gradient: LinearGradient(colors: [
+                    Color.fromRGBO(0, 0, 0, 0.2),
+                    Color.fromRGBO(0, 0, 0, 0),
+                  ], begin: Alignment.centerLeft, end: Alignment.centerRight),
                 ),
-              ],
-            ),
-            Container(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                '会员课',
-                style: TextStyle(fontSize: 12, color: Colors.white),
               ),
-              padding: EdgeInsets.symmetric(horizontal: 10),
-              height: 20,
-              decoration: const BoxDecoration(
-                borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(7),
-                    topRight: Radius.circular(7)),
-                gradient: LinearGradient(colors: [
-                  Color.fromRGBO(0, 0, 0, 0.2),
-                  Color.fromRGBO(0, 0, 0, 0),
-                ], begin: Alignment.centerLeft, end: Alignment.centerRight),
-              ),
-            ),
           ],
         )
       ],
@@ -93,6 +111,9 @@ class JUISchoolListLesson extends StatelessWidget {
   }
 
   Widget priceWidget() {
+    if (!isShowPrice) {
+      return Container();
+    }
     return Row(
       children: [
         if (style == JUISchoolListLessonStyle.mainImgLeft)
@@ -164,6 +185,18 @@ class JUISchoolListLesson extends StatelessWidget {
     );
   }
 
+  Widget _lecturerWidget() {
+    return Row(
+      children: [
+        Text(
+          '解螺旋·酸菜  |  翡翠讲师',
+          style:
+              TextStyle(color: Color.fromRGBO(113, 119, 125, 1), fontSize: 12),
+        ),
+      ],
+    );
+  }
+
   Widget mainInfo() {
     return Container(
       height: style == JUISchoolListLessonStyle.mainImgTop
@@ -193,6 +226,16 @@ class JUISchoolListLesson extends StatelessWidget {
                     height: 12,
                   ),
                 tagRow(),
+              ],
+            ),
+          if (isShowLecturer)
+            Column(
+              children: [
+                if (style == JUISchoolListLessonStyle.mainImgTop)
+                  const SizedBox(
+                    height: 12,
+                  ),
+                _lecturerWidget(),
               ],
             ),
           if (style == JUISchoolListLessonStyle.mainImgTop)

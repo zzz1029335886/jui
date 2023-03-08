@@ -20,33 +20,35 @@ typedef _InputCompletionCallBack = void Function(
     String value, bool isSubmitted);
 
 class CFTextField extends StatefulWidget {
-  const CFTextField({
-    Key? key,
-    this.text = '',
-    this.hintText = '请输入',
-    this.labelText = '',
-    this.errorText = '',
-    this.focusNode,
-    this.leftWidget,
-    this.rightWidget,
-    this.maxLines,
-    this.maxLength = _maxLength,
-    this.showMaxLength = false,
-    this.enabled = true,
-    this.autofocus = false,
-    this.inputFormatters,
-    this.inputCallBack,
-    this.inputCompletionCallBack,
-    this.textStyle,
-    this.hintTextStyle,
-    this.labelTextStyle,
-    this.textAlign = TextAlign.left,
-    this.border = InputBorder.none, // 去掉下划线
-    this.controller,
-    this.keyboardType = TextInputType.text,
-    this.textInputAction = TextInputAction.done,
-    this.isShowCleanButton = false,
-  }) : super(key: key);
+  const CFTextField(
+      {Key? key,
+      this.text = '',
+      this.hintText = '请输入',
+      this.labelText = '',
+      this.errorText = '',
+      this.focusNode,
+      this.leftWidget,
+      this.rightWidget,
+      this.maxLines,
+      this.maxLength = _maxLength,
+      this.showMaxLength = false,
+      this.enabled = true,
+      this.autofocus = false,
+      this.inputFormatters,
+      this.inputCallBack,
+      this.inputCompletionCallBack,
+      this.textStyle,
+      this.hintTextStyle,
+      this.labelTextStyle,
+      this.textAlign = TextAlign.left,
+      this.border = InputBorder.none, // 去掉下划线
+      this.controller,
+      this.keyboardType = TextInputType.text,
+      this.textInputAction = TextInputAction.done,
+      this.isShowCleanButton = false,
+      this.prefixWidget,
+      this.prefixText})
+      : super(key: key);
 
   final String? text;
   final String hintText;
@@ -55,6 +57,9 @@ class CFTextField extends StatefulWidget {
   final FocusNode? focusNode;
   final Widget? leftWidget; // 左侧widget ，默认隐藏
   final Widget? rightWidget; // 右侧widget ，默认隐藏
+  final Widget? prefixWidget; // 左侧widget ，默认隐藏
+  final String? prefixText;
+
   final int? maxLines; // 最大行数，默认显示一行，自动换行，最多展示_maxLines 行
   final int maxLength; // 最大长度，默认_maxLength
   final bool showMaxLength; // 是否显示右侧最大长度文字，默认不显示
@@ -188,6 +193,8 @@ class _CFTextFieldState extends State<CFTextField> {
       inputFormatters: widget.inputFormatters ??
           [LengthLimitingTextInputFormatter(widget.maxLength)],
       decoration: InputDecoration(
+        prefix: widget.prefixWidget,
+        prefixText: widget.prefixText,
         suffixIconConstraints:
             const BoxConstraints(minHeight: 24, minWidth: 24),
         suffixIcon: _hasDeleteIcon && _isFocused
