@@ -11,7 +11,7 @@ class JUIText extends StatelessWidget {
   const JUIText(this.title,
       {this.color = const Color.fromRGBO(49, 58, 67, 1),
       this.textAlign,
-      this.maxLines,
+      this.maxLines = 99999,
       this.fontSize = 16,
       this.fontWeight,
       super.key});
@@ -22,6 +22,7 @@ class JUIText extends StatelessWidget {
       title,
       maxLines: maxLines,
       textAlign: textAlign,
+      overflow: TextOverflow.ellipsis,
       style: TextStyle(
         color: color,
         fontSize: fontSize,

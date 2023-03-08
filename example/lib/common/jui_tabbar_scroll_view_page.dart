@@ -1,3 +1,4 @@
+import 'package:example/pages/alive_page1.dart';
 import 'package:flutter/material.dart';
 import 'package:jui/jui.dart';
 
@@ -44,6 +45,10 @@ class _TabBarScrollViewPageState extends State<TabBarScrollViewPage> {
             );
           },
           widgets: List.generate(3, (index) {
+            return AlivePage1(
+                // key: PageStorageKey<int>(index),
+                );
+
             return CustomScrollView(
               key: PageStorageKey<int>(index),
               slivers: [

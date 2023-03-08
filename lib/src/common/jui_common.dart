@@ -12,3 +12,5 @@ export 'jui_section_title.dart';
 export 'jui_share.dart';
 export 'jui_picker.dart';
 export 'jui_input_page.dart';
+export 'jui_bottom_animated.dart';
+export 'jui_edit_state_animated.dart';

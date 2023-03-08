@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'jui_enabled.dart';
+
 enum JUIButtonLabelPostion { labelTop, labelBottom, labelLeft, labelRight }
 
 class JUIButton extends StatelessWidget {
@@ -16,10 +18,12 @@ class JUIButton extends StatelessWidget {
   final Widget? child;
   final double? iconSize;
   final double middlePadding;
+  final bool isEnabled;
 
   const JUIButton(
       {this.onPressed,
       this.labelPostion = JUIButtonLabelPostion.labelRight,
+      this.isEnabled = true,
       this.icon,
       this.iconWidget,
       this.iconSize,
@@ -64,14 +68,17 @@ class JUIButton extends StatelessWidget {
       children: children,
     );
 
-    return TextButton(
-      style: TextButton.styleFrom(
-        padding: const EdgeInsets.all(0), //内边距
-        minimumSize: Size.zero,
-        tapTargetSize: MaterialTapTargetSize.shrinkWrap, //外边距
+    return JUIEnabled(
+      isEnabled: isEnabled,
+      child: TextButton(
+        style: TextButton.styleFrom(
+          padding: const EdgeInsets.all(0), //内边距
+          minimumSize: Size.zero,
+          tapTargetSize: MaterialTapTargetSize.shrinkWrap, //外边距
+        ),
+        onPressed: onPressed,
+        child: isOneWidget ? children.first : Container(child: showChild),
       ),
-      onPressed: onPressed,
-      child: isOneWidget ? children.first : Container(child: showChild),
     );
   }
 
@@ -124,11 +131,29 @@ class JUIButton extends StatelessWidget {
         ));
   }
 
+  static Widget themeBorder({
+    VoidCallback? onPressed,
+    double? radius = 7,
+    double? height = 44,
+    String? title,
+    bool isEnabled = true,
+  }) {
+    return JUIButton.custom(
+        isEnabled: isEnabled,
+        borderColor: const Color.fromRGBO(129, 216, 208, 1),
+        radius: radius,
+        titleColor: const Color.fromRGBO(129, 216, 208, 1),
+        height: height,
+        onPressed: onPressed,
+        title: title);
+  }
+
   static Widget themeBackground(
       {VoidCallback? onPressed,
       double? width,
       EdgeInsets? padding,
       EdgeInsets? margin,
+      bool isEnabled = true,
       String? title,
       double? radius = 7,
       double? height = 44,
@@ -138,6 +163,7 @@ class JUIButton extends StatelessWidget {
         onPressed: onPressed,
         width: width,
         padding: padding,
+        isEnabled: isEnabled,
         margin: margin,
         height: height,
         radius: radius,
@@ -169,6 +195,7 @@ class JUIButton extends StatelessWidget {
 
   static Widget pageBottomButton({
     required String title,
+    bool isEnabled = true,
     VoidCallback? onPressed,
   }) {
     return Column(
@@ -182,6 +209,7 @@ class JUIButton extends StatelessWidget {
           color: Colors.white,
           child: JUIButton.themeBackground(
             onPressed: onPressed,
+            isEnabled: isEnabled,
             title: title,
           ),
         ),
@@ -200,15 +228,21 @@ class JUIButton extends StatelessWidget {
       EdgeInsets? padding,
       EdgeInsets? margin,
       double? height,
+      bool isEnabled = true,
       Color? titleColor = Colors.white,
       double? fontSize,
       double? radius,
       Color? borderColor,
       Color? backgroundColor,
       bool isShowOnAppBar = false}) {
+    var _padding = padding;
+    if (isShowOnAppBar && padding == null) {
+      _padding = const EdgeInsets.only(right: 16);
+    }
+
     Widget res = Container(
       width: width,
-      padding: padding,
+      padding: _padding,
       margin: margin,
       height: height,
       decoration: BoxDecoration(
@@ -223,29 +257,20 @@ class JUIButton extends StatelessWidget {
         icon: icon,
         tintColor: tintColor,
         fontSize: fontSize,
-        onPressed: padding == null ? onPressed : null,
+        onPressed: _padding == null ? onPressed : null,
         child: clild,
       ),
     );
 
-    if (padding != null) {
+    if (_padding != null) {
       res = InkWell(
-        child: res,
         onTap: onPressed,
+        child: res,
       );
     }
 
-    if (isShowOnAppBar) {
-      res = Row(
-        children: [
-          res,
-          SizedBox(
-            width: 16,
-          )
-        ],
-      );
-    }
-    return Container(
+    return JUIEnabled(
+      isEnabled: isEnabled,
       key: key,
       child: res,
     );
