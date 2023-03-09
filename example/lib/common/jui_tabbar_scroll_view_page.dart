@@ -15,7 +15,13 @@ class _TabBarScrollViewPageState extends State<TabBarScrollViewPage> {
     return Scaffold(
         appBar: AppBar(),
         body: JUITabBarScrollView.defaultStyle(
+          isBodyScrollable: false,
+          tabBarOnTap: (index) {
+            print(index);
+            return index % 2 == 0;
+          },
           titles: ['训练营', '直播', '课程'],
+
           // isScrollable: true,
           // labelColor: Colors.amber,
           // unselectedLabelColor: Colors.black,

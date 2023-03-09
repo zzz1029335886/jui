@@ -1,20 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:jui/jui.dart';
 
-class JUISectionTitleContainer extends StatefulWidget {
+class JUISectionTitleContainer extends StatelessWidget {
   final String title;
   final Widget child;
-  final Widget? titleRightChild;
+  late Widget? titleRightChild;
   final VoidCallback? moreCallbackAction;
-  const JUISectionTitleContainer(this.title,
+  JUISectionTitleContainer(this.title,
       {required this.child,
       this.moreCallbackAction,
       this.titleRightChild,
-      super.key});
-
-  @override
-  State<JUISectionTitleContainer> createState() =>
-      _JUISectionTitleContainerState();
+      super.key}) {
+    if (moreCallbackAction != null) {
+      titleRightChild =
+          JUIButton.moreButton(onPressed: moreCallbackAction!, title: '查看更多');
+    }
+  }
 
   static Widget defaultStyle(String title,
       {required Widget child,
@@ -36,21 +37,6 @@ class JUISectionTitleContainer extends StatefulWidget {
         ),
       ),
     );
-  }
-}
-
-class _JUISectionTitleContainerState extends State<JUISectionTitleContainer> {
-  Widget? titleRightChild;
-
-  @override
-  void initState() {
-    titleRightChild = widget.titleRightChild;
-    if (widget.moreCallbackAction != null) {
-      titleRightChild = JUIButton.moreButton(
-          onPressed: widget.moreCallbackAction!, title: '查看更多');
-    }
-
-    super.initState();
   }
 
   @override
@@ -74,17 +60,17 @@ class _JUISectionTitleContainerState extends State<JUISectionTitleContainer> {
                   width: 8,
                 ),
                 JUIText(
-                  widget.title,
+                  title,
                   fontSize: 16,
                   fontWeight: FontWeight.w500,
                   color: Color.fromRGBO(28, 31, 33, 1),
                 ),
               ],
             ),
-            if (widget.titleRightChild != null) widget.titleRightChild!
+            if (titleRightChild != null) titleRightChild!
           ],
         ),
-        widget.child
+        child
       ],
     );
   }

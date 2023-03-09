@@ -17,9 +17,11 @@ class JUITabBarScrollViewSliver {
   final ScrollController? scrollController;
   final bool isPageStorage;
   final TransitionBuilder? builder;
+  final Widget? fixedHeaderWidget;
   const JUITabBarScrollViewSliver(
       {required this.slivers,
       this.builder,
+      this.fixedHeaderWidget,
       this.scrollController,
       this.isPageStorage = true});
 }
@@ -47,13 +49,14 @@ class JUITabBarScrollView extends StatefulWidget {
   final Decoration? headerDecoration;
   final JUITabBarScrollViewHeaderContainer? headerContainer;
   final Widget? underHeaderSliver;
-  final ValueChanged<int>? tabBarClick;
+  final bool? Function(int index)? tabBarOnTap;
   final double titleExtraWidth;
   final EdgeInsetsGeometry titlePadding;
+  final bool isBodyScrollable;
 
   const JUITabBarScrollView(
       {required this.titles,
-      this.tabBarClick,
+      this.tabBarOnTap,
       this.bodyWidgetBuilder,
       this.headerDecoration,
       this.headerContainer,
@@ -65,6 +68,7 @@ class JUITabBarScrollView extends StatefulWidget {
       this.tabController,
       this.headerTitleWidgetBuilder,
       this.labelColor,
+      this.isBodyScrollable = true,
       this.unselectedLabelColor,
       this.titleLabelStyle,
       this.titleExtraWidth = 6,
@@ -85,6 +89,8 @@ class JUITabBarScrollView extends StatefulWidget {
       ScrollController? scrollController,
       ScrollController? sliverScrollController,
       bool isScrollable = false,
+      bool isBodyScrollable = true,
+      bool? Function(int index)? tabBarOnTap,
       JUITabBarScrollViewSliversBuilder? sliversBuilder,
       double titleExtraWidth = 6,
       EdgeInsets titlePadding = const EdgeInsets.symmetric(horizontal: 16),
@@ -95,10 +101,12 @@ class JUITabBarScrollView extends StatefulWidget {
       unselectedTitleLabelStyle: const TextStyle(fontSize: 14),
       titles: titles,
       isScrollable: isScrollable,
+      isBodyScrollable: isBodyScrollable,
       sliverScrollController: sliverScrollController,
       sliversBuilder: sliversBuilder,
       titleExtraWidth: titleExtraWidth,
       titlePadding: titlePadding,
+      tabBarOnTap: tabBarOnTap,
       scrollController: scrollController,
       topWidgetBuilder: topWidgetBuilder,
       widgets: widgets,
@@ -153,9 +161,17 @@ class _JUITabBarScrollViewState extends State<JUITabBarScrollView>
           scrollView = sliverRes.builder!(context, scrollView);
         }
 
-        return Padding(
-          padding: const EdgeInsets.only(top: 44),
-          child: scrollView,
+        return Container(
+          padding: const EdgeInsets.only(top: 49),
+          child: Column(
+            children: [
+              if (sliverRes.fixedHeaderWidget != null)
+                sliverRes.fixedHeaderWidget!,
+              Expanded(
+                child: scrollView,
+              ),
+            ],
+          ),
         );
       });
     }
@@ -164,6 +180,9 @@ class _JUITabBarScrollViewState extends State<JUITabBarScrollView>
       controller: widget.scrollController,
       body: TabBarView(
           controller: _tabController,
+          physics: !widget.isBodyScrollable
+              ? const NeverScrollableScrollPhysics()
+              : null,
           children: children ??
               widget.widgets ??
               List.generate(widget.titles.length, (index) {
@@ -206,7 +225,7 @@ class _JUITabBarScrollViewState extends State<JUITabBarScrollView>
               underLineBorderSide: widget.underLineBorderSide,
               underIndicatorSize: widget.underIndicatorSize,
               tabController: _tabController,
-              // onTap: _changeTab,
+              onTap: widget.tabBarOnTap,
               titles: widget.titles,
               headerTitleWidgetBuilder: widget.headerTitleWidgetBuilder,
             ),

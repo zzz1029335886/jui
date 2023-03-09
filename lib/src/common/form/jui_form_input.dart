@@ -10,6 +10,7 @@ class JUIFormInput extends JUIFormContent {
   final double? maxHeight; // input最大高度
   final int? maxLength; // 最大长度
   final int? maxLines; // 最大行数
+  final int? minLines; // 最小行数
   final Decoration? contentDecoration; // 内容背景
   final EdgeInsets? contentPadding; // 内容padding
   final String? hintText; // 占位字符
@@ -33,6 +34,7 @@ class JUIFormInput extends JUIFormContent {
       this.leftWidget,
       this.rightWidget,
       this.maxLines,
+      this.minLines = 1,
       this.hintText,
       this.keyboardType,
       this.hintTextStyle,
@@ -56,16 +58,19 @@ class JUIFormInput extends JUIFormContent {
 }
 
 class _JUIFormInputState extends JUIFormBaseState<JUIFormInput> {
+  JUIFormInputStyle? get inputStyle => formBuilderState?.inputStyle;
+
+  double? get minHeight => widget.minHeight ?? inputStyle?.minHeight;
+  double? get maxHeight => widget.maxHeight ?? inputStyle?.maxHeight;
+
   @override
   Widget contentBuild(BuildContext context) {
-    JUIFormInputStyle? inputStyle = formBuilderState?.inputStyle;
     var contentPadding = widget.contentPadding ?? inputStyle?.contentPadding;
     var contentDecoration =
         widget.contentDecoration ?? inputStyle?.contentDecoration;
-    var minHeight = widget.minHeight ?? inputStyle?.minHeight;
-    var maxHeight = widget.maxHeight ?? inputStyle?.maxHeight;
     var maxLength = widget.maxLength ?? inputStyle?.maxLength ?? 100;
     var maxLines = widget.maxLines ?? inputStyle?.maxLines;
+    var minLines = widget.minLines ?? inputStyle?.minLines;
     var textStyle = widget.textStyle ?? inputStyle?.textStyle;
     var leftWidget = widget.leftWidget ?? inputStyle?.leftWidget;
     var rightWidget = widget.rightWidget ?? inputStyle?.rightWidget;
@@ -79,19 +84,24 @@ class _JUIFormInputState extends JUIFormBaseState<JUIFormInput> {
     var isShowCleanButton =
         widget.isShowCleanButton ?? inputStyle?.isShowCleanButton;
 
+    var _height =
+        minHeight == maxHeight && minHeight != null ? minHeight : null;
+    var _constraints = minHeight != null && minHeight != maxHeight
+        ? BoxConstraints(
+            minHeight: minHeight!, maxHeight: maxHeight ?? double.infinity)
+        : null;
+
     return _mainWidget(
       child: Container(
         padding: contentPadding,
         decoration: contentDecoration,
-        // color: Colors.amber,
-        height: minHeight == maxHeight && minHeight != null ? minHeight : null,
-        constraints: minHeight != null && maxHeight != null
-            ? BoxConstraints(minHeight: minHeight, maxHeight: maxHeight)
-            : null,
+        height: _height,
+        constraints: _constraints,
         child: CFTextField(
           text: widget.content,
           maxLength: maxLength,
-          maxLines: maxLines,
+          minLines: minLines ?? 1,
+          maxLines: maxLines ?? 1,
           textStyle: textStyle,
           leftWidget: leftWidget,
           rightWidget: rightWidget,
@@ -121,4 +131,24 @@ class _JUIFormInputState extends JUIFormBaseState<JUIFormInput> {
 
   @override
   MainAxisAlignment? get mainAxisAlignment => MainAxisAlignment.center;
+
+  // @override
+  // CrossAxisAlignment? get crossAxisAlignment {
+  //   if (maxHeight == null) {
+  //     return CrossAxisAlignment.stretch;
+  //   }
+  //   return CrossAxisAlignment.start;
+  // }
+
+  // @override
+  // Widget titleContainer({required Widget child}) {
+  //   if (maxHeight == null) {
+  //     return isTopTitle
+  //         ? child
+  //         : Column(
+  //             children: [child, Expanded(child: Container())],
+  //           );
+  //   }
+  //   return child;
+  // }
 }

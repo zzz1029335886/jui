@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:jui/jui.dart';
 
 typedef JUITabBarTitleBuilder = JUITabBarTitle Function(
     BuildContext context, String title, int index, bool isSelected);
@@ -34,7 +33,7 @@ class JUITabBar extends StatefulWidget implements PreferredSizeWidget {
   final BorderSide underLineBorderSide;
   final TabBarIndicatorSize? underIndicatorSize;
   final TabController? tabController;
-  final ValueChanged<int>? onTap;
+  final bool? Function(int index)? onTap;
   final List<String> titles;
   final JUITabBarTitleBuilder? headerTitleWidgetBuilder;
   final int selectedIndex;
@@ -55,7 +54,7 @@ class JUITabBar extends StatefulWidget implements PreferredSizeWidget {
     this.selectedIndex = 0,
     this.height = 49,
     this.hasBottomLine = true,
-    required this.tabController,
+    this.tabController,
     this.titleLabelStyle =
         const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
     required this.titles,
@@ -68,9 +67,9 @@ class JUITabBar extends StatefulWidget implements PreferredSizeWidget {
 
   static JUITabBar init(
       {required List<String> titles,
-      ValueChanged<int>? onTap,
+      bool? Function(int index)? onTap,
       EdgeInsetsGeometry underLineInsets = EdgeInsets.zero,
-      required TabController tabController,
+      TabController? tabController,
       JUITabBarTitleBuilder? headerTitleWidgetBuilder,
       TextStyle? titleLabelStyle,
       bool isScrollable = false,
@@ -106,24 +105,34 @@ class JUITabBar extends StatefulWidget implements PreferredSizeWidget {
   Size get preferredSize => Size.fromHeight(height);
 }
 
-class _JUITabBarState extends State<JUITabBar> {
+class _JUITabBarState extends State<JUITabBar> with TickerProviderStateMixin {
   int selectedIndex = 0;
+  late TabController tabController;
 
   @override
   void initState() {
+    tabController = widget.tabController ??
+        TabController(length: widget.titles.length, vsync: this);
     selectedIndex = widget.selectedIndex;
 
     if (widget.headerTitleWidgetBuilder != null) {
-      widget.tabController?.addListener(() {
-        onTap(widget.tabController!.index);
+      tabController.addListener(() {
+        _onTap(tabController.index);
       });
     }
 
     super.initState();
   }
 
-  void onTap(value) {
-    widget.onTap?.call(value);
+  void _onTap(value) {
+    bool? res = widget.onTap?.call(value);
+    if (res == false) {
+      tabController.animateTo(selectedIndex);
+      // setState(() {
+      //   selectedIndex = selectedIndex;
+      // });
+      return;
+    }
 
     if (selectedIndex == value) {
       return;
@@ -153,8 +162,8 @@ class _JUITabBarState extends State<JUITabBar> {
                 insets: this.widget.underLineInsets,
                 borderSide: this.widget.underLineBorderSide),
             indicatorSize: this.widget.underIndicatorSize,
-            controller: this.widget.tabController,
-            onTap: onTap,
+            controller: tabController,
+            onTap: _onTap,
             tabs: List.generate(this.widget.titles.length, (index) {
               var str = this.widget.titles[index];
 

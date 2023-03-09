@@ -23,6 +23,12 @@ class _JUIBasePageState extends State<JUIBasePage> {
             child: JUIText('title'),
             alignment: Alignment.center,
           ),
+          JUITabBar(
+            titles: ['1', '2', '3', '4'],
+            onTap: (index) {
+              return index > 2;
+            },
+          ),
           JUIButton(
             title: 'title是字符串',
             onPressed: () {},

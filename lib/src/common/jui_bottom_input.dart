@@ -20,8 +20,7 @@ class JUIBottomInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double buttonWidth = 56;
-    double inputWidth =
-        MediaQuery.of(context).size.width - 16 - 16 - buttonWidth;
+    double inputWidth = 375 - 16 - buttonWidth;
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Column(

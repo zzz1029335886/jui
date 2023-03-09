@@ -42,7 +42,7 @@ class JUIShrinkWidget extends StatefulWidget {
 }
 
 class _JUIShrinkWidgetState extends State<JUIShrinkWidget>
-    with SingleTickerProviderStateMixin, AutomaticKeepAliveClientMixin {
+    with TickerProviderStateMixin {
   late Animation<double> _shAnimation;
   late AnimationController shController;
   bool isOpen = false;
@@ -63,7 +63,6 @@ class _JUIShrinkWidgetState extends State<JUIShrinkWidget>
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
     return Column(
       children: [
         InkWell(

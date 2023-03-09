@@ -50,6 +50,7 @@ class JUIBottomSheet {
       bool enableDrag = true,
       Color? barrierColor,
       String? title,
+      Color? titleBackgroundColor,
       Widget? trailingWidget,
       Widget? leadingWidget}) {
     return show(
@@ -61,6 +62,8 @@ class JUIBottomSheet {
         return JUIBottomSheetPage(
           contentBuilder: contentBuilder,
           title: title,
+          barrierColor: barrierColor,
+          titleBackgroundColor: titleBackgroundColor,
           leadingWidget: leadingWidget,
           trailingWidget: trailingWidget,
         );
@@ -124,6 +127,7 @@ class JUIBottomSheet {
       bool enableDrag = true,
       Color? barrierColor,
       String? title,
+      Color? titleBackgroundColor,
       Widget? trailingWidget,
       Widget? leadingWidget}) {
     return showPage(
@@ -135,7 +139,8 @@ class JUIBottomSheet {
         enableDrag: enableDrag,
         trailingWidget: trailingWidget,
         leadingWidget: leadingWidget,
-        title: title);
+        title: title,
+        titleBackgroundColor: titleBackgroundColor);
   }
 }
 
@@ -144,11 +149,15 @@ class JUIBottomSheetPage extends StatefulWidget {
   final Widget? trailingWidget;
   final Widget? leadingWidget;
   final String? title;
+  final Color? titleBackgroundColor;
+  final Color? barrierColor;
 
   const JUIBottomSheetPage(
       {super.key,
       required this.contentBuilder,
+      this.barrierColor,
       this.title,
+      this.titleBackgroundColor,
       this.leadingWidget,
       this.trailingWidget});
 
@@ -160,36 +169,54 @@ class _JUIBottomSheetPageState extends State<JUIBottomSheetPage> {
   @override
   Widget build(BuildContext context) {
     return Material(
+        color: widget.barrierColor,
         child: CupertinoPageScaffold(
-      navigationBar: widget.title != null
-          ? CupertinoNavigationBar(
-              leading: widget.leadingWidget ??
-                  Container(
-                    width: 0,
+          navigationBar: widget.title != null
+              ? CupertinoNavigationBar(
+                  backgroundColor: widget.titleBackgroundColor,
+                  leading: widget.leadingWidget ??
+                      Container(
+                        width: 0,
+                      ),
+                  middle: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      // Expanded(child: Container()),
+                      // Container(
+                      //   height: 3,
+                      //   width: 50,
+                      //   decoration: BoxDecoration(
+                      //       color: Colors.grey[300],
+                      //       borderRadius: BorderRadius.all(Radius.circular(3))),
+                      // ),
+                      // const SizedBox(
+                      //   height: 3,
+                      // ),
+                      JUIText(
+                        widget.title!,
+                        color: const Color.fromRGBO(28, 31, 33, 1),
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ],
                   ),
-              middle: JUIText(
-                widget.title!,
-                color: const Color.fromRGBO(28, 31, 33, 1),
-                fontWeight: FontWeight.w500,
-              ),
-              trailing: widget.trailingWidget ??
-                  JUIButton(
-                    icon: IconsJlx.icon_guanbi,
-                    iconSize: 16,
-                    padding: const EdgeInsets.all(3),
-                    color: const Color.fromRGBO(28, 31, 33, 1),
-                    onPressed: () => Navigator.of(context).pop(),
-                  ),
-              border: null,
-            )
-          : null,
-      child: SafeArea(
-        child: Container(
-          child: widget.contentBuilder(context),
-          // color: Colors.black,
-        ),
-      ),
-    ));
+                  trailing: widget.trailingWidget ??
+                      JUIButton(
+                        icon: IconsJlx.icon_guanbi,
+                        iconSize: 16,
+                        padding: const EdgeInsets.all(3),
+                        color: const Color.fromRGBO(28, 31, 33, 1),
+                        onPressed: () => Navigator.of(context).pop(),
+                      ),
+                  border: null,
+                )
+              : null,
+          child: SafeArea(
+            child: Container(
+              child: widget.contentBuilder(context),
+              // color: Colors.black,
+            ),
+          ),
+        ));
   }
 }
 

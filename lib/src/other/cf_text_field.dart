@@ -30,6 +30,7 @@ class CFTextField extends StatefulWidget {
       this.leftWidget,
       this.rightWidget,
       this.maxLines,
+      this.minLines,
       this.maxLength = _maxLength,
       this.showMaxLength = false,
       this.enabled = true,
@@ -60,6 +61,7 @@ class CFTextField extends StatefulWidget {
   final Widget? prefixWidget; // 左侧widget ，默认隐藏
   final String? prefixText;
 
+  final int? minLines; // 最小行数，默认显示一行，自动换行
   final int? maxLines; // 最大行数，默认显示一行，自动换行，最多展示_maxLines 行
   final int maxLength; // 最大长度，默认_maxLength
   final bool showMaxLength; // 是否显示右侧最大长度文字，默认不显示
@@ -187,7 +189,7 @@ class _CFTextFieldState extends State<CFTextField> {
       textInputAction: widget.textInputAction,
       style: widget.textStyle,
       textAlign: widget.textAlign,
-      minLines: widget.maxLines ?? 1,
+      minLines: widget.minLines ?? 1,
       maxLines: widget.maxLines ?? _maxLines,
       maxLength: widget.showMaxLength == true ? widget.maxLength : null,
       inputFormatters: widget.inputFormatters ??

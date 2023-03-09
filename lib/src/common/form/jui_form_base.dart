@@ -93,6 +93,8 @@ abstract class JUIFormBaseState<T extends JUIFormBase> extends State<T> {
     return widget.config;
   }
 
+  bool get isTopTitle => getStyle().isTopTitle;
+
   // ignore: slash_for_doc_comments
   /**
    * 获取content内容宽度，去掉边距与标题宽度
@@ -104,7 +106,6 @@ abstract class JUIFormBaseState<T extends JUIFormBase> extends State<T> {
 
     EdgeInsets padding = style.padding;
     EdgeInsets margin = style.margin;
-    bool isTopTitle = style.isTopTitle;
     double? titleWidth = style.titleWidth;
     TextStyle titleStyle = style.titleStyle;
 
@@ -232,9 +233,10 @@ abstract class JUIFormBaseState<T extends JUIFormBase> extends State<T> {
     if (isRow) {
       res = Row(
         mainAxisAlignment: mainAxisAlignment ?? MainAxisAlignment.start,
-        crossAxisAlignment: height != null && titleHeight == null
-            ? CrossAxisAlignment.center
-            : CrossAxisAlignment.start,
+        crossAxisAlignment: crossAxisAlignment ??
+            (height != null && titleHeight == null
+                ? CrossAxisAlignment.center
+                : CrossAxisAlignment.start),
         children: [
           if (config?.title != null) titleWidget(),
           contentBuild(context)
@@ -265,7 +267,7 @@ abstract class JUIFormBaseState<T extends JUIFormBase> extends State<T> {
     double? titleHeight = style.titleHeight;
     var titleStyle = style.titleStyle;
 
-    return Container(
+    var title = Container(
       alignment: Alignment.center,
       width: titleWidth,
       height: titleHeight,
@@ -286,6 +288,8 @@ abstract class JUIFormBaseState<T extends JUIFormBase> extends State<T> {
         ],
       ),
     );
+
+    return titleContainer(child: title);
   }
 
   late final TextStyle _redStarTextStyle =
@@ -295,8 +299,13 @@ abstract class JUIFormBaseState<T extends JUIFormBase> extends State<T> {
   Widget contentBuild(BuildContext context);
 
   MainAxisAlignment? mainAxisAlignment;
+  CrossAxisAlignment? crossAxisAlignment;
 
   Widget cellContainer({required Widget child}) {
+    return child;
+  }
+
+  Widget titleContainer({required Widget child}) {
     return child;
   }
 }

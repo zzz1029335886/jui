@@ -30,7 +30,7 @@ class JUIFormStyle {
     return JUIFormStyle(
       titleHeight: titleHeight,
       titleStyle: titleStyle,
-      titleWidth: titleHeight,
+      titleWidth: titleWidth,
       isTopTitle: isTopTitle,
       height: height,
       isHiddenBottomLine: isHiddenBottomLine,
@@ -48,6 +48,7 @@ class JUIFormInputStyle {
   double? maxHeight; // input最大高度
   int maxLength; // 最大长度
   int? maxLines; // 最大行数
+  int? minLines; // 最大行数
   Decoration? contentDecoration; // 内容背景
   EdgeInsets? contentPadding; // 内容padding
   String? hintText; // 占位字符
@@ -77,6 +78,7 @@ class JUIFormInputStyle {
     this.maxHeight,
     this.maxLength = 9999,
     this.maxLines,
+    this.minLines = 1,
     this.minHeight,
     this.rightWidget,
     this.showMaxLength = false,

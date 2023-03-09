@@ -1,4 +1,7 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:jui/jui.dart';
 
 enum JUISchoolListLessonStyle { mainImgLeft, mainImgTop }
 
@@ -14,12 +17,18 @@ class JUISchoolListLesson extends StatelessWidget {
   final bool isShowImageTopRightTag;
   final bool isShowImageBottom;
   final bool isShowPrice;
+  final bool isPushDetail;
+  final bool isWithHorizontal;
   final Widget? imgBottomWidget;
+  final CoursesBean? coursesBean;
   const JUISchoolListLesson(
       {super.key,
+      this.coursesBean,
       this.customRightBottomWidget,
       this.titleMaxLine = 2,
       this.isShowTagRow,
+      this.isPushDetail = true,
+      this.isWithHorizontal = false,
       this.isShowStudyNum,
       this.isShowOriginPrice,
       this.isShowImageTopRightTag = true,
@@ -210,7 +219,9 @@ class JUISchoolListLesson extends StatelessWidget {
           Align(
             alignment: Alignment.centerLeft,
             child: Text(
-              '医生做科研的最佳路医生做科研的最佳路医生做科研的生做科研的生做科研的最佳路医生做科研的最佳路医生做科研的最佳路医生做科研的最佳路',
+              coursesBean != null
+                  ? '课程uuid ${coursesBean?.uuid}'
+                  : '医生做科研的最佳路医生做科研的最佳路医生做科研的生做科研的生做科研的最佳路医生做科研的最佳路医生做科研的最佳路医生做科研的最佳路',
               maxLines: titleMaxLine,
               style: const TextStyle(
                   color: Color.fromRGBO(49, 58, 67, 1),
@@ -300,10 +311,26 @@ class JUISchoolListLesson extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Widget widget;
     if (style == JUISchoolListLessonStyle.mainImgLeft) {
-      return rowStyle();
+      widget = rowStyle();
     } else {
-      return columnStyle();
+      widget = columnStyle();
     }
+
+    if (isPushDetail) {
+      widget = InkWell(
+        onTap: () {
+          Get.toNamed('SchoolLessonDetail',
+              arguments: coursesBean?.uuid, preventDuplicates: false);
+        },
+        child: widget,
+      );
+    }
+    return Container(
+      padding:
+          isWithHorizontal ? const EdgeInsets.symmetric(horizontal: 16) : null,
+      child: widget,
+    );
   }
 }
