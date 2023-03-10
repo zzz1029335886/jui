@@ -1,76 +1,82 @@
-// import 'package:dd_js_util/dd_js_util.dart';
-// import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 
-// import 'zz_form_base_cell.dart';
+import '../../other/cf_picture_selection.dart';
+import 'jui_form.dart';
 
+class JUIFormImages extends JUIFormBase {
+  final int columnCount;
+  final bool isUpload;
+  final bool isMultiplePick;
+  final int maxCount;
+  final double spacing;
+  final double runSpacing;
 
-// class ZZFormImagesCell extends ZZFormBaseCell {
-//   final int columnCount;
-//   final bool isUpload;
-//   final bool isMultiplePick;
-//   final int maxCount;
-//   final double spacing;
-//   final double runSpacing;
+  JUIFormImages({
+    super.key,
+    this.spacing = 10,
+    this.runSpacing = 10,
+    this.maxCount = 9,
+    this.columnCount = 3,
+    this.isUpload = false,
+    this.isMultiplePick = true,
+    super.config,
+    super.style,
+    super.styleBuilder,
+  });
 
-//   const ZZFormImagesCell(
-//       {super.key,
-//       this.spacing = 10,
-//       this.runSpacing = 10,
-//       this.maxCount = 9,
-//       this.columnCount = 3,
-//       this.isUpload = false,
-//       this.isMultiplePick = true,
-//       required super.config});
+  @override
+  JUIFormBaseState<JUIFormBase> createState() => _JUIFormImagesState();
+}
 
-//   @override
-//   ZZFormBaseCellState<ZZFormBaseCell> createState() => _ZZFormImagesCellState();
-// }
+class _JUIFormImagesState extends JUIFormBaseState<JUIFormImages> {
+  late PictureSelectionController controller;
 
-// class _ZZFormImagesCellState extends ZZFormBaseCellState<ZZFormImagesCell> {
-//   late PictureSelectionController controller;
+  @override
+  void initState() {
+    super.initState();
 
-//   @override
-//   void initState() {
-//     super.initState();
+    controller = PictureSelectionController();
+  }
 
-//     controller = PictureSelectionController();
-//   }
+  @override
+  void dispose() {
+    super.dispose();
+  }
 
-//   @override
-//   Widget contentBuild(BuildContext context) {
-//     var itemWidth =
-//         (contentWidth - (widget.columnCount - 1).toDouble() * widget.spacing) /
-//             widget.columnCount.toDouble();
+  @override
+  Widget contentBuild(BuildContext context) {
+    var itemWidth =
+        (contentWidth - (widget.columnCount - 1).toDouble() * widget.spacing) /
+            widget.columnCount.toDouble();
 
-//     if (widget.isUpload) {
-//       return SizedBox(
-//         width: contentWidth,
-//         child: PictureSelection(
-//           columnCount: widget.columnCount,
-//           padding: EdgeInsets.zero,
-//           mainAxisSpacing: widget.spacing,
-//           crossAxisSpacing: widget.runSpacing,
-//           multipleChoice: widget.isMultiplePick,
-//           maxCount: widget.maxCount,
-//           controller: controller,
-//         ),
-//       );
-//     } else {
-//       return SizedBox(
-//         width: contentWidth,
-//         child: Wrap(
-//           spacing: widget.spacing,
-//           runSpacing: widget.runSpacing,
-//           alignment: WrapAlignment.start,
-//           children: List.generate(widget.maxCount, (index) {
-//             return Container(
-//               width: itemWidth,
-//               height: itemWidth,
-//               color: Colors.amber,
-//             );
-//           }),
-//         ),
-//       );
-//     }
-//   }
-// }
+    if (widget.isUpload) {
+      return SizedBox(
+        width: contentWidth,
+        child: PictureSelection(
+          columnCount: widget.columnCount,
+          mainAxisSpacing: widget.spacing,
+          crossAxisSpacing: widget.runSpacing,
+          multipleChoice: widget.isMultiplePick,
+          maxCount: widget.maxCount,
+          controller: controller,
+        ),
+      );
+    } else {
+      return SizedBox(
+        width: contentWidth,
+        child: Wrap(
+          spacing: widget.spacing,
+          runSpacing: widget.runSpacing,
+          alignment: WrapAlignment.start,
+          children: List.generate(widget.maxCount, (index) {
+            return Container(
+              width: itemWidth,
+              height: itemWidth,
+              color: Colors.amber,
+            );
+          }),
+        ),
+      );
+    }
+  }
+}

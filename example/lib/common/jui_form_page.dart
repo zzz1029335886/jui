@@ -65,6 +65,16 @@ class _JUIFormPageState extends State<JUIFormPage> {
                   padding: EdgeInsets.symmetric(horizontal: 16),
                 ),
               ),
+              JUIFormImages(
+                maxCount: 8,
+                isUpload: true,
+                config: JUIFormConfig(
+                  title: '图片上传',
+                ),
+                style: JUIFormStyle(
+                  padding: EdgeInsets.symmetric(horizontal: 16),
+                ),
+              ),
               JUIFormCustom(
                 Column(
                   mainAxisAlignment: MainAxisAlignment.center,

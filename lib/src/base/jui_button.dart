@@ -183,21 +183,27 @@ class JUIButton extends StatelessWidget {
   static Widget pageBottomButtons({
     required List<Widget> widgets,
     VoidCallback? onPressed,
+    double? height = 56,
   }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        const Divider(
-          height: 0.5,
-        ),
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          color: Colors.white,
-          child: Row(
-            children: widgets,
+    return SizedBox(
+      height: height,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const Divider(
+            height: 0.5,
           ),
-        ),
-      ],
+          Expanded(
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              color: Colors.white,
+              child: Row(
+                children: widgets,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 

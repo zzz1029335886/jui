@@ -21,6 +21,7 @@ dependencies:
     
   # 底部弹出 日期选择器 单列多列  https://pub.flutter-io.cn/packages/flutter_picker
   flutter_picker: ^2.1.0
+  flutter_staggered_grid_view: ^0.6.2
   # 自定义键盘操作按钮
   # keyboard_actions: ^4.2.0
   
