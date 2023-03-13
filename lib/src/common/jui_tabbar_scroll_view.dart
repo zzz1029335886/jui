@@ -48,7 +48,6 @@ class JUITabBarScrollView extends StatefulWidget {
   final bool isScrollable;
   final Decoration? headerDecoration;
   final JUITabBarScrollViewHeaderContainer? headerContainer;
-  final Widget? underHeaderSliver;
   final bool? Function(int index)? tabBarOnTap;
   final double titleExtraWidth;
   final EdgeInsetsGeometry titlePadding;
@@ -60,7 +59,6 @@ class JUITabBarScrollView extends StatefulWidget {
       this.bodyWidgetBuilder,
       this.headerDecoration,
       this.headerContainer,
-      this.underHeaderSliver,
       this.widgets,
       this.sliversBuilder,
       this.sliverScrollController,
@@ -202,7 +200,6 @@ class _JUITabBarScrollViewState extends State<JUITabBarScrollView>
             ),
           if (widget.sliversBuilder == null) headerWidget(),
           // headerWidget(),
-          if (widget.underHeaderSliver != null) widget.underHeaderSliver!
         ];
       },
     );

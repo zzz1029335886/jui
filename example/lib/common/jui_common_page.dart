@@ -1,3 +1,4 @@
+import 'package:example/common/event_axis_page.dart';
 import 'package:example/common/input_page.dart';
 import 'package:example/common/jui_form_page.dart';
 import 'package:example/common/jui_header_scroll_view_page.dart';
@@ -146,6 +147,14 @@ class _JUICommonPageState extends State<JUICommonPage> {
                 title: 'Share',
                 onPressed: () {
                   JUIShare.sheetShow(context: context);
+                }),
+            ListButton(
+                title: 'Event axis(事件轴)',
+                onPressed: () {
+                  Navigator.of(context)
+                      .push(MaterialPageRoute(builder: (context) {
+                    return EventAxisPage();
+                  }));
                 }),
 
             ListButton(
