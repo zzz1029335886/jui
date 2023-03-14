@@ -1,9 +1,13 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:jui/jui.dart';
 
 enum JUISchoolListLessonStyle { mainImgLeft, mainImgTop }
+
+class JUICoursesBean {
+  final String? uuid;
+
+  JUICoursesBean({this.uuid});
+}
 
 class JUISchoolListLesson extends StatelessWidget {
   final JUISchoolListLessonStyle style;
@@ -20,7 +24,7 @@ class JUISchoolListLesson extends StatelessWidget {
   final bool isPushDetail;
   final bool isWithHorizontal;
   final Widget? imgBottomWidget;
-  final CoursesBean? coursesBean;
+  final JUICoursesBean? coursesBean;
   const JUISchoolListLesson(
       {super.key,
       this.coursesBean,
