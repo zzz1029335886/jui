@@ -47,7 +47,7 @@ class JUIInputPage extends StatefulWidget {
       this.maxLength = 9999,
       this.textFieldHeight,
       this.showMaxLength = false,
-      this.autofocus = false,
+      this.autofocus = true,
       this.maxLines = 1,
       this.buttonTitle,
       this.onEditingComplete,
@@ -60,12 +60,30 @@ class JUIInputPage extends StatefulWidget {
     required String title,
     String? text,
     String? hintText,
+    bool autofocus = true,
+    String errorText = '标题不能为空',
+    ValueChanged<String>? valueChanged,
     JUIInputPageOnEditingComplete? onEditingComplete,
   }) {
     return push(
       context: context,
       title: title,
+      text: text,
+      autofocus: autofocus,
       hintText: hintText,
+      onEditingComplete: (value) {
+        if (onEditingComplete != null) {
+          return onEditingComplete.call(value);
+        }
+
+        if (value != null && value.isNotEmpty) {
+          valueChanged?.call(value);
+        } else {
+          showToast(errorText);
+          return Future.sync(() => false);
+        }
+        return Future.sync(() => true);
+      },
       tip: '0-10个字符，可由中英文、数字、“_”、“-”组成 ',
       buttonTitle: '确认',
       tipTextStyle: const TextStyle(color: Color.fromRGBO(147, 153, 159, 1)),
