@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 import 'jui_enabled.dart';
@@ -20,6 +22,8 @@ class JUIButton extends StatelessWidget {
   final double middlePadding;
   final bool isEnabled;
   final EdgeInsets padding;
+  final String? badgeValue;
+  final double badgeHeight;
 
   const JUIButton(
       {this.onPressed,
@@ -28,6 +32,8 @@ class JUIButton extends StatelessWidget {
       this.icon,
       this.iconWidget,
       this.iconSize,
+      this.badgeValue,
+      this.badgeHeight = 16,
       this.padding = EdgeInsets.zero,
       this.color = const Color.fromRGBO(49, 58, 67, 1),
       this.tintColor,
@@ -72,8 +78,7 @@ class JUIButton extends StatelessWidget {
 
     Widget finalWidget =
         isOneWidget ? children.first : Container(child: showChild);
-
-    return JUIEnabled(
+    Widget button = JUIEnabled(
       isEnabled: isEnabled,
       child: TextButton(
         style: TextButton.styleFrom(
@@ -87,6 +92,43 @@ class JUIButton extends StatelessWidget {
           child: finalWidget,
         ),
       ),
+    );
+    if (badgeValue == null) {
+      return button;
+    }
+
+    var badgeStyle = const TextStyle(fontSize: 12, color: Colors.white);
+    var badgeWidget = Text(
+      badgeValue!,
+      style: badgeStyle,
+    );
+    var layout = TextPainter(
+        textDirection: TextDirection.ltr,
+        text: TextSpan(text: badgeValue, style: badgeStyle))
+      ..layout();
+    double badgeWidth = max(layout.width, badgeHeight);
+
+    return Stack(
+      children: [
+        button,
+        Positioned(
+            right: 0,
+            top: 0,
+            child: Transform.translate(
+              offset: Offset(badgeWidth * 0.5, -badgeHeight * 0.5),
+              child: Container(
+                  constraints: BoxConstraints(
+                    minHeight: badgeHeight,
+                    maxHeight: badgeHeight,
+                    minWidth: badgeHeight,
+                  ),
+                  alignment: Alignment.center,
+                  decoration: const BoxDecoration(
+                      color: Color.fromRGBO(240, 20, 20, 1),
+                      borderRadius: BorderRadius.all(Radius.circular(8))),
+                  child: badgeWidget),
+            ))
+      ],
     );
   }
 
@@ -248,6 +290,8 @@ class JUIButton extends StatelessWidget {
       double? radius,
       Color? borderColor,
       Color? backgroundColor,
+      String? badgeValue,
+      double badgeHeight = 16,
       bool isShowOnAppBar = false}) {
     var _padding = padding;
     // if (isShowOnAppBar && padding == null) {
@@ -268,6 +312,8 @@ class JUIButton extends StatelessWidget {
       child: JUIButton(
         title: title,
         color: titleColor,
+        badgeValue: badgeValue,
+        badgeHeight: badgeHeight,
         icon: icon,
         tintColor: tintColor,
         fontSize: fontSize,

@@ -14,8 +14,20 @@ class JUIPagingListWidgetState extends State<PagingListWidget> {
   @override
   void initState() {
     super.initState();
+
+    ValueChanged<er.EasyRefreshController>? valueChanged =
+        widget.extra?['_createController'];
+    valueChanged?.call(refreshController);
+
+    refreshAnimationCompleteCallback =
+        widget.extra?['_refreshAnimationCompleteCallback'];
+    loadAnimationCompleteCallback =
+        widget.extra?['_loadAnimationCompleteCallback'];
   }
 
+  VoidCallback? refreshAnimationCompleteCallback;
+  VoidCallback? loadAnimationCompleteCallback;
+  bool hasFooter = true;
   @override
   void dispose() {
     super.dispose();
@@ -30,17 +42,21 @@ class JUIPagingListWidgetState extends State<PagingListWidget> {
     return er.EasyRefresh(
       controller: refreshController,
       refreshOnStart: true,
-      onLoad: () async {
-        index++;
-        var future = widget.onLoad.call(index, pageSize);
-        future.then((value) {
-          refreshController.finishLoad(value.length == pageSize
-              ? er.IndicatorResult.success
-              : er.IndicatorResult.noMore);
-        }).catchError((onError) {
-          refreshController.finishLoad(er.IndicatorResult.fail);
-        });
-      },
+      onLoad: !hasFooter
+          ? null
+          : () async {
+              index++;
+              var future = widget.onLoad.call(index, pageSize);
+              future.then((value) {
+                refreshController.finishLoad(value.length == pageSize
+                    ? er.IndicatorResult.success
+                    : er.IndicatorResult.noMore);
+                loadAnimationCompleteCallback?.call();
+              }).catchError((onError) {
+                refreshController.finishLoad(er.IndicatorResult.fail);
+                loadAnimationCompleteCallback?.call();
+              });
+            },
       onRefresh: () async {
         index = 1;
         var future = widget.onLoad.call(index, pageSize);
@@ -49,8 +65,16 @@ class JUIPagingListWidgetState extends State<PagingListWidget> {
           if (value.length < pageSize) {
             refreshController.finishLoad(er.IndicatorResult.noMore);
           }
+          refreshAnimationCompleteCallback?.call();
+          setState(() {
+            hasFooter = value.isNotEmpty;
+          });
         }).catchError((onError) {
           refreshController.finishRefresh(er.IndicatorResult.fail);
+          refreshAnimationCompleteCallback?.call();
+          setState(() {
+            hasFooter = false;
+          });
         });
       },
       header: const er.ClassicHeader(
@@ -63,15 +87,18 @@ class JUIPagingListWidgetState extends State<PagingListWidget> {
         failedText: '加载失败',
         messageText: '最后更新于 %T',
       ),
-      footer: const er.ClassicFooter(
+      footer: er.ClassicFooter(
         dragText: '上拉加载',
         armedText: '释放刷新',
         readyText: '加载中...',
         processingText: '加载中...',
         processedText: '加载完成',
-        noMoreText: '没有更多',
+        noMoreText: '没有更多内容',
         failedText: '加载失败',
         messageText: '最后更新于 %T',
+        noMoreIcon: Container(),
+        textStyle: const TextStyle(
+            fontSize: 12, color: Color.fromRGBO(147, 153, 159, 1)),
         showMessage: false, // 隐藏更新时间
       ),
       child: widget.child,
@@ -81,17 +108,17 @@ class JUIPagingListWidgetState extends State<PagingListWidget> {
 
 class JUIPagingListWidget extends StatelessWidget {
   final JUIPageListRefreshModel pageModel;
+  final VoidCallback? animationComplete;
   final Widget child;
   final bool initialRefresh;
   final bool enablePullDown;
   final bool enablePullUp;
-  final ValueChanged<er.EasyRefreshController>? controllerValueChanged;
 
   const JUIPagingListWidget(
       {super.key,
       required this.pageModel,
       required this.child,
-      this.controllerValueChanged,
+      this.animationComplete,
       this.initialRefresh = false,
       this.enablePullDown = true,
       this.enablePullUp = true});
@@ -107,58 +134,27 @@ class JUIPagingListWidget extends StatelessWidget {
           return pageModel.onLoadUp(callConRefresh: false);
         }
       },
+      extra: {
+        "_createController": (er.EasyRefreshController controller) {
+          pageModel._refreshController = controller;
+        },
+        '_refreshAnimationCompleteCallback': () {
+          animationComplete?.call();
+          pageModel.refreshAnimationComplete();
+        },
+        '_loadAnimationCompleteCallback': () {
+          animationComplete?.call();
+          pageModel.loadAnimationComplete();
+        }
+
+        // refreshAnimationCompleteCallback =
+        //     widget.extra?['_refreshAnimationCompleteCallback'];
+        // refreshAnimationCompleteCallback =
+        //     widget.extra?['_loadAnimationCompleteCallback'];
+      },
       child: child,
     );
   }
-  //    SmartRefresher(
-  //       enablePullDown: enablePullDown,
-  //       enablePullUp: enablePullUp,
-  //       header: const MaterialClassicHeader(),
-  //       footer: CustomFooter(
-  //         builder: (BuildContext context, LoadStatus? mode) {
-  //           Widget body;
-  //           if (mode == LoadStatus.idle) {
-  //             body = Text("上拉加载");
-  //           } else if (mode == LoadStatus.loading) {
-  //             body = Text("上拉加载...");
-  //           } else if (mode == LoadStatus.failed) {
-  //             body = Text("加载失败！点击重试！");
-  //           } else if (mode == LoadStatus.canLoading) {
-  //             body = Text("松手,加载更多!");
-  //           } else {
-  //             body = Text("没有更多数据了!");
-  //           }
-  //           return Container(
-  //             height: 55.0,
-  //             child: Center(child: body),
-  //           );
-  //         },
-  //       ),
-  //       controller: refreshController,
-  //       onRefresh: () {
-  //         Future future = pageModel.onRefreshDown();
-  //         future.then((data) {
-  //           refreshController.refreshCompleted(resetFooterState: true);
-  //         }).catchError((onError) {
-  //           refreshController.refreshFailed();
-  //         });
-  //       },
-  //       onLoading: () async {
-  //         Future<List> future = pageModel.onLoadUp();
-  //         future.then((data) {
-  //           refreshController.loadComplete();
-  //           if (data.isEmpty) {
-  //             refreshController.loadNoData();
-  //           }
-  //         }).catchError((onError) {
-  //           refreshController.loadFailed();
-  //         });
-  //       },
-  //       child: pageModel.dataList.isEmpty
-  //           ? (SimpleFunctionRegistry.callMaybe('@EmptyWidget') ??
-  //               Icon(Icons.hourglass_top))
-  //           : child);
-  // }
 }
 
 abstract class JUIPageListRefreshModel<T> {
@@ -181,9 +177,13 @@ abstract class JUIPageListRefreshModel<T> {
 
   Future<List<T>> load(int pageIndex, int pageSize);
 
+  void refreshAnimationComplete() {}
+  void loadAnimationComplete() {}
+
   Future<List<T>> onLoadUp({bool callConRefresh = true}) {
     if (callConRefresh) {
       refreshController.callLoad();
+      return Future.sync(() => []);
     }
     return _loadPage(isRefresh: false);
   }
@@ -191,6 +191,7 @@ abstract class JUIPageListRefreshModel<T> {
   Future<List<T>> onRefreshDown({bool callConRefresh = true}) {
     if (callConRefresh) {
       refreshController.callRefresh();
+      return Future.sync(() => []);
     }
     return _loadPage(isRefresh: true);
   }

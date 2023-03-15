@@ -68,6 +68,17 @@ class _JUIBasePageState extends State<JUIBasePage> {
             tintColor: Colors.redAccent,
             onPressed: () {},
           ),
+          Row(
+            children: [
+              JUIButton(
+                title: 'badgeValue',
+                badgeValue: '',
+                badgeHeight: 8,
+                tintColor: Colors.redAccent,
+                onPressed: () {},
+              ),
+            ],
+          ),
           // FormBuilderRadioGroup<String>(
           //   initialValue: 'Kotlin',
           //   onChanged: (value) {

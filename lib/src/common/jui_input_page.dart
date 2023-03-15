@@ -161,7 +161,7 @@ class _JUIInputPageState extends State<JUIInputPage> {
             Container(
               height: widget.textFieldHeight,
               padding: EdgeInsets.only(
-                  right: 16,
+                  right: 0,
                   left: 16,
                   top: 5,
                   bottom: widget.showMaxLength ? 16 : 4),

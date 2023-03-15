@@ -3,16 +3,11 @@ import 'package:jui/jui.dart';
 
 enum JUISchoolListLessonStyle { mainImgLeft, mainImgTop }
 
-class JUICoursesBean {
-  final String? uuid;
-
-  JUICoursesBean({this.uuid});
-}
-
 class JUISchoolListLesson extends StatelessWidget {
   final JUISchoolListLessonStyle style;
   final Size mainImgSize;
   final Widget? customRightBottomWidget;
+  final Widget? customPriceWidget;
   final int titleMaxLine;
   final bool? isShowTagRow;
   final bool isShowLecturer;
@@ -24,11 +19,12 @@ class JUISchoolListLesson extends StatelessWidget {
   final bool isPushDetail;
   final bool isWithHorizontal;
   final Widget? imgBottomWidget;
-  final JUICoursesBean? coursesBean;
+  final CoursesBean? coursesBean;
   const JUISchoolListLesson(
       {super.key,
       this.coursesBean,
       this.customRightBottomWidget,
+      this.customPriceWidget,
       this.titleMaxLine = 2,
       this.isShowTagRow,
       this.isPushDetail = true,
@@ -224,7 +220,7 @@ class JUISchoolListLesson extends StatelessWidget {
             alignment: Alignment.centerLeft,
             child: Text(
               coursesBean != null
-                  ? '课程uuid ${coursesBean?.uuid}'
+                  ? '${coursesBean?.title}'
                   : '医生做科研的最佳路医生做科研的最佳路医生做科研的生做科研的生做科研的最佳路医生做科研的最佳路医生做科研的最佳路医生做科研的最佳路',
               maxLines: titleMaxLine,
               style: const TextStyle(
@@ -268,7 +264,7 @@ class JUISchoolListLesson extends StatelessWidget {
                             color: Color.fromRGBO(147, 153, 159, 1),
                             fontSize: 12),
                       ),
-                      priceWidget()
+                      customPriceWidget ?? priceWidget()
                     ],
                   ))
               : priceWidget()
