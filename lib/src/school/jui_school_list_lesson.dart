@@ -16,6 +16,7 @@ class JUISchoolListLesson extends StatelessWidget {
   final bool isShowImageTopRightTag;
   final bool isShowImageBottom;
   final bool isShowPrice;
+  final bool isShowLimitedTimeOffer;
   final bool isPushDetail;
   final bool isWithHorizontal;
   final Widget? imgBottomWidget;
@@ -27,6 +28,7 @@ class JUISchoolListLesson extends StatelessWidget {
       this.customPriceWidget,
       this.titleMaxLine = 2,
       this.isShowTagRow,
+      this.isShowLimitedTimeOffer = false,
       this.isPushDetail = true,
       this.isWithHorizontal = false,
       this.isShowStudyNum,
@@ -125,7 +127,8 @@ class JUISchoolListLesson extends StatelessWidget {
     }
     return Row(
       children: [
-        if (style == JUISchoolListLessonStyle.mainImgLeft)
+        if (style == JUISchoolListLessonStyle.mainImgLeft &&
+            isShowLimitedTimeOffer)
           Container(
             padding:
                 const EdgeInsets.only(left: 6, right: 6, bottom: 3, top: 2),
