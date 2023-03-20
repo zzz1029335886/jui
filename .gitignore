@@ -27,6 +27,5 @@ doc/api/
 .metadata
 jui.iml
 
-example/build/
-example/.dart_tool/
+example/
 

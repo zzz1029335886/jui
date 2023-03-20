@@ -1,6 +1,95 @@
+import 'dart:async';
+
 import 'package:easy_refresh/easy_refresh.dart' as er;
 import 'package:flutter/material.dart';
 import 'package:jieluoxuan_bundle_base/jieluoxuan_bundle_base.dart';
+
+class JUIRefresh extends StatefulWidget {
+  final Widget child;
+  final er.EasyRefreshController? controller;
+  final bool refreshOnStart;
+  final FutureOr Function()? onLoad;
+  final FutureOr Function()? onRefresh;
+
+  const JUIRefresh(
+      {required this.child,
+      this.onLoad,
+      this.onRefresh,
+      this.refreshOnStart = false,
+      this.controller,
+      super.key});
+
+  @override
+  State<JUIRefresh> createState() => _JUIRefreshState();
+}
+
+class _JUIRefreshState extends State<JUIRefresh> {
+  late er.EasyRefreshController refreshController;
+  late final er.EasyRefreshController _refreshController =
+      er.EasyRefreshController(
+    controlFinishRefresh: true,
+    controlFinishLoad: true,
+  );
+
+  @override
+  void initState() {
+    super.initState();
+
+    refreshController = widget.controller ?? _refreshController;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return er.EasyRefresh(
+      header: header(),
+      footer: footer(),
+      onRefresh: widget.onRefresh == null
+          ? null
+          : () {
+              var res = widget.onRefresh?.call();
+              if (res is Future) {
+                res.then((value) {
+                  refreshController.finishRefresh(er.IndicatorResult.success);
+                });
+              }
+            },
+      onLoad: widget.onLoad,
+      refreshOnStart: widget.refreshOnStart,
+      controller: refreshController,
+      child: widget.child,
+    );
+  }
+
+  er.Footer? footer() {
+    return er.ClassicFooter(
+      dragText: '上拉加载',
+      armedText: '释放刷新',
+      readyText: '加载中...',
+      processingText: '加载中...',
+      processedText: '加载完成',
+      noMoreText: '没有更多内容',
+      failedText: '加载失败',
+      messageText: '最后更新于 %T',
+      noMoreIcon: Container(),
+      textStyle: const TextStyle(
+          fontSize: 12, color: Color.fromRGBO(147, 153, 159, 1)),
+      showMessage: false, // 隐藏更新时间
+    );
+  }
+
+  er.Header? header() {
+    return const er.ClassicHeader(
+      dragText: '下拉刷新',
+      armedText: '释放刷新',
+      readyText: '加载中...',
+      processingText: '加载中...',
+      processedText: '加载完成',
+      noMoreText: '没有更多',
+      failedText: '加载失败',
+      messageText: '最后更新于 %T',
+    );
+  }
+}
 
 class JUIPagingListWidgetState extends State<PagingListWidget> {
   er.EasyRefreshController refreshController = er.EasyRefreshController(
@@ -28,9 +117,11 @@ class JUIPagingListWidgetState extends State<PagingListWidget> {
   VoidCallback? refreshAnimationCompleteCallback;
   VoidCallback? loadAnimationCompleteCallback;
   bool hasFooter = true;
+
   @override
   void dispose() {
     super.dispose();
+    refreshController.dispose();
   }
 
   @override
@@ -39,7 +130,7 @@ class JUIPagingListWidgetState extends State<PagingListWidget> {
     // controller.callRefresh()
     // controller.callLoad()
 
-    return er.EasyRefresh(
+    return JUIRefresh(
       controller: refreshController,
       refreshOnStart: true,
       onLoad: !hasFooter
@@ -77,30 +168,6 @@ class JUIPagingListWidgetState extends State<PagingListWidget> {
           });
         });
       },
-      header: const er.ClassicHeader(
-        dragText: '下拉刷新',
-        armedText: '释放刷新',
-        readyText: '加载中...',
-        processingText: '加载中...',
-        processedText: '加载完成',
-        noMoreText: '没有更多',
-        failedText: '加载失败',
-        messageText: '最后更新于 %T',
-      ),
-      footer: er.ClassicFooter(
-        dragText: '上拉加载',
-        armedText: '释放刷新',
-        readyText: '加载中...',
-        processingText: '加载中...',
-        processedText: '加载完成',
-        noMoreText: '没有更多内容',
-        failedText: '加载失败',
-        messageText: '最后更新于 %T',
-        noMoreIcon: Container(),
-        textStyle: const TextStyle(
-            fontSize: 12, color: Color.fromRGBO(147, 153, 159, 1)),
-        showMessage: false, // 隐藏更新时间
-      ),
       child: widget.child,
     );
   }
