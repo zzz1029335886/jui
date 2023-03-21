@@ -152,12 +152,11 @@ extension ScrollControllerExtension on ScrollController {
       double maxValue = 1,
       double minValue = 0}) {
     addListener(() {
-      double alpha = 0;
-      if (offset > 0) {
-        alpha = 1 - (height - offset) / height;
-      } else {
-        alpha = 0;
-      }
+      double alpha = 1 - (height - offset) / height;
+      // if (offset > 0) {
+      //   alpha = 1 - (height - offset) / height;
+      // }
+
       double value = max(min(alpha, maxValue), minValue);
       int intValue = (value * 1000).round();
 

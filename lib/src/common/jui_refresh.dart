@@ -4,6 +4,8 @@ import 'package:easy_refresh/easy_refresh.dart' as er;
 import 'package:flutter/material.dart';
 import 'package:jieluoxuan_bundle_base/jieluoxuan_bundle_base.dart';
 
+typedef JUIRefreshIndicatorResult = er.IndicatorResult;
+
 class JUIRefresh extends StatefulWidget {
   final Widget child;
   final er.EasyRefreshController? controller;
@@ -48,12 +50,37 @@ class _JUIRefreshState extends State<JUIRefresh> {
           : () {
               var res = widget.onRefresh?.call();
               if (res is Future) {
-                res.then((value) {
-                  refreshController.finishRefresh(er.IndicatorResult.success);
-                });
+                if (res is Future<JUIRefreshIndicatorResult>) {
+                  res.then((value) {
+                    refreshController.finishRefresh(value);
+                  });
+                } else {
+                  res.whenComplete(() {
+                    refreshController.finishRefresh(er.IndicatorResult.success);
+                  });
+                }
+              } else if (res is JUIRefreshIndicatorResult) {
+                refreshController.finishRefresh(res);
               }
             },
-      onLoad: widget.onLoad,
+      onLoad: widget.onLoad == null
+          ? null
+          : () {
+              var res = widget.onLoad?.call();
+              if (res is Future) {
+                if (res is Future<JUIRefreshIndicatorResult>) {
+                  res.then((value) {
+                    refreshController.finishLoad(value);
+                  });
+                } else {
+                  res.whenComplete(() {
+                    refreshController.finishLoad(er.IndicatorResult.success);
+                  });
+                }
+              } else if (res is JUIRefreshIndicatorResult) {
+                refreshController.finishLoad(res);
+              }
+            },
       refreshOnStart: widget.refreshOnStart,
       controller: refreshController,
       child: widget.child,
@@ -71,6 +98,8 @@ class _JUIRefreshState extends State<JUIRefresh> {
       failedText: '加载失败',
       messageText: '最后更新于 %T',
       noMoreIcon: Container(),
+      iconDimension: 0,
+      spacing: 0,
       textStyle: const TextStyle(
           fontSize: 12, color: Color.fromRGBO(147, 153, 159, 1)),
       showMessage: false, // 隐藏更新时间
@@ -87,6 +116,8 @@ class _JUIRefreshState extends State<JUIRefresh> {
       noMoreText: '没有更多',
       failedText: '加载失败',
       messageText: '最后更新于 %T',
+      textStyle:
+          TextStyle(fontSize: 12, color: Color.fromRGBO(147, 153, 159, 1)),
     );
   }
 }
@@ -279,8 +310,12 @@ abstract class JUIPageListRefreshModel<T> {
     return pageSize;
   }
 
-  Future<List<T>> _loadPage({bool isRefresh = true}) {
-    assert(_isLoading == false);
+  Future<List<T>>? loadingFuture;
+
+  Future<List<T>> _loadPage({bool isRefresh = true}) async {
+    if (_isLoading && loadingFuture != null) {
+      await loadingFuture;
+    }
 
     _isLoading = true;
     _currPageIndex = isRefresh
@@ -288,6 +323,8 @@ abstract class JUIPageListRefreshModel<T> {
         : _handlePageIndex(_currPageIndex, pagingSize);
     Future<List<T>> future =
         load(_currPageIndex, _handlePage(_currPageIndex, pagingSize));
+
+    loadingFuture = future;
 
     future.then((data) {
       if (isRefresh) dataList.clear();
@@ -298,6 +335,7 @@ abstract class JUIPageListRefreshModel<T> {
       _onFinish(false);
     }).whenComplete(() {
       _isLoading = false;
+      loadingFuture = null;
     });
     return future;
   }

@@ -8,6 +8,7 @@ class JUIPageContainer extends StatefulWidget {
   final double padding;
   final double itemHeight;
   final double viewportFraction;
+  final ScrollPhysics? physics;
 
   final Widget Function(BuildContext context, int index, dynamic item)
       itemBuilder;
@@ -22,12 +23,14 @@ class JUIPageContainer extends StatefulWidget {
       required this.columnCount,
       required this.padding,
       required this.clicked,
+      this.physics,
       super.key});
 
   static JUIPageContainer init<T>(
       {required List<T> items,
       required int columnCount,
       required double itemHeight,
+      ScrollPhysics? physics,
       double viewportFraction = 1,
       double padding = 0,
       required Widget Function(BuildContext context, int index, T item)
@@ -39,6 +42,7 @@ class JUIPageContainer extends StatefulWidget {
       items: items,
       viewportFraction: viewportFraction,
       itemHeight: itemHeight,
+      physics: physics,
       padding: padding,
       clicked: (index, item) {
         clicked?.call(index, item);
@@ -84,6 +88,7 @@ class _JUIPageContainerState extends State<JUIPageContainer> {
               // margin: EdgeInsets.only(
               //     right: currentPage == widget.itemCount - 1 ? 40 : 0),
               child: PageView.builder(
+                  physics: widget.physics,
                   itemCount: itemCount,
                   padEnds: currentPage == itemCount - 1,
                   controller: _pageController,

@@ -16,7 +16,7 @@ dependencies:
   jieluoxuan_bundle_base:
     git:
       url: "git@gitee.com:helixlife-app/jieluoxuan_bundle_base.git"
-      ref: 1.0.4
+      ref: 1.0.5
   easy_refresh: ^3.3.0+1
     
   # 底部弹出 日期选择器 单列多列  https://pub.flutter-io.cn/packages/flutter_picker
