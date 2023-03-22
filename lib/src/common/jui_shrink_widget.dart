@@ -80,25 +80,22 @@ class _JUIShrinkWidgetState extends State<JUIShrinkWidget>
           child: Row(
             children: [
               Expanded(child: widget.parent),
-              Padding(
-                padding: EdgeInsets.only(left: 20, bottom: 10),
-                child: Row(
-                  children: [
-                    if (widget.openTitle != null || widget.closeTitle != null)
-                      isOpen
-                          ? widget.openTitle ?? Container()
-                          : widget.closeTitle ?? Container(),
-                    RotationTransition(
-                      turns: _shAnimation,
-                      child: Icon(
-                        Icons.keyboard_arrow_down_outlined,
-                        color: widget.arrowColor ??
-                            const Color.fromRGBO(183, 187, 191, 1),
-                        size: 24,
-                      ),
+              Row(
+                children: [
+                  if (widget.openTitle != null || widget.closeTitle != null)
+                    isOpen
+                        ? widget.openTitle ?? Container()
+                        : widget.closeTitle ?? Container(),
+                  RotationTransition(
+                    turns: _shAnimation,
+                    child: Icon(
+                      Icons.keyboard_arrow_down_outlined,
+                      color: widget.arrowColor ??
+                          const Color.fromRGBO(183, 187, 191, 1),
+                      size: 24,
                     ),
-                  ],
-                ),
+                  ),
+                ],
               )
             ],
           ),

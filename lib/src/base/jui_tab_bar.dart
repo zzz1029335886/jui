@@ -69,7 +69,7 @@ class JUITabBar extends StatefulWidget implements PreferredSizeWidget {
   static JUITabBar init(
       {required List<String> titles,
       bool? Function(int index)? onTap,
-      EdgeInsetsGeometry underLineInsets = EdgeInsets.zero,
+      EdgeInsetsGeometry underLineInsets = const EdgeInsets.only(bottom: 5),
       TabController? tabController,
       JUITabBarTitleBuilder? headerTitleWidgetBuilder,
       TextStyle? titleLabelStyle,
@@ -182,11 +182,7 @@ class _JUITabBarState extends State<JUITabBar> with TickerProviderStateMixin {
               }
 
               return Tab(
-                child: Container(
-                    alignment: Alignment.center,
-                    width: JUITabBarTitle.textWidth(str) +
-                        this.widget.titleExtraWidth,
-                    child: Text(str)),
+                child: Container(alignment: Alignment.center, child: Text(str)),
               );
             }),
           ),
@@ -213,7 +209,7 @@ class _RoundUnderlineTabIndicator extends Decoration {
   ///
   /// The [borderSide] and [insets] arguments must not be null.
   const _RoundUnderlineTabIndicator({
-    this.borderSide = const BorderSide(width: 3.0, color: Colors.red),
+    this.borderSide = const BorderSide(width: 3.0, color: Colors.white),
     this.insets = EdgeInsets.zero,
   });
 
@@ -222,14 +218,15 @@ class _RoundUnderlineTabIndicator extends Decoration {
 
   /// Locates the selected tab's underline relative to the tab's boundary.
   ///
-  /// The [TabBar.indicatorSize] property can be used to define the
-  /// tab indicator's bounds in terms of its (centered) tab widget with
-  /// [TabIndicatorSize.label], or the entire tab with [TabIndicatorSize.tab].
+  /// The [TabBar.indicatorSize] property can be used to define the tab
+  /// indicator's bounds in terms of its (centered) tab widget with
+  /// [TabBarIndicatorSize.label], or the entire tab with
+  /// [TabBarIndicatorSize.tab].
   final EdgeInsetsGeometry insets;
 
   @override
   Decoration? lerpFrom(Decoration? a, double t) {
-    if (a != null && a is UnderlineTabIndicator) {
+    if (a is UnderlineTabIndicator) {
       return UnderlineTabIndicator(
         borderSide: BorderSide.lerp(a.borderSide, borderSide, t),
         insets: EdgeInsetsGeometry.lerp(a.insets, insets, t)!,
@@ -250,44 +247,46 @@ class _RoundUnderlineTabIndicator extends Decoration {
   }
 
   @override
-  _UnderlinePainter createBoxPainter([VoidCallback? onChanged]) {
-    return _UnderlinePainter(this, onChanged!);
+  BoxPainter createBoxPainter([VoidCallback? onChanged]) {
+    return _UnderlinePainter(this, onChanged);
   }
-
-  // @override
-  // _UnderlinePainter createBoxPainter([VoidCallback? onChanged]) {
-  //   return _UnderlinePainter(this, onChanged!);
-  // }
-}
-
-class _UnderlinePainter extends BoxPainter {
-  _UnderlinePainter(this.decoration, VoidCallback onChanged) : super(onChanged);
-
-  final _RoundUnderlineTabIndicator decoration;
-
-  BorderSide get borderSide => decoration.borderSide;
-  EdgeInsetsGeometry get insets => decoration.insets;
 
   Rect _indicatorRectFor(Rect rect, TextDirection textDirection) {
     final Rect indicator = insets.resolve(textDirection).deflateRect(rect);
-    //希望的宽度
-    double wantWidth = indicator.width;
-    //取中间坐标
-    double cw = (indicator.left + indicator.right) / 2;
-    return Rect.fromLTWH(cw - wantWidth / 2,
+    // return Rect.fromLTWH(
+    //   indicator.left,
+    //   indicator.bottom - borderSide.width,
+    //   indicator.width,
+    //   borderSide.width,
+    // );
+    double wantWidth = 20;
+    double cw = (indicator.left + indicator.right) * 0.5;
+    return Rect.fromLTWH(cw - wantWidth * 0.5,
         indicator.bottom - borderSide.width, wantWidth, borderSide.width);
   }
+
+  @override
+  Path getClipPath(Rect rect, TextDirection textDirection) {
+    return Path()..addRect(_indicatorRectFor(rect, textDirection));
+  }
+}
+
+class _UnderlinePainter extends BoxPainter {
+  _UnderlinePainter(this.decoration, VoidCallback? onChanged)
+      : super(onChanged);
+
+  final _RoundUnderlineTabIndicator decoration;
 
   @override
   void paint(Canvas canvas, Offset offset, ImageConfiguration configuration) {
     assert(configuration.size != null);
     final Rect rect = offset & configuration.size!;
     final TextDirection textDirection = configuration.textDirection!;
-    final Rect indicator =
-        _indicatorRectFor(rect, textDirection).deflate(borderSide.width / 2.0);
-//    final Paint paint = borderSide.toPaint()..strokeCap = StrokeCap.square;
-    // 改为圆角
-    final Paint paint = borderSide.toPaint()..strokeCap = StrokeCap.round;
+    final Rect indicator = decoration
+        ._indicatorRectFor(rect, textDirection)
+        .deflate(decoration.borderSide.width / 2.0);
+    final Paint paint = decoration.borderSide.toPaint()
+      ..strokeCap = StrokeCap.round;
     canvas.drawLine(indicator.bottomLeft, indicator.bottomRight, paint);
   }
 }

@@ -27,11 +27,12 @@ class JUIDropdownController extends ChangeNotifier {
   JUIDropdownController({this.stackKey});
 
   /// Use to display JUIDropdown specified dropdown menu index.
-  void show(int index, {GlobalKey? behind, bool hideWhenShowed = true}) {
+  /// 返回值表示：最终是显示还是隐藏
+  bool show(int index, {GlobalKey? behind, bool hideWhenShowed = true}) {
     if (index == _showedIndex) {
       if (_isShow) {
         hide();
-        return;
+        return false;
       }
     } else {
       if (_isShow) {
@@ -61,6 +62,7 @@ class JUIDropdownController extends ChangeNotifier {
     }
 
     notifyListeners();
+    return true;
   }
 
   /// Use to hide JUIDropdown. If you don't need to show the hidden animation, [isShowHideAnimation] pass in false, Like when you click on another GZXDropdownHeaderItem.

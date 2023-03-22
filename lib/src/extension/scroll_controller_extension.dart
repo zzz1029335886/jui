@@ -12,6 +12,8 @@ enum ScrollControllerChildPosition {
 }
 
 extension ScrollControllerExtension on ScrollController {
+  static Set<GlobalKey> scrollToKeySet = {};
+
   Future<void> scrollToKey(
       {required GlobalKey scrollKey,
       required GlobalKey targetKey,
@@ -106,8 +108,12 @@ extension ScrollControllerExtension on ScrollController {
         }
         return;
     }
-
-    return scrollTo(dy - padding, isAnimated: isAnimated);
+    scrollToKeySet.add(targetKey);
+    await scrollTo(dy - padding, isAnimated: isAnimated);
+    Future.delayed(const Duration(milliseconds: 100)).then((value) {
+      scrollToKeySet.remove(targetKey);
+      print(scrollToKeySet.length);
+    });
   }
 
   bool get isVertical => position.axis == Axis.vertical;
@@ -141,9 +147,8 @@ extension ScrollControllerExtension on ScrollController {
     final milliseconds = value.toInt().abs() + 100;
 
     final duration = Duration(milliseconds: milliseconds);
-
     animateTo(dy, duration: duration, curve: Curves.ease);
-    await Future.delayed(duration);
+    return Future.delayed(duration);
   }
 
   void addListenerReturnProgress(
@@ -161,6 +166,57 @@ extension ScrollControllerExtension on ScrollController {
       int intValue = (value * 1000).round();
 
       valueChanged(intValue / 1000.0);
+    });
+  }
+
+  void addListenerIntoKeys({
+    required GlobalKey scrollKey,
+    required List<GlobalKey> keys,
+    double padding = 0,
+    ValueChanged<int>? scrollInto,
+  }) {
+    final RenderBox? scrollRenderBox =
+        scrollKey.currentContext!.findRenderObject() as RenderBox?;
+    if (scrollRenderBox == null) {
+      return;
+    }
+
+    int count = keys.length;
+    List<double> minPositions = List.generate(count, (index) => 0.0);
+
+    for (var i = 0; i < count; i++) {
+      final GlobalKey targetKey = keys[i];
+      final RenderBox targetRenderBox =
+          targetKey.currentContext!.findRenderObject() as RenderBox;
+
+      Offset position =
+          targetRenderBox.localToGlobal(Offset.zero, ancestor: scrollRenderBox);
+      minPositions[i] = position.dy + padding;
+    }
+    int currentIndex = -1;
+    addListener(() {
+      for (var i = 0; i < count; i++) {
+        var element = keys[i];
+        if (scrollToKeySet.contains(element)) {
+          currentIndex = i;
+          return;
+        }
+      }
+      // var offset = this.offset + padding;
+      for (var i = count - 1; i >= 0; i--) {
+        var min = minPositions[i];
+        if (offset > min) {
+          // double? nextMin = i < count - 1 ? minPositions[i + 1] : null;
+          // if (nextMin != null) {
+          // } else {}
+
+          if (currentIndex != i) {
+            currentIndex = i;
+            scrollInto?.call(i);
+          }
+          break;
+        }
+      }
     });
   }
 }

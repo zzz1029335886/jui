@@ -166,7 +166,7 @@ class JUIPagingListWidgetState extends State<PagingListWidget> {
       refreshOnStart: true,
       onLoad: !hasFooter
           ? null
-          : () async {
+          : () {
               index++;
               var future = widget.onLoad.call(index, pageSize);
               future.then((value) {
@@ -179,7 +179,7 @@ class JUIPagingListWidgetState extends State<PagingListWidget> {
                 loadAnimationCompleteCallback?.call();
               });
             },
-      onRefresh: () async {
+      onRefresh: () {
         index = 1;
         var future = widget.onLoad.call(index, pageSize);
         future.then((value) {
@@ -234,6 +234,10 @@ class JUIPagingListWidget extends StatelessWidget {
       },
       extra: {
         "_createController": (er.EasyRefreshController controller) {
+          print('initialRefresh $initialRefresh');
+          if (initialRefresh) {
+            controller.callRefresh();
+          }
           pageModel._refreshController = controller;
         },
         '_refreshAnimationCompleteCallback': () {

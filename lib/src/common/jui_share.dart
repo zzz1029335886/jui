@@ -21,13 +21,17 @@ class JUIShare {
       context: realContext,
       expand: false,
       title: '分享给好友',
+      titleBackgroundColor: const Color.fromRGBO(246, 248, 249, 1),
       contentBuilder: (context) {
-        return SizedBox(
-          height: 196,
-          child: Column(
-            children: [
-              SizedBox(
-                height: 107,
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Container(
+              color: const Color.fromRGBO(246, 248, 249, 1),
+              alignment: Alignment.center,
+              child: SizedBox(
+                height: 104,
                 child: Wrap(
                   crossAxisAlignment: WrapCrossAlignment.center,
                   runAlignment: WrapAlignment.center,
@@ -90,18 +94,18 @@ class JUIShare {
                   ],
                 ),
               ),
-              Container(
-                height: 56,
-                width: double.infinity,
-                color: Colors.white,
-                child: JUIButton(
-                  title: '取消',
-                  fontWeight: FontWeight.w500,
-                  onPressed: () => Navigator.of(context).pop(),
-                ),
-              )
-            ],
-          ),
+            ),
+            Container(
+              height: 56,
+              width: double.infinity,
+              color: Colors.white,
+              child: JUIButton(
+                title: '取消',
+                fontWeight: FontWeight.w500,
+                onPressed: () => Navigator.of(context).pop(),
+              ),
+            )
+          ],
         );
       },
     );

@@ -176,6 +176,8 @@ class _JUITabBarScrollViewState extends State<JUITabBarScrollView>
 
     return NestedScrollView(
       controller: widget.scrollController,
+      physics:
+          const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
       body: TabBarView(
           controller: _tabController,
           physics: !widget.isBodyScrollable
