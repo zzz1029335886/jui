@@ -88,7 +88,8 @@ class JUIInputPage extends StatefulWidget {
       buttonTitle: '确认',
       tipTextStyle: const TextStyle(color: Color.fromRGBO(147, 153, 159, 1)),
       inputFormatters: [
-        FilteringTextInputFormatter.allow(RegExp('[\u4e00-\u9fa5a-zA-Z0-9\-]')),
+        FilteringTextInputFormatter.allow(
+            RegExp('[\u4e00-\u9fa5a-zA-Z0-9\\-]')),
         LengthLimitingTextInputFormatter(10)
       ],
     );

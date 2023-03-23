@@ -9,6 +9,7 @@ typedef JUIRefreshIndicatorResult = er.IndicatorResult;
 class JUIRefresh extends StatefulWidget {
   final Widget child;
   final er.EasyRefreshController? controller;
+  final ScrollController? scrollController;
   final bool refreshOnStart;
   final FutureOr Function()? onLoad;
   final FutureOr Function()? onRefresh;
@@ -17,6 +18,7 @@ class JUIRefresh extends StatefulWidget {
       {required this.child,
       this.onLoad,
       this.onRefresh,
+      this.scrollController,
       this.refreshOnStart = false,
       this.controller,
       super.key});
@@ -45,6 +47,7 @@ class _JUIRefreshState extends State<JUIRefresh> {
     return er.EasyRefresh(
       header: header(),
       footer: footer(),
+      scrollController: widget.scrollController,
       onRefresh: widget.onRefresh == null
           ? null
           : () {
@@ -98,6 +101,8 @@ class _JUIRefreshState extends State<JUIRefresh> {
       failedText: '加载失败',
       messageText: '最后更新于 %T',
       noMoreIcon: Container(),
+      succeededIcon: Container(),
+      failedIcon: Container(),
       iconDimension: 0,
       spacing: 0,
       textStyle: const TextStyle(
@@ -123,10 +128,7 @@ class _JUIRefreshState extends State<JUIRefresh> {
 }
 
 class JUIPagingListWidgetState extends State<PagingListWidget> {
-  er.EasyRefreshController refreshController = er.EasyRefreshController(
-    controlFinishRefresh: true,
-    controlFinishLoad: true,
-  );
+  late er.EasyRefreshController refreshController;
 
   int index = 1;
   int pageSize = 10;
@@ -135,6 +137,10 @@ class JUIPagingListWidgetState extends State<PagingListWidget> {
   void initState() {
     super.initState();
 
+    refreshController = er.EasyRefreshController(
+      controlFinishRefresh: true,
+      controlFinishLoad: true,
+    );
     ValueChanged<er.EasyRefreshController>? valueChanged =
         widget.extra?['_createController'];
     valueChanged?.call(refreshController);
@@ -163,6 +169,7 @@ class JUIPagingListWidgetState extends State<PagingListWidget> {
 
     return JUIRefresh(
       controller: refreshController,
+      scrollController: widget.controller,
       refreshOnStart: true,
       onLoad: !hasFooter
           ? null
@@ -207,6 +214,7 @@ class JUIPagingListWidgetState extends State<PagingListWidget> {
 class JUIPagingListWidget extends StatelessWidget {
   final JUIPageListRefreshModel pageModel;
   final VoidCallback? animationComplete;
+  final ScrollController? scrollController;
   final Widget child;
   final bool initialRefresh;
   final bool enablePullDown;
@@ -217,6 +225,7 @@ class JUIPagingListWidget extends StatelessWidget {
       required this.pageModel,
       required this.child,
       this.animationComplete,
+      this.scrollController,
       this.initialRefresh = false,
       this.enablePullDown = true,
       this.enablePullUp = true});
@@ -224,6 +233,7 @@ class JUIPagingListWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PagingListWidget(
+      controller: scrollController,
       dataList: pageModel.dataList,
       onLoad: (pageIndex, pageSize) {
         if (pageIndex <= 1) {
@@ -234,7 +244,6 @@ class JUIPagingListWidget extends StatelessWidget {
       },
       extra: {
         "_createController": (er.EasyRefreshController controller) {
-          print('initialRefresh $initialRefresh');
           if (initialRefresh) {
             controller.callRefresh();
           }
@@ -282,17 +291,19 @@ abstract class JUIPageListRefreshModel<T> {
   void refreshAnimationComplete() {}
   void loadAnimationComplete() {}
 
-  Future<List<T>> onLoadUp({bool callConRefresh = true}) {
+  Future<List<T>> onLoadUp(
+      {bool callConRefresh = true, ScrollController? scrollController}) {
     if (callConRefresh) {
-      refreshController.callLoad();
+      refreshController.callLoad(scrollController: scrollController);
       return Future.sync(() => []);
     }
     return _loadPage(isRefresh: false);
   }
 
-  Future<List<T>> onRefreshDown({bool callConRefresh = true}) {
+  Future<List<T>> onRefreshDown(
+      {bool callConRefresh = true, ScrollController? scrollController}) {
     if (callConRefresh) {
-      refreshController.callRefresh();
+      refreshController.callRefresh(scrollController: scrollController);
       return Future.sync(() => []);
     }
     return _loadPage(isRefresh: true);

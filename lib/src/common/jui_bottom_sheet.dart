@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:jui/jui.dart';
-import 'package:jui/src/modal_bottom_sheet/lib/modal_bottom_sheet.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
-class JUIBottomSheetModalsPageRoute extends MaterialWithModalsPageRoute {
+class JUIBottomSheetModalsPageRoute<T> extends MaterialWithModalsPageRoute<T> {
   JUIBottomSheetModalsPageRoute(
       {required super.builder,
       super.settings,
