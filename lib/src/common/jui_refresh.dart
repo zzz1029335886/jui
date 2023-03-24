@@ -43,6 +43,14 @@ class _JUIRefreshState extends State<JUIRefresh> {
   }
 
   @override
+  void dispose() {
+    if (widget.controller == null) {
+      refreshController.dispose();
+    }
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return er.EasyRefresh(
       header: header(),
@@ -103,8 +111,8 @@ class _JUIRefreshState extends State<JUIRefresh> {
       noMoreIcon: Container(),
       succeededIcon: Container(),
       failedIcon: Container(),
-      iconDimension: 0,
-      spacing: 0,
+      // iconDimension: 0,
+      // spacing: 0,
       textStyle: const TextStyle(
           fontSize: 12, color: Color.fromRGBO(147, 153, 159, 1)),
       showMessage: false, // 隐藏更新时间
@@ -149,28 +157,28 @@ class JUIPagingListWidgetState extends State<PagingListWidget> {
         widget.extra?['_refreshAnimationCompleteCallback'];
     loadAnimationCompleteCallback =
         widget.extra?['_loadAnimationCompleteCallback'];
+    refreshOnStart = widget.extra?['_refreshOnStart'];
   }
 
   VoidCallback? refreshAnimationCompleteCallback;
   VoidCallback? loadAnimationCompleteCallback;
   bool hasFooter = true;
+  bool refreshOnStart = true;
 
   @override
   void dispose() {
     super.dispose();
     refreshController.dispose();
+    refreshAnimationCompleteCallback = null;
+    loadAnimationCompleteCallback = null;
   }
 
   @override
   Widget build(BuildContext context) {
-    // widget.controller
-    // controller.callRefresh()
-    // controller.callLoad()
-
     return JUIRefresh(
       controller: refreshController,
       scrollController: widget.controller,
-      refreshOnStart: true,
+      refreshOnStart: refreshOnStart,
       onLoad: !hasFooter
           ? null
           : () {
@@ -190,20 +198,15 @@ class JUIPagingListWidgetState extends State<PagingListWidget> {
         index = 1;
         var future = widget.onLoad.call(index, pageSize);
         future.then((value) {
-          refreshController.finishRefresh(er.IndicatorResult.success);
           if (value.length < pageSize) {
             refreshController.finishLoad(er.IndicatorResult.noMore);
+          } else {
+            refreshController.finishRefresh(er.IndicatorResult.success);
           }
           refreshAnimationCompleteCallback?.call();
-          setState(() {
-            hasFooter = value.isNotEmpty;
-          });
         }).catchError((onError) {
           refreshController.finishRefresh(er.IndicatorResult.fail);
           refreshAnimationCompleteCallback?.call();
-          setState(() {
-            hasFooter = false;
-          });
         });
       },
       child: widget.child,
@@ -216,19 +219,22 @@ class JUIPagingListWidget extends StatelessWidget {
   final VoidCallback? animationComplete;
   final ScrollController? scrollController;
   final Widget child;
-  final bool initialRefresh;
-  final bool enablePullDown;
-  final bool enablePullUp;
+  final bool refreshOnStart;
+  final bool isSingleScrollView;
 
-  const JUIPagingListWidget(
-      {super.key,
-      required this.pageModel,
-      required this.child,
-      this.animationComplete,
-      this.scrollController,
-      this.initialRefresh = false,
-      this.enablePullDown = true,
-      this.enablePullUp = true});
+  JUIPagingListWidget({
+    super.key,
+    required this.pageModel,
+    required this.child,
+    this.animationComplete,
+    this.scrollController,
+    this.refreshOnStart = true,
+    this.isSingleScrollView = true,
+  }) : super() {
+    pageModel._notifyRefresh = () {
+      animationComplete?.call();
+    };
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -243,11 +249,12 @@ class JUIPagingListWidget extends StatelessWidget {
         }
       },
       extra: {
+        '_refreshOnStart': refreshOnStart,
         "_createController": (er.EasyRefreshController controller) {
-          if (initialRefresh) {
-            controller.callRefresh();
-          }
           pageModel._refreshController = controller;
+          if (!isSingleScrollView) {
+            pageModel.refreshWithOutAnimate();
+          }
         },
         '_refreshAnimationCompleteCallback': () {
           animationComplete?.call();
@@ -290,6 +297,27 @@ abstract class JUIPageListRefreshModel<T> {
 
   void refreshAnimationComplete() {}
   void loadAnimationComplete() {}
+
+  VoidCallback? _notifyRefresh;
+  void refreshWithOutAnimate() {
+    var future = _loadPage(isRefresh: true);
+    future.then((value) {
+      _notifyRefresh?.call();
+
+      if (value.length < pagingSize) {
+        refreshController.finishLoad(er.IndicatorResult.noMore);
+      } else {
+        if (refreshController.footerState?.result ==
+            er.IndicatorResult.noMore) {
+          refreshController.resetFooter();
+        } else {
+          refreshController.finishRefresh(er.IndicatorResult.success);
+        }
+      }
+    }).catchError((onError) {
+      refreshController.finishRefresh(er.IndicatorResult.fail);
+    });
+  }
 
   Future<List<T>> onLoadUp(
       {bool callConRefresh = true, ScrollController? scrollController}) {
