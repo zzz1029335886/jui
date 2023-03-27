@@ -13,16 +13,13 @@ dependencies:
   # jieluoxuan_resource_assets:
   #   git:
   #     url: "git@gitee.com:helixlife-app/jieluoxuan_resource_assets.git"
-  jieluoxuan_bundle_base:
-    git:
-      url: "git@gitee.com:helixlife-app/jieluoxuan_bundle_base.git"
-      ref: 1.0.5
   easy_refresh: ^3.3.0+1
     
   # 底部弹出 日期选择器 单列多列  https://pub.flutter-io.cn/packages/flutter_picker
   flutter_picker: ^2.1.0
   flutter_staggered_grid_view: ^0.6.2
   modal_bottom_sheet: ^3.0.0-pre
+  image_pickers: ^2.0.1
   # 自定义键盘操作按钮
   # keyboard_actions: ^4.2.0
   

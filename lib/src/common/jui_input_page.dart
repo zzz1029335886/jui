@@ -61,7 +61,6 @@ class JUIInputPage extends StatefulWidget {
     String? text,
     String? hintText,
     bool autofocus = true,
-    String errorText = '标题不能为空',
     ValueChanged<String>? valueChanged,
     JUIInputPageOnEditingComplete? onEditingComplete,
   }) {
@@ -79,7 +78,6 @@ class JUIInputPage extends StatefulWidget {
         if (value != null && value.isNotEmpty) {
           valueChanged?.call(value);
         } else {
-          showToast(errorText);
           return Future.sync(() => false);
         }
         return Future.sync(() => true);

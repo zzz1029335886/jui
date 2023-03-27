@@ -3,14 +3,24 @@ import 'package:flutter/material.dart';
 typedef JUIHeaderScrollViewBuilder = PreferredSize Function(
     BuildContext context);
 
+class JUIHeaderScrollViewController extends ChangeNotifier {
+  var canScroll = true;
+  void setScroll(bool canScroll) {
+    this.canScroll = canScroll;
+    notifyListeners();
+  }
+}
+
 class JUIHeaderScrollView extends StatefulWidget {
   final WidgetBuilder bodyWidgetBuilder;
   final JUIHeaderScrollViewBuilder? headerWidgetBuilder;
   final WidgetBuilder? topWidgetBuilder;
   final ScrollController? scrollController;
+  final JUIHeaderScrollViewController? controller;
 
   /// 是否全屏滚动
   final bool isScrollFullScreen;
+  final ScrollPhysics? physics;
 
   /// 是否固定
   final bool pinned;
@@ -19,7 +29,9 @@ class JUIHeaderScrollView extends StatefulWidget {
   const JUIHeaderScrollView(
       {this.headerWidgetBuilder,
       required this.bodyWidgetBuilder,
+      this.controller,
       this.scrollController,
+      this.physics,
       this.pinned = true,
       this.isScrollFullScreen = true,
       this.topWidgetBuilder,
@@ -32,19 +44,36 @@ class JUIHeaderScrollView extends StatefulWidget {
 
 class _JUIHeaderScrollViewState extends State<JUIHeaderScrollView> {
   int id = 0;
+  var canScroll = true;
   @override
   void initState() {
     super.initState();
+
+    widget.controller?.addListener(controllerListener);
+  }
+
+  void controllerListener() {
+    setState(() {
+      canScroll = widget.controller?.canScroll ?? true;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    ScrollPhysics? physics = widget.physics ??
+        (canScroll
+            ? const BouncingScrollPhysics()
+            : const NeverScrollableScrollPhysics());
+    print('$canScroll');
+    print(widget.physics);
+
     if (widget.isScrollFullScreen) {
       Widget widget0 = widget.bodyWidgetBuilder(context);
       bool isSliver = widget0 is SliverToBoxAdapter || widget0 is SliverList;
       return CustomScrollView(
         key: widget.scrollViewKey,
         controller: widget.scrollController,
+        physics: physics,
         slivers: [
           if (widget.topWidgetBuilder != null)
             SliverToBoxAdapter(
@@ -70,6 +99,7 @@ class _JUIHeaderScrollViewState extends State<JUIHeaderScrollView> {
       key: widget.scrollViewKey,
       body: widget.bodyWidgetBuilder(context),
       controller: widget.scrollController,
+      physics: physics,
       headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
         return [
           if (widget.topWidgetBuilder != null)

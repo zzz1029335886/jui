@@ -201,7 +201,7 @@ class _JUIBottomSheetPageState extends State<JUIBottomSheetPage> {
                   ),
                   trailing: widget.trailingWidget ??
                       JUIButton(
-                        icon: IconsJlx.icon_guanbi,
+                        icon: Icons.close,
                         iconSize: 16,
                         padding: const EdgeInsets.all(3),
                         color: const Color.fromRGBO(28, 31, 33, 1),
