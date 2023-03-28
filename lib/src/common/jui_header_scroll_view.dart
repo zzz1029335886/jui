@@ -4,7 +4,7 @@ typedef JUIHeaderScrollViewBuilder = PreferredSize Function(
     BuildContext context);
 
 class JUIHeaderScrollViewController extends ChangeNotifier {
-  var canScroll = true;
+  bool canScroll = true;
   void setScroll(bool canScroll) {
     this.canScroll = canScroll;
     notifyListeners();
@@ -44,7 +44,7 @@ class JUIHeaderScrollView extends StatefulWidget {
 
 class _JUIHeaderScrollViewState extends State<JUIHeaderScrollView> {
   int id = 0;
-  var canScroll = true;
+  bool canScroll = true;
   @override
   void initState() {
     super.initState();
@@ -61,11 +61,7 @@ class _JUIHeaderScrollViewState extends State<JUIHeaderScrollView> {
   @override
   Widget build(BuildContext context) {
     ScrollPhysics? physics = widget.physics ??
-        (canScroll
-            ? const BouncingScrollPhysics()
-            : const NeverScrollableScrollPhysics());
-    print('$canScroll');
-    print(widget.physics);
+        (canScroll ? null : const NeverScrollableScrollPhysics());
 
     if (widget.isScrollFullScreen) {
       Widget widget0 = widget.bodyWidgetBuilder(context);

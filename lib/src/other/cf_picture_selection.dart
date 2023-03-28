@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-export 'package:jieluoxuan_bundle_base/jieluoxuan_bundle_base.dart';
 import 'package:image_pickers/image_pickers.dart';
 import 'package:jui/jui.dart';
 import 'dart:io' as io;

@@ -206,6 +206,7 @@ class JUIButton extends StatelessWidget {
       bool isEnabled = true,
       String? title,
       double? radius = 7,
+      double? fontSize = 16,
       double? height = 44,
       Color? backgroundColor = const Color.fromRGBO(129, 216, 208, 1),
       bool isShowOnAppBar = false}) {
@@ -216,6 +217,7 @@ class JUIButton extends StatelessWidget {
         isEnabled: isEnabled,
         margin: margin,
         height: height,
+        fontSize: fontSize,
         radius: radius,
         backgroundColor: backgroundColor,
         isShowOnAppBar: isShowOnAppBar,

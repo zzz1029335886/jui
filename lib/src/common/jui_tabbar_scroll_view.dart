@@ -13,12 +13,12 @@ typedef JUITabBarScrollViewSliversBuilder = JUITabBarScrollViewSliver Function(
     BuildContext context, int index);
 
 class JUITabBarScrollViewSliver {
-  final List<Widget> slivers;
-  final ScrollController? scrollController;
-  final bool isPageStorage;
-  final TransitionBuilder? builder;
-  final Widget? fixedHeaderWidget;
-  const JUITabBarScrollViewSliver(
+  List<Widget> slivers;
+  ScrollController? scrollController;
+  bool isPageStorage;
+  TransitionBuilder? builder;
+  Widget? fixedHeaderWidget;
+  JUITabBarScrollViewSliver(
       {required this.slivers,
       this.builder,
       this.fixedHeaderWidget,
