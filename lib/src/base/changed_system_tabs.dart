@@ -981,7 +981,7 @@ class _TabBarState extends State<TabBar> {
     // with a better long-term solution.
     // https://github.com/flutter/flutter/pull/68171#pullrequestreview-517753917
     if (widget.automaticIndicatorColorAdjustment &&
-        color.value == Material.of(context)?.color?.value) {
+        color.value == Material.of(context).color?.value) {
       color = Colors.white;
     }
 
