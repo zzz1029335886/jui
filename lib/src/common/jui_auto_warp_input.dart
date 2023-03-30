@@ -72,12 +72,12 @@ class JUIAutoWarpInput extends StatelessWidget {
                 },
                 decoration: InputDecoration(
                   hintText: placeHolder,
-                  hintStyle: TextStyle(fontSize: 13),
+                  hintStyle: const TextStyle(fontSize: 13),
                   isDense: true,
                   // fillColor: backgroundColor,
-                  contentPadding:
-                      EdgeInsets.only(left: 10, top: 10, bottom: 5, right: 10),
-                  border: OutlineInputBorder(
+                  contentPadding: const EdgeInsets.only(
+                      left: 10, top: 10, bottom: 5, right: 10),
+                  border: const OutlineInputBorder(
                     gapPadding: 0,
                     borderSide: BorderSide(
                       width: 0,

@@ -116,8 +116,4 @@ class _JUIShrinkWidgetState extends State<JUIShrinkWidget>
       ],
     );
   }
-
-  @override
-  // TODO: implement wantKeepAlive
-  bool get wantKeepAlive => true;
 }

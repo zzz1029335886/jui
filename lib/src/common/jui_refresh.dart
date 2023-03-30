@@ -76,54 +76,19 @@ class _JUIRefreshState extends State<JUIRefresh> {
       // scrollController: widget.scrollController,
       onRefresh: widget.onRefresh == null
           ? null
-          : () {
-              var res = widget.onRefresh?.call();
-              if (res is Future) {
-                if (res is Future<JUIRefreshIndicatorResult>) {
-                  res.then((value) {
-                    refreshController.finishRefresh(value);
-                    widget.refreshAnimationComplete?.call();
-                  });
-                } else {
-                  res.whenComplete(() {
-                    refreshController
-                        .finishRefresh(JUIRefreshIndicatorResult.success);
-                    widget.refreshAnimationComplete?.call();
-                  });
-                }
-              } else if (res is JUIRefreshIndicatorResult) {
-                refreshController.finishRefresh(res);
-                widget.refreshAnimationComplete?.call();
-              } else {
-                refreshController
-                    .finishRefresh(JUIRefreshIndicatorResult.success);
-                widget.refreshAnimationComplete?.call();
-              }
+          : () async {
+              final res = await widget.onRefresh?.call() ??
+                  JUIRefreshIndicatorResult.success;
+              refreshController.finishRefresh(res);
+              widget.refreshAnimationComplete?.call();
             },
       onLoad: widget.onLoad == null
           ? null
-          : () {
-              var res = widget.onLoad?.call();
-              if (res is Future) {
-                if (res is Future<JUIRefreshIndicatorResult>) {
-                  res.then((value) {
-                    refreshController.finishLoad(value);
-                    widget.loadAnimationComplete?.call();
-                  });
-                } else {
-                  res.whenComplete(() {
-                    refreshController
-                        .finishLoad(JUIRefreshIndicatorResult.success);
-                    widget.loadAnimationComplete?.call();
-                  });
-                }
-              } else if (res is JUIRefreshIndicatorResult) {
-                refreshController.finishLoad(res);
-                widget.loadAnimationComplete?.call();
-              } else {
-                refreshController.finishLoad(JUIRefreshIndicatorResult.success);
-                widget.loadAnimationComplete?.call();
-              }
+          : () async {
+              final res = await widget.onLoad?.call() ??
+                  JUIRefreshIndicatorResult.success;
+              refreshController.finishLoad(res);
+              widget.loadAnimationComplete?.call();
             },
       refreshOnStart: widget.refreshOnStart,
       controller: refreshController,
@@ -185,7 +150,7 @@ class JUIPagingListWidget extends StatelessWidget {
     this.refreshOnStart = true,
     this.isSingleScrollView = true,
   }) : super() {
-    pageModel._notifyRefresh = () {
+    pageModel.notifyRefresh = () {
       refreshCompleted?.call();
     };
   }
@@ -262,14 +227,10 @@ abstract class JUIPageListRefreshModel<T> {
   void refreshAnimationComplete() {}
   void loadAnimationComplete() {}
 
-  VoidCallback? _notifyRefresh;
-  void refreshWithOutAnimate() {
-    // EasyLoading.show();
-
-    var future = _loadPage(isRefresh: true);
-    future.then((value) {
-      // EasyLoading.dismiss();
-      _notifyRefresh?.call();
+  VoidCallback? notifyRefresh;
+  void refreshWithOutAnimate() async {
+    try {
+      final value = await _loadPage(isRefresh: true);
 
       if (value.length < pagingSize) {
         refreshController.finishLoad(JUIRefreshIndicatorResult.noMore);
@@ -281,17 +242,16 @@ abstract class JUIPageListRefreshModel<T> {
           refreshController.finishRefresh(JUIRefreshIndicatorResult.success);
         }
       }
-    }).catchError((onError) {
-      EasyLoading.dismiss();
+    } catch (onError) {
       refreshController.finishRefresh(JUIRefreshIndicatorResult.fail);
-    });
+    }
   }
 
-  Future<List<T>> onLoadUp(
-      {bool callConRefresh = true, ScrollController? scrollController}) {
+  Future<List> onLoadUp(
+      {bool callConRefresh = true, ScrollController? scrollController}) async {
     if (callConRefresh) {
       refreshController.callLoad(scrollController: scrollController);
-      return Future.sync(() => []);
+      return [];
     }
     return _loadPage(isRefresh: false);
   }

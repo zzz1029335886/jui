@@ -227,16 +227,23 @@ class _JUIInputPageState extends State<JUIInputPage> {
     );
   }
 
-  void inputCompletionCallBack(String? text) {
-    var res = widget.onEditingComplete?.call(text);
-    if (res != null) {
-      res.then((res) {
-        if (res == true) {
-          Navigator.pop(context);
-        }
-      });
-    } else {
+  void inputCompletionCallBack(String? text) async {
+    final bool res = await widget.onEditingComplete?.call(text) ?? true;
+    if (res) {
+      // ignore: use_build_context_synchronously
       Navigator.pop(context);
     }
   }
+
+  // Future inputCompletionCallBack(String? text) async {
+  //   var res = widget.onEditingComplete?.call(text);
+  //   if (res != null) {
+  //     var result = await res;
+  //     if (result == true) {
+  //       Navigator.pop(context);
+  //     }
+  //   } else {
+  //     Navigator.pop(context);
+  //   }
+  // }
 }

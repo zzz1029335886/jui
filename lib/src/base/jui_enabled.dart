@@ -18,20 +18,19 @@ class JUIEnabled extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (isEnabled) {
-      return child;
-    } else {
-      var widget = Opacity(
-        opacity: opacity,
-        child: child,
-      );
-      if (!isIgnoring) {
-        return widget;
-      }
-      return IgnorePointer(
-        ignoring: isIgnoring,
-        child: widget,
-      );
-    }
+    return isEnabled
+        ? child
+        : (isIgnoring
+            ? IgnorePointer(
+                ignoring: isIgnoring,
+                child: Opacity(
+                  opacity: opacity,
+                  child: child,
+                ),
+              )
+            : Opacity(
+                opacity: opacity,
+                child: child,
+              ));
   }
 }

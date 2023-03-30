@@ -68,20 +68,10 @@ class JUITitleLineWidget extends StatelessWidget {
       totalHeight += itemsHeight! + itemPadding * children.length;
     }
 
-    Widget titleWidget;
-    if (customTitle != null) {
-      titleWidget = customTitle!;
-    } else if (titleTextStyle != null) {
-      titleWidget = Text(
-        title,
-        style: titleTextStyle,
-      );
-    } else {
-      titleWidget = JUIText(
-        title,
-        fontSize: 14,
-      );
-    }
+    final titleWidget = customTitle ??
+        (titleTextStyle != null
+            ? Text(title, style: titleTextStyle)
+            : JUIText(title, fontSize: 14));
 
     return SizedBox(
       height: 35 + totalHeight,
