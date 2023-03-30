@@ -65,6 +65,14 @@ class _JUIRefreshState extends State<JUIRefresh> {
     return er.EasyRefresh(
       header: header(),
       footer: footer(),
+      // header: const er.CupertinoHeader(
+      //     position: er.IndicatorPosition.locator,
+      //     safeArea: false,
+      //     foregroundColor: Colors.blue,
+      //     backgroundColor: Colors.red),
+      // footer: const er.CupertinoFooter(
+      //   position: er.IndicatorPosition.locator,
+      // ),
       // scrollController: widget.scrollController,
       onRefresh: widget.onRefresh == null
           ? null
