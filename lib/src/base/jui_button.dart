@@ -14,6 +14,7 @@ class JUIButton extends StatelessWidget {
   final Color? color;
   final Color? tintColor;
   final String? title;
+  final Color? titleColor;
   final TextAlign? titleAlign;
   final double? fontSize;
   final FontWeight? fontWeight;
@@ -38,6 +39,7 @@ class JUIButton extends StatelessWidget {
       this.color = const Color.fromRGBO(49, 58, 67, 1),
       this.tintColor,
       this.title,
+      this.titleColor,
       this.titleAlign,
       this.middlePadding = 8,
       this.fontSize,
@@ -66,7 +68,7 @@ class JUIButton extends StatelessWidget {
           title!,
           textAlign: titleAlign,
           style: TextStyle(
-              color: tintColor ?? color,
+              color: titleColor ?? tintColor ?? color,
               fontSize: fontSize,
               fontWeight: fontWeight),
         )
@@ -280,6 +282,7 @@ class JUIButton extends StatelessWidget {
       VoidCallback? onPressed,
       String? title,
       IconData? icon,
+      double? iconSize,
       Widget? iconWidget,
       Color? tintColor,
       double? width,
@@ -318,6 +321,7 @@ class JUIButton extends StatelessWidget {
         badgeValue: badgeValue,
         badgeHeight: badgeHeight,
         icon: icon,
+        iconSize: iconSize,
         iconWidget: iconWidget,
         tintColor: tintColor,
         fontSize: fontSize,

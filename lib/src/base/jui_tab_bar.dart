@@ -42,10 +42,12 @@ class JUITabBar extends StatefulWidget implements PreferredSizeWidget {
   final double titleExtraWidth;
   final bool hasBottomLine;
   final EdgeInsetsGeometry titlePadding;
+  final EdgeInsetsGeometry padding;
 
   const JUITabBar({
     super.key,
     this.labelColor,
+    this.padding = EdgeInsets.zero,
     this.titleExtraWidth = 6,
     this.titlePadding = const EdgeInsets.symmetric(horizontal: 16),
     this.underIndicatorSize,
@@ -150,7 +152,7 @@ class _JUITabBarState extends State<JUITabBar> with TickerProviderStateMixin {
       child: Column(
         children: [
           cst.TabBar(
-            padding: EdgeInsets.zero,
+            padding: this.widget.padding,
             labelPadding: this.widget.titlePadding,
             labelColor:
                 this.widget.labelColor ?? const Color.fromRGBO(28, 31, 33, 1),
