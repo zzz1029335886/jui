@@ -23,6 +23,7 @@ class JUIShrinkWidget extends StatefulWidget {
   final Widget? closeTitle;
   final Widget? openTitle;
   final Color? arrowColor;
+  final EdgeInsets? parentPadding;
 
   const JUIShrinkWidget(
       {Key? key,
@@ -33,6 +34,7 @@ class JUIShrinkWidget extends StatefulWidget {
       this.childVisibleWidget,
       this.stateListener,
       this.closeTitle,
+      this.parentPadding,
       this.openTitle,
       this.arrowColor})
       : super(key: key);
@@ -77,27 +79,30 @@ class _JUIShrinkWidgetState extends State<JUIShrinkWidget>
             });
             widget.stateListener?.call(isOpen, shController);
           },
-          child: Row(
-            children: [
-              Expanded(child: widget.parent),
-              Row(
-                children: [
-                  if (widget.openTitle != null || widget.closeTitle != null)
-                    isOpen
-                        ? widget.openTitle ?? Container()
-                        : widget.closeTitle ?? Container(),
-                  RotationTransition(
-                    turns: _shAnimation,
-                    child: Icon(
-                      Icons.keyboard_arrow_down_outlined,
-                      color: widget.arrowColor ??
-                          const Color.fromRGBO(183, 187, 191, 1),
-                      size: 24,
+          child: Container(
+            padding: widget.parentPadding,
+            child: Row(
+              children: [
+                Expanded(child: widget.parent),
+                Row(
+                  children: [
+                    if (widget.openTitle != null || widget.closeTitle != null)
+                      isOpen
+                          ? widget.openTitle ?? Container()
+                          : widget.closeTitle ?? Container(),
+                    RotationTransition(
+                      turns: _shAnimation,
+                      child: Icon(
+                        Icons.keyboard_arrow_down_outlined,
+                        color: widget.arrowColor ??
+                            const Color.fromRGBO(183, 187, 191, 1),
+                        size: 24,
+                      ),
                     ),
-                  ),
-                ],
-              )
-            ],
+                  ],
+                )
+              ],
+            ),
           ),
         ),
         Opacity(

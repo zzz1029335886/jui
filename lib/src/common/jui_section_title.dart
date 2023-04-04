@@ -62,7 +62,7 @@ class JUISectionTitleContainer extends StatelessWidget {
                 JUIText(
                   title,
                   fontSize: 16,
-                  fontWeight: FontWeight.w500,
+                  fontWeight: JUIFontWeightExtension.medium,
                   color: Color.fromRGBO(28, 31, 33, 1),
                 ),
               ],

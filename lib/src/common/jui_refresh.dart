@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:easy_refresh/easy_refresh.dart' as er;
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
@@ -62,6 +63,23 @@ class _JUIRefreshState extends State<JUIRefresh> {
 
   @override
   Widget build(BuildContext context) {
+    // return CupertinoSliverRefreshControl(
+    //   builder: (context, refreshState, pulledExtent, refreshTriggerPullDistance,
+    //       refreshIndicatorExtent) {
+    //     return widget.child;
+    //   },
+    // );
+
+    // return RefreshIndicator(
+    //   child: widget.child,
+    //   onRefresh: () async {
+    //     final res =
+    //         await widget.onRefresh?.call() ?? JUIRefreshIndicatorResult.success;
+    //     refreshController.finishRefresh(res);
+    //     widget.refreshAnimationComplete?.call();
+    //   },
+    // );
+
     return er.EasyRefresh(
       header: header(),
       footer: footer(),

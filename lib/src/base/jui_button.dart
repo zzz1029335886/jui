@@ -295,6 +295,7 @@ class JUIButton extends StatelessWidget {
       double? fontSize,
       double? radius,
       Color? borderColor,
+      double borderWidth = 0.5,
       Color? backgroundColor,
       String? badgeValue,
       double badgeHeight = 16,
@@ -311,7 +312,9 @@ class JUIButton extends StatelessWidget {
       height: height,
       decoration: BoxDecoration(
           color: backgroundColor,
-          border: borderColor != null ? Border.all(color: borderColor) : null,
+          border: borderColor != null
+              ? Border.all(color: borderColor, width: borderWidth)
+              : null,
           borderRadius: radius != null
               ? BorderRadius.all(Radius.circular(radius))
               : null),

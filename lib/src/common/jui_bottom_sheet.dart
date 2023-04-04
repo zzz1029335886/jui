@@ -108,7 +108,7 @@ class JUIBottomSheet {
                         title: const Center(
                           child: JUIText(
                             '取消',
-                            fontWeight: FontWeight.w500,
+                            fontWeight: JUIFontWeightExtension.medium,
                           ),
                         ),
                         onTap: () => Navigator.of(context).pop(),
@@ -195,7 +195,7 @@ class _JUIBottomSheetPageState extends State<JUIBottomSheetPage> {
                       JUIText(
                         widget.title!,
                         color: const Color.fromRGBO(28, 31, 33, 1),
-                        fontWeight: FontWeight.w500,
+                        fontWeight: JUIFontWeightExtension.medium,
                       ),
                     ],
                   ),

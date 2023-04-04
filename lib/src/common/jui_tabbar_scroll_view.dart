@@ -94,8 +94,8 @@ class JUITabBarScrollView extends StatefulWidget {
       EdgeInsets titlePadding = const EdgeInsets.symmetric(horizontal: 16),
       WidgetBuilder? topWidgetBuilder}) {
     return JUITabBarScrollView(
-      titleLabelStyle:
-          const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+      titleLabelStyle: const TextStyle(
+          fontSize: 16, fontWeight: JUIFontWeightExtension.medium),
       unselectedTitleLabelStyle: const TextStyle(fontSize: 14),
       titles: titles,
       isScrollable: isScrollable,
