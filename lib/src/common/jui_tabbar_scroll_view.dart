@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../../jui.dart';
-import '../base/jui_tab_bar.dart';
 
 typedef JUITabBarScrollViewHeaderTitleBuilder = JUITabBarTitleBuilder;
 typedef JUITabBarScrollViewTitle = JUITabBarTitle;

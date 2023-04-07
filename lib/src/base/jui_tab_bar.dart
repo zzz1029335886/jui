@@ -14,7 +14,7 @@ class JUITabBarTitle {
   static double textWidth(String text,
       {TextStyle style = const TextStyle(
         fontSize: 16,
-        fontWeight:  JUIFontWeightExtension.medium,
+        fontWeight: JUIFontWeightExtension.medium,
       )}) {
     var tp = TextPainter(
         textDirection: TextDirection.ltr,
@@ -59,8 +59,8 @@ class JUITabBar extends StatefulWidget implements PreferredSizeWidget {
     this.height = 49,
     this.hasBottomLine = true,
     this.tabController,
-    this.titleLabelStyle =
-        const TextStyle(fontSize: 16, fontWeight: JUIFontWeightExtension.medium),
+    this.titleLabelStyle = const TextStyle(
+        fontSize: 16, fontWeight: JUIFontWeightExtension.medium),
     required this.titles,
     this.underLineBorderSide =
         const BorderSide(width: 3, color: Color.fromRGBO(129, 216, 208, 1)),
@@ -86,7 +86,8 @@ class JUITabBar extends StatefulWidget implements PreferredSizeWidget {
       labelColor: const Color.fromRGBO(28, 31, 33, 1),
       unselectedLabelColor: const Color.fromRGBO(113, 119, 125, 1),
       titleLabelStyle: titleLabelStyle ??
-          const TextStyle(fontSize: 16, fontWeight: JUIFontWeightExtension.medium),
+          const TextStyle(
+              fontSize: 16, fontWeight: JUIFontWeightExtension.medium),
       unselectedTitleLabelStyle:
           unselectedTitleLabelStyle ?? const TextStyle(fontSize: 14),
       tabController: tabController,
