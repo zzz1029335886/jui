@@ -52,6 +52,12 @@ class _JUIHeaderScrollViewState extends State<JUIHeaderScrollView> {
     widget.controller?.addListener(controllerListener);
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+    widget.controller?.removeListener(controllerListener);
+  }
+
   void controllerListener() {
     setState(() {
       canScroll = widget.controller?.canScroll ?? true;

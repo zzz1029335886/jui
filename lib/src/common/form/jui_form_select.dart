@@ -10,6 +10,7 @@ class JUIFormSelect extends JUIFormContent {
   final String? placeholder;
   final TextStyle? contentTextStyle;
   final TextStyle? placeholderTextStyle;
+  final double iconSize;
   JUIFormSelect({
     super.key,
     super.content,
@@ -19,6 +20,7 @@ class JUIFormSelect extends JUIFormContent {
     this.placeholder,
     this.clickCallback,
     this.hiddenArrow = false,
+    this.iconSize = 18,
     super.config,
     super.style,
     super.styleBuilder,
@@ -46,8 +48,8 @@ class _JUIFormSelectState extends JUIFormBaseState<JUIFormSelect> {
           ),
         Offstage(
           offstage: widget.hiddenArrow,
-          child: const Icon(Icons.arrow_forward_ios,
-              size: 18, color: Color(0xFFC8C8C8)),
+          child: Icon(Icons.arrow_forward_ios,
+              size: widget.iconSize, color: const Color(0xFFC8C8C8)),
         )
       ],
     );
