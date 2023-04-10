@@ -52,6 +52,7 @@ class JUITabBarScrollView extends StatefulWidget {
   final EdgeInsetsGeometry titlePadding;
   final EdgeInsetsGeometry? tabbarPadding;
   final bool isBodyScrollable;
+  final bool hasTabBottomLine;
 
   const JUITabBarScrollView(
       {required this.titles,
@@ -76,6 +77,7 @@ class JUITabBarScrollView extends StatefulWidget {
       this.underLineBorderSide =
           const BorderSide(width: 3, color: Color.fromRGBO(129, 216, 208, 1)),
       this.isScrollable = false,
+      this.hasTabBottomLine = true,
       this.underLineInsets =
           const EdgeInsets.only(left: 8, right: 8, bottom: 5),
       this.underIndicatorSize = TabBarIndicatorSize.label,
@@ -222,6 +224,7 @@ class _JUITabBarScrollViewState extends State<JUITabBarScrollView>
               titleLabelStyle: widget.titleLabelStyle,
               unselectedTitleLabelStyle: widget.unselectedTitleLabelStyle,
               isScrollable: widget.isScrollable,
+              hasBottomLine: widget.hasTabBottomLine,
               underLineInsets: widget.underLineInsets,
               underLineBorderSide: widget.underLineBorderSide,
               underIndicatorSize: widget.underIndicatorSize,

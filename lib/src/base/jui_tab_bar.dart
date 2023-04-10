@@ -151,7 +151,7 @@ class _JUITabBarState extends State<JUITabBar> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     Widget widget = SizedBox(
       height: this.widget.height,
-      child: Column(
+      child: Stack(
         children: [
           cst.TabBar(
             padding: this.widget.padding,
@@ -191,8 +191,13 @@ class _JUITabBarState extends State<JUITabBar> with TickerProviderStateMixin {
             }),
           ),
           if (this.widget.hasBottomLine)
-            const Divider(
-              height: 0.5,
+            const Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: Divider(
+                height: 1,
+              ),
             ),
         ],
       ),

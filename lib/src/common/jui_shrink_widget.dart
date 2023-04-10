@@ -24,6 +24,7 @@ class JUIShrinkWidget extends StatefulWidget {
   final Widget? openTitle;
   final Color? arrowColor;
   final EdgeInsets? parentPadding;
+  final bool isHideLineWhenOpen;
 
   const JUIShrinkWidget(
       {Key? key,
@@ -35,6 +36,7 @@ class JUIShrinkWidget extends StatefulWidget {
       this.stateListener,
       this.closeTitle,
       this.parentPadding,
+      this.isHideLineWhenOpen = true,
       this.openTitle,
       this.arrowColor})
       : super(key: key);
@@ -105,19 +107,25 @@ class _JUIShrinkWidgetState extends State<JUIShrinkWidget>
             ),
           ),
         ),
-        Opacity(
-          opacity: isOpen ? 0 : 1,
-          child: Container(
-            color: const Color.fromRGBO(235, 239, 242, 1),
-            height: 0.5,
+        if (widget.isHideLineWhenOpen)
+          Opacity(
+            opacity: isOpen ? 0 : 1,
+            child: Container(
+              color: const Color.fromRGBO(235, 239, 242, 1),
+              height: 0.5,
+            ),
           ),
-        ),
         AnimatedCrossFade(
             firstChild: widget.childVisibleWidget ?? Container(height: 0),
             duration: widget.animateDuration,
             crossFadeState:
                 isOpen ? CrossFadeState.showSecond : CrossFadeState.showFirst,
-            secondChild: widget.child)
+            secondChild: widget.child),
+        if (!widget.isHideLineWhenOpen)
+          Container(
+            color: const Color.fromRGBO(235, 239, 242, 1),
+            height: 0.5,
+          ),
       ],
     );
   }
