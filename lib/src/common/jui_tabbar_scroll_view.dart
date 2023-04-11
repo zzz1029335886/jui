@@ -214,6 +214,7 @@ class _JUITabBarScrollViewState extends State<JUITabBarScrollView>
     return SliverPersistentHeader(
         delegate: _SliverAppBarDelegate(
             JUITabBar(
+              height: 50,
               labelColor:
                   widget.labelColor ?? const Color.fromRGBO(28, 31, 33, 1),
               unselectedLabelColor: widget.unselectedLabelColor ??
