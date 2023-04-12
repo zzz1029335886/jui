@@ -229,7 +229,7 @@ abstract class JUIPageListRefreshModel<T> {
   // ignore: constant_identifier_names
   static const int _DEFAULT_START_PAGE_INDEX = 1;
   // ignore: constant_identifier_names
-  static const int _DEFAULT_PAGE_SIZE = 10;
+  static const int _DEFAULT_PAGE_SIZE = 20;
 
   int _currPageIndex = _DEFAULT_START_PAGE_INDEX - 1;
   int _lastPageIndex = _DEFAULT_START_PAGE_INDEX;
@@ -237,6 +237,7 @@ abstract class JUIPageListRefreshModel<T> {
   int get pagingSize => _DEFAULT_PAGE_SIZE;
   bool _isLoading = false;
   final List<T> _dataList = [];
+  JUIPageListRefreshModelPageMeta? pageMeta;
 
   List<T> get dataList => _dataList;
 
@@ -327,5 +328,44 @@ abstract class JUIPageListRefreshModel<T> {
       loadingFuture = null;
     });
     return future;
+  }
+}
+
+class JUIPageListRefreshModelPageMeta {
+  int? currentPage;
+  int? lastPage;
+  int? total;
+  String? url;
+
+  JUIPageListRefreshModelPageMeta(
+      {this.currentPage, this.lastPage, this.total, this.url});
+
+  factory JUIPageListRefreshModelPageMeta.fromJson(Map<String, dynamic> json) {
+    var m = JUIPageListRefreshModelPageMeta();
+    return m.fromJson(json) ?? m;
+  }
+
+  JUIPageListRefreshModelPageMeta? fromJson(Map<String, dynamic>? json) {
+    if (json == null) return null;
+    var data = JUIPageListRefreshModelPageMeta();
+    data.currentPage = json['current_page'];
+    data.lastPage = json['last_page'];
+    data.total = json['total'];
+    data.url = json['url'];
+    return data;
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['current_page'] = currentPage;
+    data['last_page'] = lastPage;
+    data['total'] = total;
+    data['url'] = url;
+    return data;
+  }
+
+  @override
+  String toString() {
+    return 'PageMeta{currentPage: $currentPage, lastPage: $lastPage, total: $total, url: $url}';
   }
 }

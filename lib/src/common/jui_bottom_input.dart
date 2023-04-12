@@ -9,10 +9,21 @@ class JUIBottomInput extends StatelessWidget {
   final String? content;
   final String placeHolder;
   final TextStyle textStyle;
+  final double? height;
+  final int maxLine;
+  final int minLine;
+  final int maxLength;
+  final bool showMaxLength;
+
   const JUIBottomInput(
       {Key? key,
       required this.onEditingCompleteText,
       this.content,
+      this.maxLine = 5,
+      this.minLine = 1,
+      this.maxLength = 9999,
+      this.showMaxLength = false,
+      this.height,
       this.textStyle = const TextStyle(fontSize: 16),
       this.placeHolder = '请输入内容'})
       : super(key: key);
@@ -37,12 +48,16 @@ class JUIBottomInput extends StatelessWidget {
           Container(
             color: Colors.white,
             child: JUIAutoWarpInput(
-                contentMinHeight: 34,
+                contentMinHeight: height ?? 34,
+                maxLines: maxLine,
+                minLines: minLine,
+                maxLength: maxLength,
+                showMaxLength: showMaxLength,
                 contentBorderRadius: 17,
                 inputWidth: inputWidth,
                 textStyle: textStyle,
-                onEditingCompleteText: (value) {
-                  bool? res = onEditingCompleteText.call(value);
+                onEditingCompleteText: (value) async {
+                  bool? res = await onEditingCompleteText.call(value);
                   if (res != null && res == true) {
                     Navigator.pop(context);
                   }
@@ -60,12 +75,22 @@ class JUIBottomInput extends StatelessWidget {
     required BuildContext context,
     required JUIBottomInputOnEditingComplete completeText,
     String? content,
+    double? height,
+    int maxLine = 5,
+    int minLine = 1,
+    int maxLength = 9999,
+    bool showMaxLength = false,
     String placeholder = '请输入内容',
   }) {
     Navigator.push(
         context,
         BottomInputPopupRoute(
             child: JUIBottomInput(
+          height: height,
+          maxLine: maxLine,
+          minLine: minLine,
+          maxLength: maxLength,
+          showMaxLength: showMaxLength,
           placeHolder: placeholder,
           content: content,
           onEditingCompleteText: completeText,

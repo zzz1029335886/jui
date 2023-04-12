@@ -3,6 +3,8 @@
 ///  Created by iotjin on 2020/02/18.
 ///  description:  输入框（默认没有边框，宽充满屏幕，文字居左，默认显示1行，自动换行，最多5行，可设置键盘类型，右侧添加自定义widget，多行，最大长度，是否可编辑，文字样式）
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -38,6 +40,8 @@ class CFTextField extends StatefulWidget {
       this.inputFormatters,
       this.inputCallBack,
       this.inputCompletionCallBack,
+      this.onEditingComplete,
+      this.decoration,
       this.textStyle,
       this.hintTextStyle,
       this.labelTextStyle,
@@ -71,6 +75,10 @@ class CFTextField extends StatefulWidget {
   final List<TextInputFormatter>? inputFormatters;
   final _InputCallBack? inputCallBack;
   final _InputCompletionCallBack? inputCompletionCallBack;
+  final FutureOr<bool?>? Function()? onEditingComplete;
+
+  final InputDecoration? decoration;
+
   final TextStyle? textStyle;
   final TextStyle? hintTextStyle;
   final TextStyle? labelTextStyle; // 默认为hintTextStyle，高亮为主题色
@@ -167,7 +175,9 @@ class _CFTextFieldState extends State<CFTextField> {
   @override
   void dispose() {
     _focusNode.unfocus();
-    _textController.dispose();
+    if (widget.controller == null) {
+      _textController.dispose();
+    }
     super.dispose();
 //    print('JhTextField dispose');
   }
@@ -194,40 +204,41 @@ class _CFTextFieldState extends State<CFTextField> {
       maxLength: widget.showMaxLength == true ? widget.maxLength : null,
       inputFormatters: widget.inputFormatters ??
           [LengthLimitingTextInputFormatter(widget.maxLength)],
-      decoration: InputDecoration(
-        prefix: widget.prefixWidget,
-        prefixText: widget.prefixText,
-        suffixIconConstraints:
-            const BoxConstraints(minHeight: 24, minWidth: 24),
-        suffixIcon: _hasDeleteIcon && _isFocused
-            ? SizedBox(
-                height: 12,
-                child: IconButton(
-                  padding: const EdgeInsets.all(0.0),
-                  icon: const Icon(
-                    Icons.cancel,
-                    color: Color.fromRGBO(183, 187, 191, 1),
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      _textController.text = '';
-                      _hasDeleteIcon = false;
-                      widget.inputCallBack?.call(_textController.text);
-                    });
-                  },
-                ))
-            : null,
-        hintText: widget.hintText,
-        hintStyle: widget.hintTextStyle,
-        labelText: widget.labelText.isEmpty ? null : widget.labelText,
-        labelStyle: _isFocused ? labelTextStyle : widget.hintTextStyle,
-        errorText: widget.errorText.isEmpty ? null : widget.errorText,
-        isDense: true,
-        contentPadding: widget.border != InputBorder.none
-            ? const EdgeInsets.symmetric(horizontal: 5, vertical: 8)
-            : const EdgeInsets.fromLTRB(0, 8, 5, 8),
-        border: widget.border,
-      ),
+      decoration: widget.decoration ??
+          InputDecoration(
+            prefix: widget.prefixWidget,
+            prefixText: widget.prefixText,
+            suffixIconConstraints:
+                const BoxConstraints(minHeight: 24, minWidth: 24),
+            suffixIcon: _hasDeleteIcon && _isFocused
+                ? SizedBox(
+                    height: 12,
+                    child: IconButton(
+                      padding: const EdgeInsets.all(0.0),
+                      icon: const Icon(
+                        Icons.cancel,
+                        color: Color.fromRGBO(183, 187, 191, 1),
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _textController.text = '';
+                          _hasDeleteIcon = false;
+                          widget.inputCallBack?.call(_textController.text);
+                        });
+                      },
+                    ))
+                : null,
+            hintText: widget.hintText,
+            hintStyle: widget.hintTextStyle,
+            labelText: widget.labelText.isEmpty ? null : widget.labelText,
+            labelStyle: _isFocused ? labelTextStyle : widget.hintTextStyle,
+            errorText: widget.errorText.isEmpty ? null : widget.errorText,
+            isDense: true,
+            contentPadding: widget.border != InputBorder.none
+                ? const EdgeInsets.symmetric(horizontal: 5, vertical: 8)
+                : const EdgeInsets.fromLTRB(0, 8, 5, 8),
+            border: widget.border,
+          ),
       // 执行顺序为 onTap -> onChanged -> onEditingComplete -> onSubmitted
       // 点击输入框
       onTap: () {
@@ -242,8 +253,12 @@ class _CFTextFieldState extends State<CFTextField> {
         widget.inputCallBack?.call(_textController.text);
       },
       // 输入完成，提交按钮点击后会先执行这里
-      onEditingComplete: () {
-        _focusNode.unfocus();
+      onEditingComplete: () async {
+        var res = await widget.onEditingComplete?.call();
+        if (res == false) {
+        } else {
+          _focusNode.unfocus();
+        }
       },
       // 提交按钮点击
       onSubmitted: (value) {

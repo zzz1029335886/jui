@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:jui/jui.dart';
 
-typedef JUIAutoWarpInputOnEditingComplete = bool? Function(String value);
+typedef JUIAutoWarpInputOnEditingComplete = FutureOr<bool?>? Function(
+    String value);
 
 class JUIAutoWarpInput extends StatelessWidget {
   final TextEditingController controller = TextEditingController();
@@ -18,12 +21,18 @@ class JUIAutoWarpInput extends StatelessWidget {
       this.backgroundColor = const Color.fromRGBO(246, 248, 249, 1),
       this.contentBorderRadius = 5,
       this.contentMinHeight,
-      this.autofocus = true})
+      this.maxLines = 5,
+      this.minLines = 1,
+      this.autofocus = true,
+      this.showMaxLength = false,
+      this.maxLength})
       : super(key: key) {
     controller.text = content;
   }
 
   final bool autofocus;
+  final bool showMaxLength;
+
   final double? inputWidth;
   final TextStyle? textStyle;
   final JUIAutoWarpInputOnEditingComplete onEditingCompleteText;
@@ -34,6 +43,9 @@ class JUIAutoWarpInput extends StatelessWidget {
   final Color? backgroundColor;
   final double contentBorderRadius;
   final double? contentMinHeight;
+  final int maxLines;
+  final int minLines;
+  final int? maxLength;
 
   @override
   Widget build(BuildContext context) {
@@ -56,19 +68,20 @@ class JUIAutoWarpInput extends StatelessWidget {
                       BorderRadius.all(Radius.circular(contentBorderRadius))),
               width: inputWidth,
               margin: const EdgeInsets.only(bottom: 8),
-              child: TextField(
+              child: CFTextField(
                 controller: controller,
                 autofocus: autofocus,
-                style: textStyle,
+                textStyle: textStyle,
                 //设置键盘按钮为发送
                 textInputAction: TextInputAction.send,
                 keyboardType: TextInputType.multiline,
-                onEditingComplete: () {
+                onEditingComplete: () async {
                   //点击发送调用
-                  bool? res = onEditingCompleteText(controller.text);
+                  bool? res = await onEditingCompleteText(controller.text);
                   if (res != null && res == true) {
                     FocusScope.of(context).unfocus();
                   }
+                  return res;
                 },
                 decoration: InputDecoration(
                   hintText: placeHolder,
@@ -85,9 +98,10 @@ class JUIAutoWarpInput extends StatelessWidget {
                     ),
                   ),
                 ),
-
-                minLines: 1,
-                maxLines: 5,
+                showMaxLength: showMaxLength,
+                minLines: minLines,
+                maxLines: maxLines,
+                maxLength: maxLength ?? 99999,
               ),
             ),
             Container(
@@ -103,9 +117,10 @@ class JUIAutoWarpInput extends StatelessWidget {
                       color: Color.fromRGBO(129, 216, 208, 1),
                       fontSize: 14,
                     ),
-                onPressed: () {
-                  bool? res = onEditingCompleteText(controller.text);
+                onPressed: () async {
+                  bool? res = await onEditingCompleteText(controller.text);
                   if (res != null && res == true) {
+                    // ignore: use_build_context_synchronously
                     FocusScope.of(context).unfocus();
                   }
                 },

@@ -25,9 +25,10 @@ class JUIFormInput extends JUIFormContent {
   final TextAlign? textAlign;
   final bool? isShowCleanButton;
   final ValueChanged<String?>? valueChanged;
-
+  final TextEditingController? controller;
   JUIFormInput(
       {super.key,
+      this.controller,
       this.valueChanged,
       this.isEdit,
       this.textAlign,
@@ -102,6 +103,7 @@ class _JUIFormInputState extends JUIFormBaseState<JUIFormInput> {
           maxLength: maxLength,
           minLines: minLines ?? 1,
           maxLines: maxLines ?? 1,
+          controller: widget.controller,
           textStyle: textStyle,
           leftWidget: leftWidget,
           rightWidget: rightWidget,
