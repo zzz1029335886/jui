@@ -279,6 +279,7 @@ class JUIButton extends StatelessWidget {
 
   static Widget custom(
       {Key? key,
+      Color? color,
       VoidCallback? onPressed,
       String? title,
       IconData? icon,
@@ -290,6 +291,7 @@ class JUIButton extends StatelessWidget {
       EdgeInsets? padding,
       EdgeInsets? margin,
       double? height,
+      double middlePadding = 8,
       bool isEnabled = true,
       Color? titleColor = Colors.white,
       double? fontSize,
@@ -320,7 +322,8 @@ class JUIButton extends StatelessWidget {
               : null),
       child: JUIButton(
         title: title,
-        color: titleColor,
+        color: titleColor ?? color,
+        middlePadding: middlePadding,
         badgeValue: badgeValue,
         badgeHeight: badgeHeight,
         icon: icon,

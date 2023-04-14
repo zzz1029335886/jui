@@ -163,11 +163,14 @@ class JUIPagingListWidget extends StatelessWidget {
     super.key,
     required this.pageModel,
     required this.child,
+    int? pageSize,
     this.refreshCompleted,
     this.scrollController,
     this.refreshOnStart = true,
     this.isSingleScrollView = true,
   }) : super() {
+    pageModel._customPagingSize = pageSize;
+
     pageModel.notifyRefresh = () {
       refreshCompleted?.call();
     };
@@ -234,7 +237,7 @@ abstract class JUIPageListRefreshModel<T> {
   int _currPageIndex = _DEFAULT_START_PAGE_INDEX - 1;
   int _lastPageIndex = _DEFAULT_START_PAGE_INDEX;
 
-  int get pagingSize => _DEFAULT_PAGE_SIZE;
+  int get pagingSize => _customPagingSize ?? _DEFAULT_PAGE_SIZE;
   bool _isLoading = false;
   final List<T> _dataList = [];
   JUIPageListRefreshModelPageMeta? pageMeta;
@@ -242,6 +245,7 @@ abstract class JUIPageListRefreshModel<T> {
   List<T> get dataList => _dataList;
 
   Future<List<T>> load(int pageIndex, int pageSize);
+  int? _customPagingSize;
 
   void refreshAnimationComplete() {}
   void loadAnimationComplete() {}
