@@ -4,6 +4,7 @@ import 'package:easy_refresh/easy_refresh.dart' as er;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:get/get.dart';
 
 typedef JUIRefreshIndicatorResult = er.IndicatorResult;
 typedef JUIEasyRefreshController = er.EasyRefreshController;
@@ -182,11 +183,11 @@ class JUIPagingListWidget extends StatelessWidget {
       scrollController: scrollController,
       onRefresh: () {
         var future = pageModel.onRefreshDown(callConRefresh: false);
-        return complete(future);
+        return complete(future, true);
       },
       onLoad: () {
         var future = pageModel.onLoadUp(callConRefresh: false);
-        return complete(future);
+        return complete(future, false);
       },
       refreshOnStart: refreshOnStart,
       createdController: (JUIEasyRefreshController controller) {
@@ -207,16 +208,18 @@ class JUIPagingListWidget extends StatelessWidget {
     );
   }
 
-  Future<JUIRefreshIndicatorResult> complete(Future<List> future) {
+  Future<JUIRefreshIndicatorResult> complete(
+      Future<List> future, bool isRefresh) {
     Completer<JUIRefreshIndicatorResult> completer = Completer();
     future.then((value) {
       if (value.length < pageModel.pagingSize) {
+        completer.complete(JUIRefreshIndicatorResult.success);
         pageModel._refreshController
             .finishLoad(JUIRefreshIndicatorResult.noMore);
       } else {
+        completer.complete(JUIRefreshIndicatorResult.success);
         pageModel._refreshController.resetFooter();
       }
-      completer.complete(JUIRefreshIndicatorResult.success);
     }).catchError((onError) {
       completer.complete(JUIRefreshIndicatorResult.fail);
     });
@@ -239,10 +242,14 @@ abstract class JUIPageListRefreshModel<T> {
 
   int get pagingSize => _customPagingSize ?? _DEFAULT_PAGE_SIZE;
   bool _isLoading = false;
-  final List<T> _dataList = [];
   JUIPageListRefreshModelPageMeta? pageMeta;
 
-  List<T> get dataList => _dataList;
+  final _dataList = RxList<T>();
+  List<T> get dataList => _dataList.value;
+  set dataList(List<T> value) => _dataList.value = value;
+
+  // final List<T> _dataList = [];
+  // List<T> get dataList => _dataList;
 
   Future<List<T>> load(int pageIndex, int pageSize);
   int? _customPagingSize;
@@ -253,6 +260,9 @@ abstract class JUIPageListRefreshModel<T> {
   VoidCallback? notifyRefresh;
   void refreshWithOutAnimate() async {
     try {
+      if (dataList.isNotEmpty) {
+        return;
+      }
       final value = await _loadPage(isRefresh: true);
 
       if (value.length < pagingSize) {
@@ -261,13 +271,14 @@ abstract class JUIPageListRefreshModel<T> {
         if (refreshController.footerState?.result ==
             JUIRefreshIndicatorResult.noMore) {
           refreshController.resetFooter();
-        } else {
-          refreshController.finishRefresh(JUIRefreshIndicatorResult.success);
         }
       }
+      refreshController.finishRefresh(JUIRefreshIndicatorResult.success);
     } catch (onError) {
       refreshController.finishRefresh(JUIRefreshIndicatorResult.fail);
     }
+
+    notifyRefresh?.call();
   }
 
   Future<List> onLoadUp(

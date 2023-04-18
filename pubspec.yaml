@@ -29,6 +29,7 @@ dependencies:
   flutter_easyloading: ^3.0.5
   # 自定义键盘操作按钮
   # keyboard_actions: ^4.2.0
+  get: ^4.6.5
   
 dev_dependencies:
   flutter_test:
