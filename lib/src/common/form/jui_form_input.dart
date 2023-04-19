@@ -115,6 +115,7 @@ class _JUIFormInputState extends JUIFormBaseState<JUIFormInput> {
           showMaxLength: showMaxLength ?? false,
           enabled: isEdit ?? true,
           isShowCleanButton: isShowCleanButton ?? false,
+          inputCallBack: widget.valueChanged,
           inputCompletionCallBack: (value, isSubmitted) {
             widget.valueChanged?.call(value);
           },
