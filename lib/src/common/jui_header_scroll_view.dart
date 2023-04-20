@@ -88,7 +88,7 @@ class _JUIHeaderScrollViewState extends State<JUIHeaderScrollView> {
                 ),
                 pinned: widget.pinned,
                 floating: false),
-          if (isSliver) widget,
+          if (isSliver) widget0,
           if (!isSliver)
             SliverToBoxAdapter(
               child: widget0,
