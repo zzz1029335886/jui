@@ -25,6 +25,7 @@ class JUIButton extends StatelessWidget {
   final EdgeInsets padding;
   final String? badgeValue;
   final double badgeHeight;
+  final int? maxLines;
 
   const JUIButton(
       {this.onPressed,
@@ -39,6 +40,7 @@ class JUIButton extends StatelessWidget {
       this.color = const Color.fromRGBO(49, 58, 67, 1),
       this.tintColor,
       this.title,
+      this.maxLines,
       this.titleColor,
       this.titleAlign,
       this.middlePadding = 8,
@@ -67,6 +69,7 @@ class JUIButton extends StatelessWidget {
         Text(
           title!,
           textAlign: titleAlign,
+          maxLines: maxLines,
           style: TextStyle(
               color: titleColor ?? tintColor ?? color,
               fontSize: fontSize,
@@ -188,6 +191,7 @@ class JUIButton extends StatelessWidget {
     double? radius = 7,
     double? height = 44,
     String? title,
+    int? maxLines,
     bool isEnabled = true,
   }) {
     return JUIButton.custom(
@@ -197,7 +201,8 @@ class JUIButton extends StatelessWidget {
         titleColor: const Color.fromRGBO(129, 216, 208, 1),
         height: height,
         onPressed: onPressed,
-        title: title);
+        title: title,
+        maxLines: maxLines);
   }
 
   static Widget themeBackground(
@@ -207,6 +212,7 @@ class JUIButton extends StatelessWidget {
       EdgeInsets? margin,
       bool isEnabled = true,
       String? title,
+      int? maxLines,
       double? radius = 7,
       double? fontSize = 16,
       double? height = 44,
@@ -223,6 +229,7 @@ class JUIButton extends StatelessWidget {
         radius: radius,
         backgroundColor: backgroundColor,
         isShowOnAppBar: isShowOnAppBar,
+        maxLines: maxLines,
         title: title);
   }
 
@@ -282,6 +289,7 @@ class JUIButton extends StatelessWidget {
       Color? color,
       VoidCallback? onPressed,
       String? title,
+      int? maxLines,
       IconData? icon,
       double? iconSize,
       Widget? iconWidget,
@@ -322,6 +330,7 @@ class JUIButton extends StatelessWidget {
               : null),
       child: JUIButton(
         title: title,
+        maxLines: maxLines,
         color: titleColor ?? color,
         middlePadding: middlePadding,
         badgeValue: badgeValue,
