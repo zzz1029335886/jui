@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:easy_refresh/easy_refresh.dart' as er;
+import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -40,8 +41,7 @@ class JUIRefresh extends StatefulWidget {
 
 class _JUIRefreshState extends State<JUIRefresh> {
   late JUIEasyRefreshController refreshController;
-  late final JUIEasyRefreshController _refreshController =
-      JUIEasyRefreshController(
+  late final JUIEasyRefreshController _refreshController = JUIEasyRefreshController(
     controlFinishRefresh: true,
     controlFinishLoad: true,
   );
@@ -82,8 +82,8 @@ class _JUIRefreshState extends State<JUIRefresh> {
     // );
 
     return er.EasyRefresh(
-      header: header(),
-      footer: footer(),
+      // header: header(),
+      // footer: footer(),
       // header: const er.CupertinoHeader(
       //     position: er.IndicatorPosition.locator,
       //     safeArea: false,
@@ -93,19 +93,36 @@ class _JUIRefreshState extends State<JUIRefresh> {
       //   position: er.IndicatorPosition.locator,
       // ),
       // scrollController: widget.scrollController,
+
+      header: const MaterialHeader(
+        safeArea: false,
+      ),
+      // footer: const MaterialFooter(
+      //   position: IndicatorPosition.locator,
+      // ),
+      footer: const ClassicFooter(
+        triggerOffset: 100,
+        position: IndicatorPosition.locator,
+        dragText: '下拉刷新',
+        armedText: '释放刷新',
+        readyText: '加载中...',
+        processingText: '加载中...',
+        processedText: '加载完成',
+        noMoreText: '没有更多',
+        failedText: '加载失败',
+        messageText: '最后更新于 %T',
+      ),
       onRefresh: widget.onRefresh == null
           ? null
           : () async {
-              final res = await widget.onRefresh?.call() ??
-                  JUIRefreshIndicatorResult.success;
+              final res = await widget.onRefresh?.call() ?? JUIRefreshIndicatorResult.success;
               refreshController.finishRefresh(res);
               widget.refreshAnimationComplete?.call();
             },
       onLoad: widget.onLoad == null
           ? null
           : () async {
-              final res = await widget.onLoad?.call() ??
-                  JUIRefreshIndicatorResult.success;
+              final res = await widget.onLoad?.call() ?? JUIRefreshIndicatorResult.success;
               refreshController.finishLoad(res);
               widget.loadAnimationComplete?.call();
             },
@@ -130,8 +147,7 @@ class _JUIRefreshState extends State<JUIRefresh> {
       // failedIcon: Container(),
       // iconDimension: 0,
       // spacing: 0,
-      textStyle:
-          TextStyle(fontSize: 12, color: Color.fromRGBO(147, 153, 159, 1)),
+      textStyle: TextStyle(fontSize: 12, color: Color.fromRGBO(147, 153, 159, 1)),
       showMessage: false, // 隐藏更新时间
     );
   }
@@ -146,8 +162,7 @@ class _JUIRefreshState extends State<JUIRefresh> {
       noMoreText: '没有更多',
       failedText: '加载失败',
       messageText: '最后更新于 %T',
-      textStyle:
-          TextStyle(fontSize: 12, color: Color.fromRGBO(147, 153, 159, 1)),
+      textStyle: TextStyle(fontSize: 12, color: Color.fromRGBO(147, 153, 159, 1)),
     );
   }
 }
@@ -208,14 +223,12 @@ class JUIPagingListWidget extends StatelessWidget {
     );
   }
 
-  Future<JUIRefreshIndicatorResult> complete(
-      Future<List> future, bool isRefresh) {
+  Future<JUIRefreshIndicatorResult> complete(Future<List> future, bool isRefresh) {
     Completer<JUIRefreshIndicatorResult> completer = Completer();
     future.then((value) {
       if (value.length < pageModel.pagingSize) {
         completer.complete(JUIRefreshIndicatorResult.success);
-        pageModel._refreshController
-            .finishLoad(JUIRefreshIndicatorResult.noMore);
+        pageModel._refreshController.finishLoad(JUIRefreshIndicatorResult.noMore);
       } else {
         completer.complete(JUIRefreshIndicatorResult.success);
         pageModel._refreshController.resetFooter();
@@ -232,8 +245,10 @@ abstract class JUIPageListRefreshModel<T> {
   late JUIEasyRefreshController _refreshController;
 
   JUIEasyRefreshController get refreshController => _refreshController;
+
   // ignore: constant_identifier_names
   static const int _DEFAULT_START_PAGE_INDEX = 1;
+
   // ignore: constant_identifier_names
   static const int _DEFAULT_PAGE_SIZE = 20;
 
@@ -245,19 +260,24 @@ abstract class JUIPageListRefreshModel<T> {
   JUIPageListRefreshModelPageMeta? pageMeta;
 
   final _dataList = RxList<T>();
+
   List<T> get dataList => _dataList.value;
+
   set dataList(List<T> value) => _dataList.value = value;
 
   // final List<T> _dataList = [];
   // List<T> get dataList => _dataList;
 
   Future<List<T>> load(int pageIndex, int pageSize);
+
   int? _customPagingSize;
 
   void refreshAnimationComplete() {}
+
   void loadAnimationComplete() {}
 
   VoidCallback? notifyRefresh;
+
   void refreshWithOutAnimate() async {
     try {
       if (dataList.isNotEmpty) {
@@ -268,8 +288,7 @@ abstract class JUIPageListRefreshModel<T> {
       if (value.length < pagingSize) {
         refreshController.finishLoad(JUIRefreshIndicatorResult.noMore);
       } else {
-        if (refreshController.footerState?.result ==
-            JUIRefreshIndicatorResult.noMore) {
+        if (refreshController.footerState?.result == JUIRefreshIndicatorResult.noMore) {
           refreshController.resetFooter();
         }
       }
@@ -281,8 +300,7 @@ abstract class JUIPageListRefreshModel<T> {
     notifyRefresh?.call();
   }
 
-  Future<List> onLoadUp(
-      {bool callConRefresh = true, ScrollController? scrollController}) async {
+  Future<List> onLoadUp({bool callConRefresh = true, ScrollController? scrollController}) async {
     if (callConRefresh) {
       refreshController.callLoad(scrollController: scrollController);
       return [];
@@ -290,8 +308,7 @@ abstract class JUIPageListRefreshModel<T> {
     return _loadPage(isRefresh: false);
   }
 
-  Future<List<T>> onRefreshDown(
-      {bool callConRefresh = true, ScrollController? scrollController}) {
+  Future<List<T>> onRefreshDown({bool callConRefresh = true, ScrollController? scrollController}) {
     if (callConRefresh) {
       refreshController.callRefresh(scrollController: scrollController);
       return Future.sync(() => []);
@@ -323,11 +340,8 @@ abstract class JUIPageListRefreshModel<T> {
     }
 
     _isLoading = true;
-    _currPageIndex = isRefresh
-        ? _DEFAULT_START_PAGE_INDEX
-        : _handlePageIndex(_currPageIndex, pagingSize);
-    Future<List<T>> future =
-        load(_currPageIndex, _handlePage(_currPageIndex, pagingSize));
+    _currPageIndex = isRefresh ? _DEFAULT_START_PAGE_INDEX : _handlePageIndex(_currPageIndex, pagingSize);
+    Future<List<T>> future = load(_currPageIndex, _handlePage(_currPageIndex, pagingSize));
 
     loadingFuture = future;
 
@@ -352,8 +366,7 @@ class JUIPageListRefreshModelPageMeta {
   int? total;
   String? url;
 
-  JUIPageListRefreshModelPageMeta(
-      {this.currentPage, this.lastPage, this.total, this.url});
+  JUIPageListRefreshModelPageMeta({this.currentPage, this.lastPage, this.total, this.url});
 
   factory JUIPageListRefreshModelPageMeta.fromJson(Map<String, dynamic> json) {
     var m = JUIPageListRefreshModelPageMeta();
