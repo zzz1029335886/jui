@@ -104,13 +104,11 @@ abstract class JUIFormBaseState<T extends JUIFormBase> extends State<T> {
     var config = getConfig();
     var style = getStyle();
 
-    EdgeInsets padding = style.padding;
-    EdgeInsets margin = style.margin;
-    double? titleWidth = style.titleWidth;
-    TextStyle titleStyle = style.titleStyle;
-
-    var width =
-        screenWidth - padding.left - padding.right - margin.left - margin.right;
+    var width = screenWidth -
+        stylePadding.left -
+        stylePadding.right -
+        styleMargin.left -
+        styleMargin.right;
 
     if (!isTopTitle) {
       double realTitleWidth = 0;
@@ -132,7 +130,7 @@ abstract class JUIFormBaseState<T extends JUIFormBase> extends State<T> {
 /**
  * 计算文本内容宽度
  */
-  double _textWidth(String title, TextStyle textStyle) {
+  double _textWidth(String title, TextStyle? textStyle) {
     var tp = TextPainter(
         textDirection: TextDirection.ltr,
         text: TextSpan(text: title, style: textStyle))
@@ -154,8 +152,8 @@ abstract class JUIFormBaseState<T extends JUIFormBase> extends State<T> {
     var config = getConfig();
     var style = getStyle();
     var bgColor = style.bgColor;
-    var padding = style.padding;
-    var margin = style.margin;
+    var padding = stylePadding;
+    var margin = styleMargin;
     var height = style.height;
     var isHiddenTopLine = style.isHiddenTopLine;
     var isHiddenBottomLine = style.isHiddenBottomLine;
@@ -210,8 +208,8 @@ abstract class JUIFormBaseState<T extends JUIFormBase> extends State<T> {
 
     Widget tip = config!.tipWidget ??
         config.getTipWidget(
-          paddingLeft: style.padding.left,
-          paddingRight: style.padding.right,
+          paddingLeft: stylePadding.left,
+          paddingRight: stylePadding.right,
         );
 
     Widget widget = cellContainer(child: contentWidget);
@@ -227,7 +225,6 @@ abstract class JUIFormBaseState<T extends JUIFormBase> extends State<T> {
     var config = getConfig();
     var style = getStyle();
     var height = style.height;
-    var titleHeight = style.titleHeight;
 
     Widget res;
     if (isRow) {
@@ -259,13 +256,17 @@ abstract class JUIFormBaseState<T extends JUIFormBase> extends State<T> {
     return res;
   }
 
+  JUIFormStyle? get deepStyle => formBuilderState?.widget.style?.deepCopy();
+  TextStyle? get titleStyle => getStyle().titleStyle ?? deepStyle?.titleStyle;
+  double? get titleWidth => getStyle().titleWidth ?? deepStyle?.titleWidth;
+  double? get titleHeight => getStyle().titleHeight ?? deepStyle?.titleHeight;
+  EdgeInsets get stylePadding =>
+      getStyle().padding ?? deepStyle?.padding ?? EdgeInsets.zero;
+  EdgeInsets get styleMargin =>
+      getStyle().margin ?? deepStyle?.margin ?? EdgeInsets.zero;
+
   Widget titleWidget() {
     var config = getConfig();
-    var style = getStyle();
-
-    double? titleWidth = style.titleWidth;
-    double? titleHeight = style.titleHeight;
-    var titleStyle = style.titleStyle;
 
     var title = Container(
       alignment: Alignment.center,

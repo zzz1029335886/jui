@@ -4,17 +4,17 @@ import 'package:flutter/services.dart';
 class JUIFormStyle {
   late double? titleWidth; // 标题宽度，默认100
   late double? titleHeight; // 标题宽度，默认空，居中
-  late TextStyle titleStyle; // 标题字体样式，默认颜色black87
+  late TextStyle? titleStyle; // 标题字体样式，默认颜色black87
   late Color bgColor; // 背景颜色，默认白色
   late double? height;
-  late EdgeInsets padding;
-  late EdgeInsets margin;
+  late EdgeInsets? padding;
+  late EdgeInsets? margin;
   late bool isHiddenBottomLine; // 隐藏底部横线
   late bool isHiddenTopLine; // 隐藏底部横线
   late double linePadding;
   late bool isTopTitle;
   JUIFormStyle(
-      {this.titleStyle = const TextStyle(color: Colors.black87),
+      {this.titleStyle,
       this.bgColor = Colors.white,
       this.isTopTitle = false,
       this.height,
@@ -23,8 +23,8 @@ class JUIFormStyle {
       this.isHiddenTopLine = true,
       this.linePadding = 16,
       this.titleWidth,
-      this.margin = EdgeInsets.zero,
-      this.padding = EdgeInsets.zero});
+      this.margin,
+      this.padding});
 
   JUIFormStyle deepCopy() {
     return JUIFormStyle(

@@ -1,24 +1,8 @@
 import 'package:flutter/material.dart';
 
 import 'form_builder_field.dart';
+import 'form_builder_field_option.dart';
 import 'grouped_radio.dart';
-
-class FormBuilderFieldOption<T> extends StatelessWidget {
-  final Widget? child;
-  final T value;
-
-  /// Creates an option for fields with selection options
-  const FormBuilderFieldOption({
-    Key? key,
-    required this.value,
-    this.child,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return child ?? Text(value.toString());
-  }
-}
 
 /// Field to select one value from a list of Radio Widgets
 class FormBuilderRadioGroup<T> extends FormBuilderField<T> {
@@ -43,15 +27,15 @@ class FormBuilderRadioGroup<T> extends FormBuilderField<T> {
 
   /// Creates field to select one value from a list of Radio Widgets
   FormBuilderRadioGroup({
-    AutovalidateMode autovalidateMode = AutovalidateMode.disabled,
-    bool enabled = true,
-    FocusNode? focusNode,
-    FormFieldSetter<T>? onSaved,
-    // FormFieldValidator<T>? validator,
-    InputDecoration decoration = const InputDecoration(),
-    Key? key,
+    super.autovalidateMode = AutovalidateMode.disabled,
+    super.enabled,
+    super.focusNode,
+    super.onSaved,
+    super.validator,
+    super.decoration,
+    super.key,
     required this.options,
-    T? initialValue,
+    super.initialValue,
     this.shouldRadioRequestFocus = false,
     this.activeColor,
     this.controlAffinity = ControlAffinity.leading,
@@ -69,54 +53,44 @@ class FormBuilderRadioGroup<T> extends FormBuilderField<T> {
     this.wrapSpacing = 0.0,
     this.wrapTextDirection,
     this.wrapVerticalDirection = VerticalDirection.down,
-    ValueChanged<T?>? onChanged,
-    ValueTransformer<T?>? valueTransformer,
-    VoidCallback? onReset,
+    super.onChanged,
+    super.valueTransformer,
+    super.onReset,
   }) : super(
-          key: key,
-          initialValue: initialValue,
-          name: 'name',
-          validator: (value) {
-            return null;
-          },
-          valueTransformer: valueTransformer,
-          onChanged: onChanged,
-          autovalidateMode: autovalidateMode,
-          onSaved: onSaved,
-          enabled: enabled,
-          onReset: onReset,
-          focusNode: focusNode,
-          decoration: decoration,
+          name: '',
           builder: (FormFieldState<T?> field) {
             final state = field as _FormBuilderRadioGroupState<T>;
 
-            return GroupedRadio<T>(
-              activeColor: activeColor,
-              controlAffinity: controlAffinity,
-              disabled: state.enabled
-                  ? disabled
-                  : options.map((option) => option.value).toList(),
-              focusColor: focusColor,
-              hoverColor: hoverColor,
-              materialTapTargetSize: materialTapTargetSize,
-              onChanged: (value) {
-                if (shouldRadioRequestFocus) {
-                  state.requestFocus();
-                }
-                state.didChange(value);
-              },
-              options: options,
-              orientation: orientation,
-              separator: separator,
-              value: state.value,
-              wrapAlignment: wrapAlignment,
-              wrapCrossAxisAlignment: wrapCrossAxisAlignment,
-              wrapDirection: wrapDirection,
-              wrapRunAlignment: wrapRunAlignment,
-              wrapRunSpacing: wrapRunSpacing,
-              wrapSpacing: wrapSpacing,
-              wrapTextDirection: wrapTextDirection,
-              wrapVerticalDirection: wrapVerticalDirection,
+            return InputDecorator(
+              decoration: state.decoration,
+              child: GroupedRadio<T>(
+                activeColor: activeColor,
+                controlAffinity: controlAffinity,
+                disabled: state.enabled
+                    ? disabled
+                    : options.map((option) => option.value).toList(),
+                focusColor: focusColor,
+                hoverColor: hoverColor,
+                materialTapTargetSize: materialTapTargetSize,
+                onChanged: (value) {
+                  if (shouldRadioRequestFocus) {
+                    state.requestFocus();
+                  }
+                  state.didChange(value);
+                },
+                options: options,
+                orientation: orientation,
+                separator: separator,
+                value: state.value,
+                wrapAlignment: wrapAlignment,
+                wrapCrossAxisAlignment: wrapCrossAxisAlignment,
+                wrapDirection: wrapDirection,
+                wrapRunAlignment: wrapRunAlignment,
+                wrapRunSpacing: wrapRunSpacing,
+                wrapSpacing: wrapSpacing,
+                wrapTextDirection: wrapTextDirection,
+                wrapVerticalDirection: wrapVerticalDirection,
+              ),
             );
           },
         );

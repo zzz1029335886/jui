@@ -3,28 +3,36 @@ import 'package:flutter/material.dart';
 import 'form_builder_field.dart';
 import 'form_builder_field_option.dart';
 
-class GroupedRadio<T> extends StatefulWidget {
+class GroupedCheckbox<T> extends StatelessWidget {
   /// A list of string that describes each checkbox. Each item must be distinct.
   final List<FormBuilderFieldOption<T>> options;
 
   /// A list of string which specifies automatically checked checkboxes.
   /// Every element must match an item from itemList.
-  final T? value;
+  final List<T>? value;
 
-  /// Specifies which radio option values should be disabled.
-  /// If this is null, then no radio options will be disabled.
+  /// Specifies which checkbox option values should be disabled.
+  /// If this is null, then no checkbox options will be disabled.
   final List<T>? disabled;
 
   /// Specifies the orientation of the elements in itemList.
   final OptionsOrientation orientation;
 
   /// Called when the value of the checkbox group changes.
-  final ValueChanged<T?> onChanged;
+  final ValueChanged<List<T>> onChanged;
 
   /// The color to use when this checkbox is checked.
   ///
-  /// Defaults to [ThemeData.toggleableActiveColor].
+  /// Defaults to [ColorScheme.secondary].
   final Color? activeColor;
+
+  /// The color to use for the check icon when this checkbox is checked.
+  ///
+  /// Defaults to Color(0xFFFFFFFF)
+  final Color? checkColor;
+
+  /// If true the checkbox's value can be true, false, or null.
+  final bool tristate;
 
   /// Configures the minimum size of the tap target.
   final MaterialTapTargetSize? materialTapTargetSize;
@@ -173,7 +181,7 @@ class GroupedRadio<T> extends StatefulWidget {
 
   final ControlAffinity controlAffinity;
 
-  const GroupedRadio({
+  const GroupedCheckbox({
     super.key,
     required this.options,
     required this.orientation,
@@ -181,9 +189,11 @@ class GroupedRadio<T> extends StatefulWidget {
     this.value,
     this.disabled,
     this.activeColor,
+    this.checkColor,
     this.focusColor,
     this.hoverColor,
     this.materialTapTargetSize,
+    this.tristate = false,
     this.wrapDirection = Axis.horizontal,
     this.wrapAlignment = WrapAlignment.start,
     this.wrapSpacing = 0.0,
@@ -197,101 +207,94 @@ class GroupedRadio<T> extends StatefulWidget {
   });
 
   @override
-  State<GroupedRadio<T?>> createState() => _GroupedRadioState<T>();
-}
-
-class _GroupedRadioState<T> extends State<GroupedRadio<T?>> {
-  @override
   Widget build(BuildContext context) {
     final widgetList = <Widget>[];
-    for (int i = 0; i < widget.options.length; i++) {
-      widgetList.add(_buildRadioButton(i));
+    for (var i = 0; i < options.length; i++) {
+      widgetList.add(item(i));
     }
-
-    switch (widget.orientation) {
-      case OptionsOrientation.vertical:
-        return SingleChildScrollView(
-          scrollDirection: Axis.vertical,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: widgetList,
-          ),
-        );
-      case OptionsOrientation.horizontal:
-        return SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(children: widgetList),
-        );
-      case OptionsOrientation.wrap:
-      default:
-        return SingleChildScrollView(
-          // physics: const NeverScrollableScrollPhysics(),
-          child: Wrap(
-            spacing: widget.wrapSpacing,
-            runSpacing: widget.wrapRunSpacing,
-            textDirection: widget.wrapTextDirection,
-            crossAxisAlignment: widget.wrapCrossAxisAlignment,
-            verticalDirection: widget.wrapVerticalDirection,
-            alignment: widget.wrapAlignment,
-            direction: Axis.horizontal,
-            runAlignment: widget.wrapRunAlignment,
-            children: widgetList,
-          ),
-        );
+    Widget finalWidget;
+    if (orientation == OptionsOrientation.vertical) {
+      finalWidget = SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: widgetList,
+        ),
+      );
+    } else if (orientation == OptionsOrientation.horizontal) {
+      finalWidget = SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          children: widgetList.map((item) {
+            return Column(children: <Widget>[item]);
+          }).toList(),
+        ),
+      );
+    } else {
+      finalWidget = SingleChildScrollView(
+        child: Wrap(
+          spacing: wrapSpacing,
+          runSpacing: wrapRunSpacing,
+          textDirection: wrapTextDirection,
+          crossAxisAlignment: wrapCrossAxisAlignment,
+          verticalDirection: wrapVerticalDirection,
+          alignment: wrapAlignment,
+          direction: Axis.horizontal,
+          runAlignment: wrapRunAlignment,
+          children: widgetList,
+        ),
+      );
     }
+    return finalWidget;
   }
 
-  Widget _buildRadioButton(int index) {
-    final option = widget.options[index];
+  Widget item(int index) {
+    final option = options[index];
     final optionValue = option.value;
-    final isOptionDisabled = true == widget.disabled?.contains(optionValue);
-    final control = Radio<T?>(
-      groupValue: widget.value,
-      activeColor: widget.activeColor,
-      focusColor: widget.focusColor,
-      hoverColor: widget.hoverColor,
-      materialTapTargetSize: widget.materialTapTargetSize,
-      value: optionValue,
+    final isOptionDisabled = true == disabled?.contains(optionValue);
+    final control = Checkbox(
+      activeColor: activeColor,
+      checkColor: checkColor,
+      focusColor: focusColor,
+      hoverColor: hoverColor,
+      materialTapTargetSize: materialTapTargetSize,
+      value: tristate
+          ? value?.contains(optionValue)
+          : true == value?.contains(optionValue),
+      tristate: tristate,
       onChanged: isOptionDisabled
           ? null
-          : (T? selected) {
-              widget.onChanged(selected);
+          : (selected) {
+              List<T> selectedListItems = value == null ? [] : List.of(value!);
+              selected!
+                  ? selectedListItems.add(optionValue)
+                  : selectedListItems.remove(optionValue);
+              onChanged(selectedListItems);
             },
     );
-
     final label = GestureDetector(
       onTap: isOptionDisabled
           ? null
           : () {
-              widget.onChanged(optionValue);
+              List<T> selectedListItems = value == null ? [] : List.of(value!);
+              selectedListItems.contains(optionValue)
+                  ? selectedListItems.remove(optionValue)
+                  : selectedListItems.add(optionValue);
+              onChanged(selectedListItems);
             },
       child: option,
     );
 
-    return Container(
-      child: Column(
+    return SizedBox(
+      // color: Colors.green,
+      height: 23,
+      child: Row(
         mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            height: 23,
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                if (widget.controlAffinity == ControlAffinity.leading) control,
-                Flexible(child: label),
-                if (widget.controlAffinity == ControlAffinity.trailing) control,
-                if (widget.orientation != OptionsOrientation.vertical &&
-                    widget.separator != null &&
-                    index != widget.options.length - 1)
-                  widget.separator!,
-              ],
-            ),
-          ),
-          if (widget.orientation == OptionsOrientation.vertical &&
-              widget.separator != null &&
-              index != widget.options.length - 1)
-            widget.separator!,
+        children: <Widget>[
+          if (controlAffinity == ControlAffinity.leading) control,
+          Flexible(flex: 1, child: label),
+          if (controlAffinity == ControlAffinity.trailing) control,
+          if (separator != null && index != options.length - 1) separator!,
         ],
       ),
     );

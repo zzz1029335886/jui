@@ -62,7 +62,7 @@ class FormBuilderField<T> extends FormField<T> {
     required this.name,
     this.valueTransformer,
     this.onChanged,
-    this.decoration = const InputDecoration(),
+    this.decoration = const InputDecoration(border: InputBorder.none),
     this.onReset,
     this.focusNode,
   }) : super(
