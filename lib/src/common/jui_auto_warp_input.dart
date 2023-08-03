@@ -18,7 +18,7 @@ class JUIAutoWarpInput extends StatelessWidget {
       this.placeHolder = '请输入',
       this.buttonChild,
       this.buttonWidth,
-      this.backgroundColor = const Color.fromRGBO(246, 248, 249, 1),
+      this.backgroundColor,
       this.contentBorderRadius = 5,
       this.contentMinHeight,
       this.maxLines = 5,
@@ -114,7 +114,7 @@ class JUIAutoWarpInput extends StatelessWidget {
                 child: buttonChild ??
                     const JUIText(
                       '发布',
-                      color: Color.fromRGBO(129, 216, 208, 1),
+                      // color: Color.fromRGBO(129, 216, 208, 1),
                       fontSize: 14,
                     ),
                 onPressed: () async {

@@ -9,7 +9,7 @@ class JUIText extends StatelessWidget {
   final TextAlign? textAlign;
 
   const JUIText(this.title,
-      {this.color = const Color.fromRGBO(49, 58, 67, 1),
+      {this.color,
       this.textAlign,
       this.maxLines = 99999,
       this.fontSize = 16,

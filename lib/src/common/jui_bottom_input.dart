@@ -46,7 +46,9 @@ class JUIBottomInput extends StatelessWidget {
             },
           )),
           Container(
-            color: Colors.white,
+            color: Theme.of(context).brightness == Brightness.dark
+                ? Colors.black
+                : Colors.white,
             child: JUIAutoWarpInput(
                 contentMinHeight: height ?? 34,
                 maxLines: maxLine,

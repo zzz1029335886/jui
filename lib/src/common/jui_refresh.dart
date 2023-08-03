@@ -4,7 +4,6 @@ import 'package:easy_refresh/easy_refresh.dart' as er;
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 
 typedef JUIRefreshIndicatorResult = er.IndicatorResult;
@@ -41,7 +40,8 @@ class JUIRefresh extends StatefulWidget {
 
 class _JUIRefreshState extends State<JUIRefresh> {
   late JUIEasyRefreshController refreshController;
-  late final JUIEasyRefreshController _refreshController = JUIEasyRefreshController(
+  late final JUIEasyRefreshController _refreshController =
+      JUIEasyRefreshController(
     controlFinishRefresh: true,
     controlFinishLoad: true,
   );
@@ -82,8 +82,8 @@ class _JUIRefreshState extends State<JUIRefresh> {
     // );
 
     return er.EasyRefresh(
-      // header: header(),
-      // footer: footer(),
+      header: header(),
+      footer: footer(),
       // header: const er.CupertinoHeader(
       //     position: er.IndicatorPosition.locator,
       //     safeArea: false,
@@ -94,35 +94,42 @@ class _JUIRefreshState extends State<JUIRefresh> {
       // ),
       // scrollController: widget.scrollController,
 
-      header: const MaterialHeader(
-        safeArea: false,
-      ),
+      // header: const MaterialHeader(
+      //   safeArea: false,
+      // ),
       // footer: const MaterialFooter(
       //   position: IndicatorPosition.locator,
       // ),
-      footer: const ClassicFooter(
-        triggerOffset: 100,
-        position: IndicatorPosition.locator,
-        dragText: '下拉刷新',
-        armedText: '释放刷新',
-        readyText: '加载中...',
-        processingText: '加载中...',
-        processedText: '加载完成',
-        noMoreText: '没有更多',
-        failedText: '加载失败',
-        messageText: '最后更新于 %T',
-      ),
+      // footer: const ClassicFooter(
+      //   triggerOffset: 100,
+      //   position: IndicatorPosition.locator,
+      //   dragText: '下拉刷新',
+      //   armedText: '释放刷新',
+      //   readyText: '加载中...',
+      //   processingText: '加载中...',
+      //   processedText: '加载完成',
+      //   noMoreText: '没有更多',
+      //   failedText: '加载失败',
+      //   messageText: '最后更新于 %T',
+      // ),
+      resetAfterRefresh: false,
       onRefresh: widget.onRefresh == null
           ? null
           : () async {
-              final res = await widget.onRefresh?.call() ?? JUIRefreshIndicatorResult.success;
+              final res = await widget.onRefresh?.call() ??
+                  JUIRefreshIndicatorResult.success;
+              // if (refreshController.footerState?.result ==
+              //     JUIRefreshIndicatorResult.noMore) {
+              //   refreshController.finishLoad(IndicatorResult.noMore, true);
+              // }
               refreshController.finishRefresh(res);
               widget.refreshAnimationComplete?.call();
             },
       onLoad: widget.onLoad == null
           ? null
           : () async {
-              final res = await widget.onLoad?.call() ?? JUIRefreshIndicatorResult.success;
+              final res = await widget.onLoad?.call() ??
+                  JUIRefreshIndicatorResult.success;
               refreshController.finishLoad(res);
               widget.loadAnimationComplete?.call();
             },
@@ -147,7 +154,8 @@ class _JUIRefreshState extends State<JUIRefresh> {
       // failedIcon: Container(),
       // iconDimension: 0,
       // spacing: 0,
-      textStyle: TextStyle(fontSize: 12, color: Color.fromRGBO(147, 153, 159, 1)),
+      textStyle:
+          TextStyle(fontSize: 12, color: Color.fromRGBO(147, 153, 159, 1)),
       showMessage: false, // 隐藏更新时间
     );
   }
@@ -162,7 +170,8 @@ class _JUIRefreshState extends State<JUIRefresh> {
       noMoreText: '没有更多',
       failedText: '加载失败',
       messageText: '最后更新于 %T',
-      textStyle: TextStyle(fontSize: 12, color: Color.fromRGBO(147, 153, 159, 1)),
+      textStyle:
+          TextStyle(fontSize: 12, color: Color.fromRGBO(147, 153, 159, 1)),
     );
   }
 }
@@ -194,44 +203,59 @@ class JUIPagingListWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return JUIRefresh(
-      scrollController: scrollController,
-      onRefresh: () {
-        var future = pageModel.onRefreshDown(callConRefresh: false);
-        return complete(future, true);
-      },
-      onLoad: () {
-        var future = pageModel.onLoadUp(callConRefresh: false);
-        return complete(future, false);
-      },
-      refreshOnStart: refreshOnStart,
-      createdController: (JUIEasyRefreshController controller) {
-        pageModel._refreshController = controller;
-        if (!isSingleScrollView) {
-          pageModel.refreshWithOutAnimate();
-        }
-      },
-      refreshAnimationComplete: () {
-        refreshCompleted?.call();
-        pageModel.refreshAnimationComplete();
-      },
-      loadAnimationComplete: () {
-        refreshCompleted?.call();
-        pageModel.loadAnimationComplete();
-      },
-      child: child,
+    return FractionallySizedBox(
+      child: JUIRefresh(
+        scrollController: scrollController,
+        onRefresh: () {
+          var future = pageModel.onRefreshDown(callConRefresh: false);
+          return _complete(future, true);
+        },
+        onLoad: () {
+          var future = pageModel.onLoadUp(callConRefresh: false);
+          return _complete(future, false);
+        },
+        refreshOnStart: refreshOnStart,
+        createdController: (JUIEasyRefreshController controller) {
+          pageModel._refreshController = controller;
+          if (!isSingleScrollView) {
+            pageModel.refreshWithOutAnimate();
+          }
+        },
+        refreshAnimationComplete: () {
+          refreshCompleted?.call();
+          pageModel.refreshAnimationComplete();
+        },
+        loadAnimationComplete: () {
+          refreshCompleted?.call();
+          pageModel.loadAnimationComplete();
+        },
+        child: child,
+      ),
     );
   }
 
-  Future<JUIRefreshIndicatorResult> complete(Future<List> future, bool isRefresh) {
+  Future<JUIRefreshIndicatorResult> _complete(
+      Future<JUIPageListResultModel?> future, bool isRefresh) {
     Completer<JUIRefreshIndicatorResult> completer = Completer();
     future.then((value) {
-      if (value.length < pageModel.pagingSize) {
-        completer.complete(JUIRefreshIndicatorResult.success);
-        pageModel._refreshController.finishLoad(JUIRefreshIndicatorResult.noMore);
+      if (value != null) {
+        if (isRefresh) {
+          if (value.noMore) {
+            pageModel._refreshController
+                .finishLoad(JUIRefreshIndicatorResult.noMore);
+          } else {
+            pageModel._refreshController.resetFooter();
+          }
+          completer.complete(JUIRefreshIndicatorResult.success);
+        } else {
+          if (value.noMore) {
+            completer.complete(JUIRefreshIndicatorResult.noMore);
+          } else {
+            completer.complete(JUIRefreshIndicatorResult.success);
+          }
+        }
       } else {
-        completer.complete(JUIRefreshIndicatorResult.success);
-        pageModel._refreshController.resetFooter();
+        completer.complete(JUIRefreshIndicatorResult.none);
       }
     }).catchError((onError) {
       completer.complete(JUIRefreshIndicatorResult.fail);
@@ -239,6 +263,12 @@ class JUIPagingListWidget extends StatelessWidget {
 
     return completer.future;
   }
+}
+
+class JUIPageListResultModel<T> {
+  List<T> list;
+  bool noMore;
+  JUIPageListResultModel(this.list, this.noMore);
 }
 
 abstract class JUIPageListRefreshModel<T> {
@@ -250,25 +280,24 @@ abstract class JUIPageListRefreshModel<T> {
   static const int _DEFAULT_START_PAGE_INDEX = 1;
 
   // ignore: constant_identifier_names
-  static const int _DEFAULT_PAGE_SIZE = 20;
+  static const int _DEFAULT_PAGE_SIZE = 10;
 
   int _currPageIndex = _DEFAULT_START_PAGE_INDEX - 1;
   int _lastPageIndex = _DEFAULT_START_PAGE_INDEX;
 
   int get pagingSize => _customPagingSize ?? _DEFAULT_PAGE_SIZE;
   bool _isLoading = false;
-  JUIPageListRefreshModelPageMeta? pageMeta;
 
   final _dataList = RxList<T>();
 
-  List<T> get dataList => _dataList.value;
+  List<T> get dataList => _dataList;
 
   set dataList(List<T> value) => _dataList.value = value;
 
   // final List<T> _dataList = [];
   // List<T> get dataList => _dataList;
 
-  Future<List<T>> load(int pageIndex, int pageSize);
+  Future<JUIPageListResultModel<T>> load(int pageIndex, int pageSize);
 
   int? _customPagingSize;
 
@@ -284,13 +313,11 @@ abstract class JUIPageListRefreshModel<T> {
         return;
       }
       final value = await _loadPage(isRefresh: true);
-
-      if (value.length < pagingSize) {
+      if (value.noMore) {
         refreshController.finishLoad(JUIRefreshIndicatorResult.noMore);
       } else {
-        if (refreshController.footerState?.result == JUIRefreshIndicatorResult.noMore) {
-          refreshController.resetFooter();
-        }
+        // refreshController.footerState?.result == JUIRefreshIndicatorResult.noMore
+        refreshController.resetFooter();
       }
       refreshController.finishRefresh(JUIRefreshIndicatorResult.success);
     } catch (onError) {
@@ -300,18 +327,22 @@ abstract class JUIPageListRefreshModel<T> {
     notifyRefresh?.call();
   }
 
-  Future<List> onLoadUp({bool callConRefresh = true, ScrollController? scrollController}) async {
+  Future<JUIPageListResultModel<T>?> onLoadUp(
+      {bool callConRefresh = true, ScrollController? scrollController}) async {
     if (callConRefresh) {
-      refreshController.callLoad(scrollController: scrollController);
-      return [];
+      return refreshController
+          .callLoad(scrollController: scrollController)
+          .then((value) => null);
     }
     return _loadPage(isRefresh: false);
   }
 
-  Future<List<T>> onRefreshDown({bool callConRefresh = true, ScrollController? scrollController}) {
+  Future<JUIPageListResultModel<T>?> onRefreshDown(
+      {bool callConRefresh = true, ScrollController? scrollController}) {
     if (callConRefresh) {
-      refreshController.callRefresh(scrollController: scrollController);
-      return Future.sync(() => []);
+      return refreshController
+          .callRefresh(scrollController: scrollController)
+          .then((value) => null);
     }
     return _loadPage(isRefresh: true);
   }
@@ -332,22 +363,25 @@ abstract class JUIPageListRefreshModel<T> {
     return pageSize;
   }
 
-  Future<List<T>>? loadingFuture;
+  Future<JUIPageListResultModel<T>>? loadingFuture;
 
-  Future<List<T>> _loadPage({bool isRefresh = true}) async {
+  Future<JUIPageListResultModel<T>> _loadPage({bool isRefresh = true}) async {
     if (_isLoading && loadingFuture != null) {
       await loadingFuture;
     }
 
     _isLoading = true;
-    _currPageIndex = isRefresh ? _DEFAULT_START_PAGE_INDEX : _handlePageIndex(_currPageIndex, pagingSize);
-    Future<List<T>> future = load(_currPageIndex, _handlePage(_currPageIndex, pagingSize));
+    _currPageIndex = isRefresh
+        ? _DEFAULT_START_PAGE_INDEX
+        : _handlePageIndex(_currPageIndex, pagingSize);
+    Future<JUIPageListResultModel<T>> future =
+        load(_currPageIndex, _handlePage(_currPageIndex, pagingSize));
 
     loadingFuture = future;
 
     future.then((data) {
       if (isRefresh) dataList.clear();
-      dataList.addAll(data);
+      dataList.addAll(data.list);
 
       _onFinish(true);
     }).catchError((e) {
@@ -357,43 +391,5 @@ abstract class JUIPageListRefreshModel<T> {
       loadingFuture = null;
     });
     return future;
-  }
-}
-
-class JUIPageListRefreshModelPageMeta {
-  int? currentPage;
-  int? lastPage;
-  int? total;
-  String? url;
-
-  JUIPageListRefreshModelPageMeta({this.currentPage, this.lastPage, this.total, this.url});
-
-  factory JUIPageListRefreshModelPageMeta.fromJson(Map<String, dynamic> json) {
-    var m = JUIPageListRefreshModelPageMeta();
-    return m.fromJson(json) ?? m;
-  }
-
-  JUIPageListRefreshModelPageMeta? fromJson(Map<String, dynamic>? json) {
-    if (json == null) return null;
-    var data = JUIPageListRefreshModelPageMeta();
-    data.currentPage = json['current_page'];
-    data.lastPage = json['last_page'];
-    data.total = json['total'];
-    data.url = json['url'];
-    return data;
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['current_page'] = currentPage;
-    data['last_page'] = lastPage;
-    data['total'] = total;
-    data['url'] = url;
-    return data;
-  }
-
-  @override
-  String toString() {
-    return 'PageMeta{currentPage: $currentPage, lastPage: $lastPage, total: $total, url: $url}';
   }
 }

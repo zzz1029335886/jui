@@ -37,7 +37,7 @@ class JUIButton extends StatelessWidget {
       this.badgeValue,
       this.badgeHeight = 16,
       this.padding = EdgeInsets.zero,
-      this.color = const Color.fromRGBO(49, 58, 67, 1),
+      this.color,
       this.tintColor,
       this.title,
       this.maxLines,
