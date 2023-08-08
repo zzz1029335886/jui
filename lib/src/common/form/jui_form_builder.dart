@@ -5,7 +5,7 @@ class JUIFormStyle {
   late double? titleWidth; // 标题宽度，默认100
   late double? titleHeight; // 标题宽度，默认空，居中
   late TextStyle? titleStyle; // 标题字体样式，默认颜色black87
-  late Color bgColor; // 背景颜色，默认白色
+  late Color? bgColor; // 背景颜色，默认白色
   late double? height;
   late EdgeInsets? padding;
   late EdgeInsets? margin;
@@ -15,7 +15,7 @@ class JUIFormStyle {
   late bool isTopTitle;
   JUIFormStyle(
       {this.titleStyle,
-      this.bgColor = Colors.white,
+      this.bgColor,
       this.isTopTitle = false,
       this.height,
       this.isHiddenBottomLine = false,

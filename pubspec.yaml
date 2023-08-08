@@ -20,7 +20,7 @@ dependencies:
   # 底部弹出 日期选择器 单列多列  https://pub.flutter-io.cn/packages/flutter_picker
   flutter_picker: ^2.1.0
   # 流水布局
-  flutter_staggered_grid_view: ^0.6.2
+  flutter_staggered_grid_view: ^0.7.0
   # 底部弹出
   modal_bottom_sheet: ^3.0.0-pre
   # 图片选择

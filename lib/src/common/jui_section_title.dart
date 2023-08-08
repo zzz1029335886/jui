@@ -59,11 +59,9 @@ class JUISectionTitleContainer extends StatelessWidget {
                 const SizedBox(
                   width: 8,
                 ),
-                JUIText(
+                Text(
                   title,
-                  fontSize: 16,
-                  fontWeight: JUIFontWeightExtension.medium,
-                  color: Color.fromRGBO(28, 31, 33, 1),
+                  style: Theme.of(context).textTheme.titleMedium,
                 ),
               ],
             ),

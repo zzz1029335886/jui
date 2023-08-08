@@ -257,7 +257,9 @@ class _CFTextFieldState extends State<CFTextField> {
         var res = await widget.onEditingComplete?.call();
         if (res == false) {
         } else {
-          _focusNode.unfocus();
+          if (_isFocused) {
+            FocusManager.instance.primaryFocus?.unfocus();
+          }
         }
       },
       // 提交按钮点击

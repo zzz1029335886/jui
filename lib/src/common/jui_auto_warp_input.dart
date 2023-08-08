@@ -50,7 +50,7 @@ class JUIAutoWarpInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double buttonWidth = this.buttonWidth ?? 56;
-    double inputWidth = this.inputWidth ?? 375 - 16 - buttonWidth;
+    double inputWidth = this.inputWidth ?? (375 - 16 - buttonWidth);
 
     return Container(
         padding: const EdgeInsets.only(left: 16, top: 8, bottom: 8, right: 0),
@@ -79,7 +79,9 @@ class JUIAutoWarpInput extends StatelessWidget {
                   //点击发送调用
                   bool? res = await onEditingCompleteText(controller.text);
                   if (res != null && res == true) {
+                    controller.text = '';
                     FocusScope.of(context).unfocus();
+                    FocusManager.instance.primaryFocus?.unfocus();
                   }
                   return res;
                 },
@@ -114,14 +116,14 @@ class JUIAutoWarpInput extends StatelessWidget {
                 child: buttonChild ??
                     const JUIText(
                       '发布',
-                      // color: Color.fromRGBO(129, 216, 208, 1),
                       fontSize: 14,
                     ),
                 onPressed: () async {
                   bool? res = await onEditingCompleteText(controller.text);
                   if (res != null && res == true) {
-                    // ignore: use_build_context_synchronously
+                    controller.text = '';
                     FocusScope.of(context).unfocus();
+                    FocusManager.instance.primaryFocus?.unfocus();
                   }
                 },
               ),

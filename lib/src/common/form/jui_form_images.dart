@@ -10,6 +10,7 @@ class JUIFormImages extends JUIFormBase {
   final int maxCount;
   final double spacing;
   final double runSpacing;
+  final PictureSelectionController? controller;
 
   JUIFormImages({
     super.key,
@@ -19,6 +20,7 @@ class JUIFormImages extends JUIFormBase {
     this.columnCount = 3,
     this.isUpload = false,
     this.isMultiplePick = true,
+    this.controller,
     super.config,
     super.style,
     super.styleBuilder,
@@ -35,7 +37,7 @@ class _JUIFormImagesState extends JUIFormBaseState<JUIFormImages> {
   void initState() {
     super.initState();
 
-    controller = PictureSelectionController();
+    controller = widget.controller ?? PictureSelectionController();
   }
 
   @override

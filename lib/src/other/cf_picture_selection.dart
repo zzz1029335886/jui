@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:image_pickers/image_pickers.dart';
 import 'package:jui/jui.dart';
 import 'dart:io' as io;
-
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 extension WidgetTa on Widget {
   Widget addTap(VoidCallback onTap) {
@@ -412,8 +409,8 @@ class ImageAddIcon extends StatelessWidget {
       aspectRatio: 1,
       child: Container(
         decoration: BoxDecoration(
-            border: Border.all(color: Colors.grey.shade200),
-            color: Colors.white),
+          border: Border.all(color: Colors.grey),
+        ),
         alignment: Alignment.center,
         child: const Icon(
           Icons.add,

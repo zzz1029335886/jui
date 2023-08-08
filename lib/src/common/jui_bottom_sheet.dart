@@ -82,9 +82,9 @@ class JUIBottomSheet {
         backgroundColor: Colors.transparent,
         barrierColor: Colors.black.withOpacity(0.6),
         builder: (_) => Container(
-              decoration: const BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.only(
+              decoration: BoxDecoration(
+                  color: Theme.of(context).primaryColorDark,
+                  borderRadius: const BorderRadius.only(
                       topLeft: Radius.circular(10),
                       topRight: Radius.circular(10))),
               child: SafeArea(
@@ -101,7 +101,7 @@ class JUIBottomSheet {
                     if (showCancel)
                       Container(
                         height: 8,
-                        color: const Color.fromRGBO(246, 248, 249, 1),
+                        color: Theme.of(context).dividerColor,
                       ),
                     if (showCancel)
                       ListTile(
