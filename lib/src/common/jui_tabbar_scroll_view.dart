@@ -53,6 +53,7 @@ class JUITabBarScrollView extends StatefulWidget {
   final EdgeInsetsGeometry? tabbarPadding;
   final bool isBodyScrollable;
   final bool hasTabBottomLine;
+  final WidgetBuilder? sliverAppBar;
 
   const JUITabBarScrollView(
       {required this.titles,
@@ -82,6 +83,7 @@ class JUITabBarScrollView extends StatefulWidget {
           const EdgeInsets.only(left: 8, right: 8, bottom: 5),
       this.underIndicatorSize = TabBarIndicatorSize.label,
       this.topWidgetBuilder,
+      this.sliverAppBar,
       super.key});
 
   static Widget defaultStyle(
@@ -194,6 +196,7 @@ class _JUITabBarScrollViewState extends State<JUITabBarScrollView>
               })),
       headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
         return [
+          if (widget.sliverAppBar != null) widget.sliverAppBar!(context),
           if (widget.topWidgetBuilder != null)
             SliverToBoxAdapter(
               child: widget.topWidgetBuilder!(context),
@@ -214,9 +217,8 @@ class _JUITabBarScrollViewState extends State<JUITabBarScrollView>
     return SliverPersistentHeader(
         delegate: _SliverAppBarDelegate(
             JUITabBar(
-              height: 50,
-              labelColor:
-                  widget.labelColor ?? const Color.fromRGBO(28, 31, 33, 1),
+              height: 49,
+              labelColor: widget.labelColor ?? null,
               unselectedLabelColor: widget.unselectedLabelColor ??
                   const Color.fromRGBO(113, 119, 125, 1),
               titleExtraWidth: widget.titleExtraWidth,
@@ -259,13 +261,16 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
     if (headerContainer != null) {
       var container = headerContainer!(sizeWidget);
       return Container(
-        color: decoration == null ? Colors.white : null,
+        color: decoration == null
+            ? Theme.of(context).scaffoldBackgroundColor
+            : null,
         decoration: decoration,
         child: container,
       );
     }
     return Container(
-      color: decoration == null ? Colors.white : null,
+      color:
+          decoration == null ? Theme.of(context).scaffoldBackgroundColor : null,
       decoration: decoration,
       child: sizeWidget,
     );

@@ -83,7 +83,6 @@ class JUITabBar extends StatefulWidget implements PreferredSizeWidget {
       EdgeInsets titlePadding = const EdgeInsets.symmetric(horizontal: 16),
       required int selectedIndex}) {
     return JUITabBar(
-      labelColor: const Color.fromRGBO(28, 31, 33, 1),
       unselectedLabelColor: const Color.fromRGBO(113, 119, 125, 1),
       titleLabelStyle: titleLabelStyle ??
           const TextStyle(
@@ -156,8 +155,7 @@ class _JUITabBarState extends State<JUITabBar> with TickerProviderStateMixin {
           cst.TabBar(
             padding: this.widget.padding,
             labelPadding: this.widget.titlePadding,
-            labelColor:
-                this.widget.labelColor ?? const Color.fromRGBO(28, 31, 33, 1),
+            labelColor: this.widget.labelColor,
             unselectedLabelColor: this.widget.unselectedLabelColor ??
                 const Color.fromRGBO(113, 119, 125, 1),
             labelStyle: this.widget.titleLabelStyle,
@@ -204,8 +202,8 @@ class _JUITabBarState extends State<JUITabBar> with TickerProviderStateMixin {
     );
 
     if (this.widget.isScrollable) {
-      return Row(
-        children: [widget],
+      return SingleChildScrollView(
+        child: widget,
       );
     }
 

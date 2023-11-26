@@ -173,7 +173,8 @@ class _JUIBottomSheetPageState extends State<JUIBottomSheetPage> {
         child: CupertinoPageScaffold(
           navigationBar: widget.title != null
               ? CupertinoNavigationBar(
-                  backgroundColor: widget.titleBackgroundColor,
+                  backgroundColor: widget.titleBackgroundColor ??
+                      Theme.of(context).scaffoldBackgroundColor,
                   leading: widget.leadingWidget ??
                       Container(
                         width: 0,
@@ -192,10 +193,9 @@ class _JUIBottomSheetPageState extends State<JUIBottomSheetPage> {
                       // const SizedBox(
                       //   height: 3,
                       // ),
-                      JUIText(
+                      Text(
                         widget.title!,
-                        color: const Color.fromRGBO(28, 31, 33, 1),
-                        fontWeight: JUIFontWeightExtension.medium,
+                        style: Theme.of(context).textTheme.titleMedium,
                       ),
                     ],
                   ),
@@ -204,7 +204,7 @@ class _JUIBottomSheetPageState extends State<JUIBottomSheetPage> {
                         icon: Icons.close,
                         iconSize: 24,
                         padding: const EdgeInsets.all(3),
-                        color: const Color.fromRGBO(28, 31, 33, 1),
+                        color: Theme.of(context).iconTheme.color,
                         onPressed: () => Navigator.of(context).pop(),
                       ),
                   border: null,

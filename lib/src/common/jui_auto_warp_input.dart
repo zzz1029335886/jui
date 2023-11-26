@@ -25,6 +25,7 @@ class JUIAutoWarpInput extends StatelessWidget {
       this.minLines = 1,
       this.autofocus = true,
       this.showMaxLength = false,
+      this.textInputAction = TextInputAction.send,
       this.maxLength})
       : super(key: key) {
     controller.text = content;
@@ -43,6 +44,7 @@ class JUIAutoWarpInput extends StatelessWidget {
   final Color? backgroundColor;
   final double contentBorderRadius;
   final double? contentMinHeight;
+  final TextInputAction textInputAction;
   final int maxLines;
   final int minLines;
   final int? maxLength;
@@ -73,7 +75,7 @@ class JUIAutoWarpInput extends StatelessWidget {
                 autofocus: autofocus,
                 textStyle: textStyle,
                 //设置键盘按钮为发送
-                textInputAction: TextInputAction.send,
+                textInputAction: textInputAction,
                 keyboardType: TextInputType.multiline,
                 onEditingComplete: () async {
                   //点击发送调用
@@ -89,7 +91,7 @@ class JUIAutoWarpInput extends StatelessWidget {
                   hintText: placeHolder,
                   hintStyle: const TextStyle(fontSize: 13),
                   isDense: true,
-                  // fillColor: backgroundColor,
+                  fillColor: backgroundColor,
                   contentPadding: const EdgeInsets.only(
                       left: 10, top: 10, bottom: 5, right: 10),
                   border: const OutlineInputBorder(

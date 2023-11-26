@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:easy_refresh/easy_refresh.dart' as er;
-import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -116,14 +115,38 @@ class _JUIRefreshState extends State<JUIRefresh> {
       onRefresh: widget.onRefresh == null
           ? null
           : () async {
-              final res = await widget.onRefresh?.call() ??
-                  JUIRefreshIndicatorResult.success;
               // if (refreshController.footerState?.result ==
               //     JUIRefreshIndicatorResult.noMore) {
               //   refreshController.finishLoad(IndicatorResult.noMore, true);
               // }
+
+              final res = await widget.onRefresh?.call() ??
+                  JUIRefreshIndicatorResult.success;
               refreshController.finishRefresh(res);
               widget.refreshAnimationComplete?.call();
+
+              // var res = widget.onRefresh?.call();
+              // if (res is Future) {
+              //   if (res is Future<JUIRefreshIndicatorResult>) {
+              //     res.then((value) {
+              //       refreshController.finishRefresh(value);
+              //       widget.refreshAnimationComplete?.call();
+              //     });
+              //   } else {
+              //     res.whenComplete(() {
+              //       refreshController
+              //           .finishRefresh(JUIRefreshIndicatorResult.success);
+              //       widget.refreshAnimationComplete?.call();
+              //     });
+              //   }
+              // } else if (res is JUIRefreshIndicatorResult) {
+              //   refreshController.finishRefresh(res);
+              //   widget.refreshAnimationComplete?.call();
+              // } else {
+              //   refreshController
+              //       .finishRefresh(JUIRefreshIndicatorResult.success);
+              //   widget.refreshAnimationComplete?.call();
+              // }
             },
       onLoad: widget.onLoad == null
           ? null
@@ -179,6 +202,7 @@ class _JUIRefreshState extends State<JUIRefresh> {
 class JUIPagingListWidget extends StatelessWidget {
   final JUIPageListRefreshModel pageModel;
   final VoidCallback? refreshCompleted;
+  final VoidCallback? beforeRefresh;
   final ScrollController? scrollController;
   final Widget child;
   final bool refreshOnStart;
@@ -190,6 +214,7 @@ class JUIPagingListWidget extends StatelessWidget {
     required this.child,
     int? pageSize,
     this.refreshCompleted,
+    this.beforeRefresh,
     this.scrollController,
     this.refreshOnStart = true,
     this.isSingleScrollView = true,
@@ -207,6 +232,7 @@ class JUIPagingListWidget extends StatelessWidget {
       child: JUIRefresh(
         scrollController: scrollController,
         onRefresh: () {
+          beforeRefresh?.call();
           var future = pageModel.onRefreshDown(callConRefresh: false);
           return _complete(future, true);
         },
@@ -297,7 +323,7 @@ abstract class JUIPageListRefreshModel<T> {
   // final List<T> _dataList = [];
   // List<T> get dataList => _dataList;
 
-  Future<JUIPageListResultModel<T>> load(int pageIndex, int pageSize);
+  Future load(int pageIndex, int pageSize);
 
   int? _customPagingSize;
 
@@ -374,10 +400,17 @@ abstract class JUIPageListRefreshModel<T> {
     _currPageIndex = isRefresh
         ? _DEFAULT_START_PAGE_INDEX
         : _handlePageIndex(_currPageIndex, pagingSize);
-    Future<JUIPageListResultModel<T>> future =
+    Future future =
         load(_currPageIndex, _handlePage(_currPageIndex, pagingSize));
 
-    loadingFuture = future;
+    if (future is Future<JUIPageListResultModel<T>>) {
+      loadingFuture = future;
+    } else if (future is Future<List<T>>) {
+      loadingFuture = future.then(
+          (value) => JUIPageListResultModel(value, value.length == pagingSize));
+    } else {
+      throw AssertionError("返回值错误，只能是 List<T> 或 JUIPageListResultModel<T>");
+    }
 
     future.then((data) {
       if (isRefresh) dataList.clear();
@@ -390,6 +423,6 @@ abstract class JUIPageListRefreshModel<T> {
       _isLoading = false;
       loadingFuture = null;
     });
-    return future;
+    return future as Future<JUIPageListResultModel<T>>;
   }
 }

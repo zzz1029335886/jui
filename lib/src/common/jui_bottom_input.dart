@@ -14,6 +14,7 @@ class JUIBottomInput extends StatelessWidget {
   final int minLine;
   final int maxLength;
   final bool showMaxLength;
+  final TextInputAction textInputAction;
 
   const JUIBottomInput(
       {Key? key,
@@ -25,6 +26,7 @@ class JUIBottomInput extends StatelessWidget {
       this.showMaxLength = false,
       this.height,
       this.textStyle = const TextStyle(fontSize: 16),
+      this.textInputAction = TextInputAction.send,
       this.placeHolder = '请输入内容'})
       : super(key: key);
 
@@ -46,7 +48,7 @@ class JUIBottomInput extends StatelessWidget {
             },
           )),
           Container(
-            color: Theme.of(context).primaryColorDark,
+            color: Theme.of(context).scaffoldBackgroundColor,
             child: JUIAutoWarpInput(
                 contentMinHeight: height ?? 34,
                 maxLines: maxLine,
@@ -56,6 +58,7 @@ class JUIBottomInput extends StatelessWidget {
                 contentBorderRadius: 17,
                 inputWidth: inputWidth,
                 textStyle: textStyle,
+                textInputAction: textInputAction,
                 onEditingCompleteText: (value) async {
                   bool? res = await onEditingCompleteText.call(value);
                   if (res != null && res == true) {

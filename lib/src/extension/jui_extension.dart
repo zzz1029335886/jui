@@ -61,6 +61,7 @@ extension JUIPageListRefreshModelExtension<T> on JUIPageListRefreshModel<T> {
   Widget listViewWithEmpty(
       {required JUIPageListObjectListWidgetBuilder<T> itemBuilder,
       Widget? emptyWidget,
+      bool separatorDivider = true,
       ScrollController? scrollController}) {
     var viewModel = this;
     return viewModel.dataList.isEmpty
@@ -79,9 +80,13 @@ extension JUIPageListRefreshModelExtension<T> on JUIPageListRefreshModel<T> {
               return widget;
             },
             separatorBuilder: (context, index) {
-              return const Divider(
-                height: 0.5,
-              );
+              if (separatorDivider) {
+                return const Divider(
+                  height: 0.5,
+                );
+              } else {
+                return Container();
+              }
             },
             itemCount: viewModel.dataList.length);
   }

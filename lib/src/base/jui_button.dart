@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 
 import 'jui_enabled.dart';
 
-enum JUIButtonLabelPostion { labelTop, labelBottom, labelLeft, labelRight }
+enum JUIButtonLabelPosition { labelTop, labelBottom, labelLeft, labelRight }
 
 class JUIButton extends StatelessWidget {
   final VoidCallback? onPressed;
-  final JUIButtonLabelPostion labelPostion;
+  final JUIButtonLabelPosition labelPosition;
   final IconData? icon;
   final Widget? iconWidget;
   final Color? color;
@@ -29,7 +29,7 @@ class JUIButton extends StatelessWidget {
 
   const JUIButton(
       {this.onPressed,
-      this.labelPostion = JUIButtonLabelPostion.labelRight,
+      this.labelPosition = JUIButtonLabelPosition.labelRight,
       this.isEnabled = true,
       this.icon,
       this.iconWidget,
@@ -142,22 +142,22 @@ class JUIButton extends StatelessWidget {
           (title != null || child != null) ||
       (icon != null || iconWidget != null) && title == null && child == null;
   get isVertical =>
-      labelPostion == JUIButtonLabelPostion.labelBottom ||
-      labelPostion == JUIButtonLabelPostion.labelTop;
+      labelPosition == JUIButtonLabelPosition.labelBottom ||
+      labelPosition == JUIButtonLabelPosition.labelTop;
 
   Widget _child({required List<Widget> children}) {
     if (isVertical) {
       return Column(
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
-        children: labelPostion == JUIButtonLabelPostion.labelBottom
+        children: labelPosition == JUIButtonLabelPosition.labelBottom
             ? children
             : children.reversed.toList(),
       );
     } else {
       return Row(
         mainAxisSize: MainAxisSize.min,
-        children: labelPostion == JUIButtonLabelPostion.labelRight
+        children: labelPosition == JUIButtonLabelPosition.labelRight
             ? children
             : children.reversed.toList(),
       );
@@ -301,7 +301,7 @@ class JUIButton extends StatelessWidget {
       double? height,
       double middlePadding = 8,
       bool isEnabled = true,
-      Color? titleColor = Colors.white,
+      Color? titleColor,
       double? fontSize,
       FontWeight? fontWeight,
       double? radius,
