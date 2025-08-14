@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../common/jui_refresh.dart';
+import '../jui_setting.dart';
 
 export 'scroll_controller_extension.dart';
 
@@ -19,13 +20,17 @@ extension JUIPageListRefreshModelExtension<T> on JUIPageListRefreshModel<T> {
   Widget columnWithEmpty({
     required JUIPageListObjectColumnWidgetBuilder<T> itemBuilder,
     Widget? emptyWidget,
+    double? topMargin = 0,
     double? width,
   }) {
     var viewModel = this;
     return viewModel.dataList.isEmpty
-        ? SizedBox(
-            width: width,
-            child: emptyWidget,
+        ? Container(
+            margin: EdgeInsets.only(
+                top: topMargin ?? JUISettings.pageListConfig.defaultTopMargin),
+            width: width ?? JUISettings.pageListConfig.emptyWidgetWidth,
+            child: emptyWidget ??
+                JUISettings.pageListConfig.defaultEmptyWidgetBuilder?.call(),
           )
         : Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -40,13 +45,18 @@ extension JUIPageListRefreshModelExtension<T> on JUIPageListRefreshModel<T> {
 
   Widget sliverListWithEmpty({
     required JUIPageListObjectListWidgetBuilder<T> itemBuilder,
-    double topMargin = 30,
+    double? topMargin,
     Widget? emptyWidget,
+    double? width,
   }) {
     if (dataList.isEmpty) {
       return SliverToBoxAdapter(
         child: Container(
-            margin: EdgeInsets.only(top: topMargin), child: emptyWidget),
+            width: width ?? JUISettings.pageListConfig.emptyWidgetWidth,
+            margin: EdgeInsets.only(
+                top: topMargin ?? JUISettings.pageListConfig.defaultTopMargin),
+            child: emptyWidget ??
+                JUISettings.pageListConfig.defaultEmptyWidgetBuilder?.call()),
       );
     }
 
@@ -60,14 +70,25 @@ extension JUIPageListRefreshModelExtension<T> on JUIPageListRefreshModel<T> {
 
   Widget listViewWithEmpty(
       {required JUIPageListObjectListWidgetBuilder<T> itemBuilder,
+      double? topMargin,
       Widget? emptyWidget,
+      double? width,
       bool separatorDivider = true,
       ScrollController? scrollController}) {
     var viewModel = this;
-    return viewModel.dataList.isEmpty
+
+    return viewModel.dataList.isEmpty && !isRefreshing
         ? ListView.builder(
             itemBuilder: (context, index) {
-              return emptyWidget;
+              return Container(
+                width: width ?? JUISettings.pageListConfig.emptyWidgetWidth,
+                margin: EdgeInsets.only(
+                    top: topMargin ??
+                        JUISettings.pageListConfig.defaultTopMargin),
+                child: emptyWidget ??
+                    JUISettings.pageListConfig.defaultEmptyWidgetBuilder
+                        ?.call(),
+              );
             },
             itemCount: 1,
           )

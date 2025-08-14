@@ -1,9 +1,11 @@
 import 'dart:async';
 
 import 'package:easy_refresh/easy_refresh.dart' as er;
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:jui/src/jui_setting.dart';
+
+import '../other/classic_header.dart' as ch;
 
 typedef JUIRefreshIndicatorResult = er.IndicatorResult;
 typedef JUIEasyRefreshController = er.EasyRefreshController;
@@ -18,8 +20,8 @@ class JUIRefresh extends StatefulWidget {
   final VoidCallback? refreshAnimationComplete;
   final VoidCallback? loadAnimationComplete;
 
-  final FutureOr Function()? onLoad;
-  final FutureOr Function()? onRefresh;
+  final FutureOr<JUIRefreshIndicatorResult> Function()? onLoad;
+  final FutureOr<JUIRefreshIndicatorResult> Function()? onRefresh;
 
   const JUIRefresh(
       {required this.child,
@@ -42,7 +44,7 @@ class _JUIRefreshState extends State<JUIRefresh> {
   late final JUIEasyRefreshController _refreshController =
       JUIEasyRefreshController(
     controlFinishRefresh: true,
-    controlFinishLoad: true,
+    controlFinishLoad: false,
   );
 
   @override
@@ -63,98 +65,58 @@ class _JUIRefreshState extends State<JUIRefresh> {
 
   @override
   Widget build(BuildContext context) {
-    // return CupertinoSliverRefreshControl(
-    //   builder: (context, refreshState, pulledExtent, refreshTriggerPullDistance,
-    //       refreshIndicatorExtent) {
-    //     return widget.child;
-    //   },
-    // );
-
-    // return RefreshIndicator(
-    //   child: widget.child,
-    //   onRefresh: () async {
-    //     final res =
-    //         await widget.onRefresh?.call() ?? JUIRefreshIndicatorResult.success;
-    //     refreshController.finishRefresh(res);
-    //     widget.refreshAnimationComplete?.call();
-    //   },
-    // );
-
     return er.EasyRefresh(
-      header: header(),
-      footer: footer(),
-      // header: const er.CupertinoHeader(
-      //     position: er.IndicatorPosition.locator,
-      //     safeArea: false,
-      //     foregroundColor: Colors.blue,
-      //     backgroundColor: Colors.red),
-      // footer: const er.CupertinoFooter(
-      //   position: er.IndicatorPosition.locator,
-      // ),
-      // scrollController: widget.scrollController,
-
-      // header: const MaterialHeader(
-      //   safeArea: false,
-      // ),
-      // footer: const MaterialFooter(
-      //   position: IndicatorPosition.locator,
-      // ),
-      // footer: const ClassicFooter(
-      //   triggerOffset: 100,
-      //   position: IndicatorPosition.locator,
-      //   dragText: '下拉刷新',
-      //   armedText: '释放刷新',
-      //   readyText: '加载中...',
-      //   processingText: '加载中...',
-      //   processedText: '加载完成',
-      //   noMoreText: '没有更多',
-      //   failedText: '加载失败',
-      //   messageText: '最后更新于 %T',
-      // ),
+      header: ch.ClassicHeader(
+        triggerOffset: 40,
+        dragText: JUISettings.refreshHeaderTextConfig.dragText,
+        armedText: JUISettings.refreshHeaderTextConfig.armedText,
+        readyText: JUISettings.refreshHeaderTextConfig.readyText,
+        processingText: JUISettings.refreshHeaderTextConfig.processingText,
+        processedText: JUISettings.refreshHeaderTextConfig.processedText,
+        noMoreText: JUISettings.refreshHeaderTextConfig.noMoreText,
+        failedText: JUISettings.refreshHeaderTextConfig.failedText,
+        messageText: JUISettings.refreshHeaderTextConfig.messageText,
+        showMessage: JUISettings.refreshHeaderTextConfig.showMessage,
+        iconTheme: IconThemeData(
+          color: Color.fromRGBO(147, 153, 159, 1),
+        ),
+        textStyle:
+            TextStyle(fontSize: 12, color: Color.fromRGBO(147, 153, 159, 1)),
+      ),
+      footer: er.ClassicFooter(
+        dragText: JUISettings.refreshFooterTextConfig.dragText,
+        armedText: JUISettings.refreshFooterTextConfig.armedText,
+        readyText: JUISettings.refreshFooterTextConfig.readyText,
+        processingText: JUISettings.refreshFooterTextConfig.processingText,
+        processedText: JUISettings.refreshFooterTextConfig.processedText,
+        noMoreText: JUISettings.refreshFooterTextConfig.noMoreText,
+        failedText: JUISettings.refreshFooterTextConfig.failedText,
+        messageText: JUISettings.refreshFooterTextConfig.messageText,
+        showMessage: JUISettings.refreshFooterTextConfig.showMessage,
+        noMoreIcon: null,
+        iconTheme: IconThemeData(
+          color: Color.fromRGBO(147, 153, 159, 1),
+        ),
+        textStyle: const TextStyle(
+            fontSize: 12, color: Color.fromRGBO(147, 153, 159, 1)),
+      ),
       resetAfterRefresh: false,
       onRefresh: widget.onRefresh == null
           ? null
           : () async {
-              // if (refreshController.footerState?.result ==
-              //     JUIRefreshIndicatorResult.noMore) {
-              //   refreshController.finishLoad(IndicatorResult.noMore, true);
-              // }
-
               final res = await widget.onRefresh?.call() ??
                   JUIRefreshIndicatorResult.success;
               refreshController.finishRefresh(res);
               widget.refreshAnimationComplete?.call();
-
-              // var res = widget.onRefresh?.call();
-              // if (res is Future) {
-              //   if (res is Future<JUIRefreshIndicatorResult>) {
-              //     res.then((value) {
-              //       refreshController.finishRefresh(value);
-              //       widget.refreshAnimationComplete?.call();
-              //     });
-              //   } else {
-              //     res.whenComplete(() {
-              //       refreshController
-              //           .finishRefresh(JUIRefreshIndicatorResult.success);
-              //       widget.refreshAnimationComplete?.call();
-              //     });
-              //   }
-              // } else if (res is JUIRefreshIndicatorResult) {
-              //   refreshController.finishRefresh(res);
-              //   widget.refreshAnimationComplete?.call();
-              // } else {
-              //   refreshController
-              //       .finishRefresh(JUIRefreshIndicatorResult.success);
-              //   widget.refreshAnimationComplete?.call();
-              // }
             },
       onLoad: widget.onLoad == null
           ? null
           : () async {
               final res = await widget.onLoad?.call() ??
                   JUIRefreshIndicatorResult.success;
-              refreshController.finishLoad(res);
+              refreshController.finishLoad(res, true);
               widget.loadAnimationComplete?.call();
+              return res;
             },
       refreshOnStart: widget.refreshOnStart,
       controller: refreshController,
@@ -163,50 +125,59 @@ class _JUIRefreshState extends State<JUIRefresh> {
   }
 
   er.Footer? footer() {
-    return const er.ClassicFooter(
-      dragText: '上拉加载',
-      armedText: '释放刷新',
-      readyText: '加载中...',
-      processingText: '加载中...',
-      processedText: '加载完成',
-      noMoreText: '没有更多内容',
-      failedText: '加载失败',
-      messageText: '最后更新于 %T',
-      // noMoreIcon: Container(),
-      // succeededIcon: Container(),
-      // failedIcon: Container(),
-      // iconDimension: 0,
-      // spacing: 0,
-      textStyle:
-          TextStyle(fontSize: 12, color: Color.fromRGBO(147, 153, 159, 1)),
-      showMessage: false, // 隐藏更新时间
+    return er.ClassicFooter(
+      dragText: JUISettings.refreshFooterTextConfig.dragText,
+      armedText: JUISettings.refreshFooterTextConfig.armedText,
+      readyText: JUISettings.refreshFooterTextConfig.readyText,
+      processingText: JUISettings.refreshFooterTextConfig.processingText,
+      processedText: JUISettings.refreshFooterTextConfig.processedText,
+      noMoreText: JUISettings.refreshFooterTextConfig.noMoreText,
+      failedText: JUISettings.refreshFooterTextConfig.failedText,
+      messageText: JUISettings.refreshFooterTextConfig.messageText,
+      showMessage: JUISettings.refreshFooterTextConfig.showMessage,
+      noMoreIcon: null,
+      iconTheme: IconThemeData(
+        color: Color.fromRGBO(147, 153, 159, 1),
+      ),
+      textStyle: const TextStyle(
+          fontSize: 12, color: Color.fromRGBO(147, 153, 159, 1)),
     );
   }
 
   er.Header? header() {
-    return const er.ClassicHeader(
-      dragText: '下拉刷新',
-      armedText: '释放刷新',
-      readyText: '加载中...',
-      processingText: '加载中...',
-      processedText: '加载完成',
-      noMoreText: '没有更多',
-      failedText: '加载失败',
-      messageText: '最后更新于 %T',
+    return er.ClassicHeader(
+      triggerOffset: 18,
+      readySpringBuilder: er.kBezierSpringBuilder,
+      frictionFactor: er.kBezierFrictionFactor,
+      dragText: JUISettings.refreshHeaderTextConfig.dragText,
+      armedText: JUISettings.refreshHeaderTextConfig.armedText,
+      readyText: JUISettings.refreshHeaderTextConfig.readyText,
+      processingText: JUISettings.refreshHeaderTextConfig.processingText,
+      processedText: JUISettings.refreshHeaderTextConfig.processedText,
+      noMoreText: JUISettings.refreshHeaderTextConfig.noMoreText,
+      failedText: JUISettings.refreshHeaderTextConfig.failedText,
+      messageText: JUISettings.refreshHeaderTextConfig.messageText,
+      showMessage: JUISettings.refreshHeaderTextConfig.showMessage,
+      iconTheme: IconThemeData(
+        color: Color.fromRGBO(147, 153, 159, 1),
+      ),
       textStyle:
           TextStyle(fontSize: 12, color: Color.fromRGBO(147, 153, 159, 1)),
     );
   }
 }
 
-class JUIPagingListWidget extends StatelessWidget {
-  final JUIPageListRefreshModel pageModel;
+class JUIPagingListWidget<T> extends StatelessWidget {
+  final JUIPageListRefreshModel<T> pageModel;
   final VoidCallback? refreshCompleted;
   final VoidCallback? beforeRefresh;
   final ScrollController? scrollController;
+  final JUIEasyRefreshController? controller;
+
   final Widget child;
   final bool refreshOnStart;
   final bool isSingleScrollView;
+  final bool isLodeMore;
 
   JUIPagingListWidget({
     super.key,
@@ -216,8 +187,10 @@ class JUIPagingListWidget extends StatelessWidget {
     this.refreshCompleted,
     this.beforeRefresh,
     this.scrollController,
+    this.controller,
     this.refreshOnStart = true,
     this.isSingleScrollView = true,
+    this.isLodeMore = true,
   }) : super() {
     pageModel._customPagingSize = pageSize;
 
@@ -231,20 +204,23 @@ class JUIPagingListWidget extends StatelessWidget {
     return FractionallySizedBox(
       child: JUIRefresh(
         scrollController: scrollController,
+        controller: controller,
         onRefresh: () {
           beforeRefresh?.call();
-          var future = pageModel.onRefreshDown(callConRefresh: false);
+          var future = pageModel._onRefreshDown(callConRefresh: false);
           return _complete(future, true);
         },
-        onLoad: () {
-          var future = pageModel.onLoadUp(callConRefresh: false);
-          return _complete(future, false);
-        },
+        onLoad: pageModel.dataList.isEmpty
+            ? null
+            : () {
+                var future = pageModel._onLoadUp(callConRefresh: false);
+                return _complete(future, false);
+              },
         refreshOnStart: refreshOnStart,
         createdController: (JUIEasyRefreshController controller) {
           pageModel._refreshController = controller;
           if (!isSingleScrollView) {
-            pageModel.refreshWithOutAnimate();
+            pageModel._refreshWithOutAnimate();
           }
         },
         refreshAnimationComplete: () {
@@ -268,7 +244,7 @@ class JUIPagingListWidget extends StatelessWidget {
         if (isRefresh) {
           if (value.noMore) {
             pageModel._refreshController
-                .finishLoad(JUIRefreshIndicatorResult.noMore);
+                .finishLoad(JUIRefreshIndicatorResult.noMore, true);
           } else {
             pageModel._refreshController.resetFooter();
           }
@@ -284,6 +260,7 @@ class JUIPagingListWidget extends StatelessWidget {
         completer.complete(JUIRefreshIndicatorResult.none);
       }
     }).catchError((onError) {
+      debugPrint('Error during refresh/load: $onError');
       completer.complete(JUIRefreshIndicatorResult.fail);
     });
 
@@ -294,10 +271,13 @@ class JUIPagingListWidget extends StatelessWidget {
 class JUIPageListResultModel<T> {
   List<T> list;
   bool noMore;
-  JUIPageListResultModel(this.list, this.noMore);
+  JUIPageListResultModel({
+    required this.list,
+    required this.noMore,
+  });
 }
 
-abstract class JUIPageListRefreshModel<T> {
+mixin JUIPageListRefreshModel<T> {
   late JUIEasyRefreshController _refreshController;
 
   JUIEasyRefreshController get refreshController => _refreshController;
@@ -313,6 +293,7 @@ abstract class JUIPageListRefreshModel<T> {
 
   int get pagingSize => _customPagingSize ?? _DEFAULT_PAGE_SIZE;
   bool _isLoading = false;
+  bool isRefreshing = true;
 
   final _dataList = RxList<T>();
 
@@ -323,7 +304,7 @@ abstract class JUIPageListRefreshModel<T> {
   // final List<T> _dataList = [];
   // List<T> get dataList => _dataList;
 
-  Future load(int pageIndex, int pageSize);
+  Future<JUIPageListResultModel<T>> load(int pageIndex, int pageSize);
 
   int? _customPagingSize;
 
@@ -333,7 +314,7 @@ abstract class JUIPageListRefreshModel<T> {
 
   VoidCallback? notifyRefresh;
 
-  void refreshWithOutAnimate() async {
+  void _refreshWithOutAnimate() async {
     try {
       if (dataList.isNotEmpty) {
         return;
@@ -347,13 +328,14 @@ abstract class JUIPageListRefreshModel<T> {
       }
       refreshController.finishRefresh(JUIRefreshIndicatorResult.success);
     } catch (onError) {
+      debugPrint('Refresh without animation error: $onError');
       refreshController.finishRefresh(JUIRefreshIndicatorResult.fail);
     }
 
     notifyRefresh?.call();
   }
 
-  Future<JUIPageListResultModel<T>?> onLoadUp(
+  Future<JUIPageListResultModel<T>?> _onLoadUp(
       {bool callConRefresh = true, ScrollController? scrollController}) async {
     if (callConRefresh) {
       return refreshController
@@ -363,7 +345,7 @@ abstract class JUIPageListRefreshModel<T> {
     return _loadPage(isRefresh: false);
   }
 
-  Future<JUIPageListResultModel<T>?> onRefreshDown(
+  Future<JUIPageListResultModel<T>?> _onRefreshDown(
       {bool callConRefresh = true, ScrollController? scrollController}) {
     if (callConRefresh) {
       return refreshController
@@ -395,25 +377,19 @@ abstract class JUIPageListRefreshModel<T> {
     if (_isLoading && loadingFuture != null) {
       await loadingFuture;
     }
+    if (isRefresh) dataList.clear();
 
     _isLoading = true;
+    isRefreshing = isRefresh;
     _currPageIndex = isRefresh
         ? _DEFAULT_START_PAGE_INDEX
         : _handlePageIndex(_currPageIndex, pagingSize);
-    Future future =
-        load(_currPageIndex, _handlePage(_currPageIndex, pagingSize));
+    var future = load(_currPageIndex, _handlePage(_currPageIndex, pagingSize));
 
-    if (future is Future<JUIPageListResultModel<T>>) {
-      loadingFuture = future;
-    } else if (future is Future<List<T>>) {
-      loadingFuture = future.then(
-          (value) => JUIPageListResultModel(value, value.length == pagingSize));
-    } else {
-      throw AssertionError("返回值错误，只能是 List<T> 或 JUIPageListResultModel<T>");
-    }
+    loadingFuture = future;
 
     future.then((data) {
-      if (isRefresh) dataList.clear();
+      debugPrint('future then: $data');
       dataList.addAll(data.list);
 
       _onFinish(true);
@@ -421,8 +397,9 @@ abstract class JUIPageListRefreshModel<T> {
       _onFinish(false);
     }).whenComplete(() {
       _isLoading = false;
+      isRefreshing = false;
       loadingFuture = null;
     });
-    return future as Future<JUIPageListResultModel<T>>;
+    return future;
   }
 }

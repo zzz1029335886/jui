@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:jui/src/extension/jui_extension.dart';
-import 'changed_system_tabs.dart' as cst;
+// import 'changed_system_tabs.dart' as cst;
 
 typedef JUITabBarTitleBuilder = JUITabBarTitle Function(
     BuildContext context, String title, int index, bool isSelected);
@@ -152,7 +152,7 @@ class _JUITabBarState extends State<JUITabBar> with TickerProviderStateMixin {
       height: this.widget.height,
       child: Stack(
         children: [
-          cst.TabBar(
+          TabBar(
             padding: this.widget.padding,
             labelPadding: this.widget.titlePadding,
             labelColor: this.widget.labelColor,

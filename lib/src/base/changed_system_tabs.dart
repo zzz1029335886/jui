@@ -171,7 +171,7 @@ class _TabStyle extends AnimatedWidget {
   @override
   Widget build(BuildContext context) {
     final ThemeData themeData = Theme.of(context);
-    final TabBarTheme tabBarTheme = TabBarTheme.of(context);
+    final TabBarThemeData tabBarTheme = TabBarTheme.of(context);
     final Animation<double> animation = listenable as Animation<double>;
 
     // To enable TextStyle.lerp(style1, style2, value), both styles must have
@@ -192,11 +192,11 @@ class _TabStyle extends AnimatedWidget {
     final TextStyle defaultUnselectedStyle = (unselectedLabelStyle ??
             tabBarTheme.unselectedLabelStyle ??
             labelStyle ??
-            themeData.primaryTextTheme.bodyText1)!
+            themeData.primaryTextTheme.bodyLarge)!
         .copyWith(inherit: true);
     final TextStyle defaultStyle = (labelStyle ??
             tabBarTheme.labelStyle ??
-            themeData.primaryTextTheme.bodyText1)!
+            themeData.primaryTextTheme.bodyLarge)!
         .copyWith(inherit: true)
         .copyWith(fontSize: defaultUnselectedStyle.fontSize);
     final TextStyle? textStyle = selected
@@ -205,7 +205,7 @@ class _TabStyle extends AnimatedWidget {
 
     final Color? selectedColor = labelColor ??
         tabBarTheme.labelColor ??
-        themeData.primaryTextTheme.bodyText1?.color;
+        themeData.primaryTextTheme.bodyLarge?.color;
     final Color? unselectedColor = unselectedLabelColor ??
         tabBarTheme.unselectedLabelColor ??
         selectedColor?.withAlpha(0xB2); // 70% alpha
@@ -253,8 +253,7 @@ class _TabLabelBarRenderer extends RenderFlex {
     required TextDirection super.textDirection,
     required super.verticalDirection,
     required this.onPerformLayout,
-  })  : assert(onPerformLayout != null),
-        assert(textDirection != null);
+  });
 
   _LayoutCallback onPerformLayout;
 
@@ -349,9 +348,7 @@ class _IndicatorPainter extends CustomPainter {
     required this.tabKeys,
     required _IndicatorPainter? old,
     required this.indicatorPadding,
-  })  : assert(controller != null),
-        assert(indicator != null),
-        super(repaint: controller.animation) {
+  }) : super(repaint: controller.animation) {
     if (old != null) {
       saveTabOffsets(old._currentTabOffsets, old._currentTextDirection);
     }
@@ -561,7 +558,6 @@ class _TabBarScrollPosition extends ScrollPositionWithSingleContext {
       // scenario, setting the actual dimension would cause a strange scroll
       // effect without this guard because the super call below would starts a
       // ballistic scroll activity.
-      assert(viewportDimension != null);
       _initialViewportDimensionWasZero = viewportDimension != 0.0;
       correctPixels(tabBar._initialScrollOffset(
           viewportDimension, minScrollExtent, maxScrollExtent));
@@ -666,12 +662,8 @@ class TabBar extends StatefulWidget implements PreferredSizeWidget {
     this.physics,
     this.splashFactory,
     this.splashBorderRadius,
-  })  : assert(tabs != null),
-        assert(isScrollable != null),
-        assert(dragStartBehavior != null),
-        assert(indicator != null ||
-            (indicatorWeight != null && indicatorWeight > 0.0)),
-        assert(indicator != null || (indicatorPadding != null));
+  })  : assert(indicator != null || (indicatorWeight > 0.0)),
+        assert(indicator != null);
 
   /// Typically a list of two or more [Tab] widgets.
   ///
@@ -960,7 +952,7 @@ class _TabBarState extends State<TabBar> {
     if (widget.indicator != null) {
       return widget.indicator!;
     }
-    final TabBarTheme tabBarTheme = TabBarTheme.of(context);
+    final TabBarThemeData tabBarTheme = TabBarTheme.of(context);
     if (tabBarTheme.indicator != null) {
       return tabBarTheme.indicator!;
     }
@@ -1236,7 +1228,7 @@ class _TabBarState extends State<TabBar> {
       );
     }
 
-    final TabBarTheme tabBarTheme = TabBarTheme.of(context);
+    final TabBarThemeData tabBarTheme = TabBarTheme.of(context);
 
     final List<Widget> wrappedTabs =
         List<Widget>.generate(widget.tabs.length, (int index) {
