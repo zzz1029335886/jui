@@ -32,7 +32,8 @@ dependencies:
   get: ^4.6.5
   # 添加此行到你的dependencies
   flutter_picker:
-    path: ../flutter_picker
+    git:
+      url: 'https://github.com/zzz1029335886/flutter_picker.git'
   
 dev_dependencies:
   flutter_test:
