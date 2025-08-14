@@ -24,7 +24,7 @@ extension JUIPageListRefreshModelExtension<T> on JUIPageListRefreshModel<T> {
     double? width,
   }) {
     var viewModel = this;
-    return viewModel.dataList.isEmpty
+    return viewModel.dataList.isEmpty && !isRefreshing
         ? Container(
             margin: EdgeInsets.only(
                 top: topMargin ?? JUISettings.pageListConfig.defaultTopMargin),
@@ -49,7 +49,7 @@ extension JUIPageListRefreshModelExtension<T> on JUIPageListRefreshModel<T> {
     Widget? emptyWidget,
     double? width,
   }) {
-    if (dataList.isEmpty) {
+    if (dataList.isEmpty && !isRefreshing) {
       return SliverToBoxAdapter(
         child: Container(
             width: width ?? JUISettings.pageListConfig.emptyWidgetWidth,

@@ -15,8 +15,12 @@ dependencies:
   #     url: "git@gitee.com:helixlife-app/jieluoxuan_resource_assets.git"
   
   # 刷新控件
-  easy_refresh: ^3.4.0
-    
+  # easy_refresh: ^3.4.0
+  pull_to_refresh_pro:
+    git:
+       url: git@codeup.aliyun.com:671750e2a8418da66584af6e/flutter-sdk/pull_to_refresh_pro.git
+       ref: main
+
   # 底部弹出 日期选择器 单列多列  https://pub.flutter-io.cn/packages/flutter_picker
   
   # 流水布局

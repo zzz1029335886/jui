@@ -24,7 +24,8 @@ class JUIRefreshTextConfig {
   final String failedText; // '加载失败',
   final String messageText; //: '最后更新于 %T',
   final bool showMessage; //: 显示刷新时间,
-
+  final TextStyle textStyle;
+  final IconThemeData iconThemeData;
   const JUIRefreshTextConfig({
     required this.dragText,
     this.armedText = '释放刷新',
@@ -35,6 +36,13 @@ class JUIRefreshTextConfig {
     this.failedText = '加载失败',
     this.messageText = '最后更新于 %T',
     this.showMessage = true,
+    this.textStyle = const TextStyle(
+      color: Color.fromRGBO(147, 153, 159, 1),
+      fontSize: 14,
+    ),
+    this.iconThemeData = const IconThemeData(
+      color: Color.fromRGBO(147, 153, 159, 1),
+    ),
   });
 }
 

@@ -1,21 +1,130 @@
 import 'dart:async';
 
-import 'package:easy_refresh/easy_refresh.dart' as er;
+// import 'package:easy_refresh/easy_refresh.dart' as er;
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:jui/src/jui_setting.dart';
+import 'package:pull_to_refresh_pro/pull_to_refresh_pro.dart';
 
-import '../other/classic_header.dart' as ch;
+// import '../other/classic_header.dart' as ch;
 
-typedef JUIRefreshIndicatorResult = er.IndicatorResult;
-typedef JUIEasyRefreshController = er.EasyRefreshController;
-typedef EasyRefresh = er.EasyRefresh;
+// typedef JUIRefreshIndicatorResult = RefreshStatus; //;er.IndicatorResult;
+/// header state
+enum JUIRefreshIndicatorResult {
+  /// Initial state, when not being overscrolled into, or after the overscroll
+  /// is canceled or after done and the sliver retracted away.
+  idle,
+
+  /// Dragged far enough that the onRefresh callback will callback
+  canRefresh,
+
+  /// the indicator is refreshing,waiting for the finish callback
+  refreshing,
+
+  /// the indicator refresh completed
+  success,
+
+  /// the indicator refresh failed
+  fail,
+
+  ///  Dragged far enough that the onTwoLevel callback will callback
+  canTwoLevel,
+
+  ///  indicator is opening twoLevel
+  twoLevelOpening,
+
+  /// indicator is in twoLevel
+  twoLeveling,
+
+  ///  indicator is closing twoLevel
+  twoLevelClosing,
+
+  noMore,
+
+  none
+}
+
+// typedef JUIEasyRefreshController
+//     = RefreshController; //er.EasyRefreshController;
+typedef JUIRefresherBuilder = RefresherBuilder; //er.ERChildBuilder;
+
+// typedef EasyRefresh = er.EasyRefresh;
+class JUIEasyRefreshController extends RefreshController {
+  void finishRefresh(JUIRefreshIndicatorResult result) {
+    switch (result) {
+      case JUIRefreshIndicatorResult.success:
+        refreshCompleted();
+        break;
+      case JUIRefreshIndicatorResult.fail:
+        refreshFailed();
+        break;
+      case JUIRefreshIndicatorResult.none:
+        refreshToIdle();
+        break;
+      case JUIRefreshIndicatorResult.idle:
+      case JUIRefreshIndicatorResult.canRefresh:
+      case JUIRefreshIndicatorResult.refreshing:
+      case JUIRefreshIndicatorResult.canTwoLevel:
+      case JUIRefreshIndicatorResult.twoLevelOpening:
+      case JUIRefreshIndicatorResult.twoLeveling:
+      case JUIRefreshIndicatorResult.twoLevelClosing:
+      case JUIRefreshIndicatorResult.noMore:
+        // Not applicable for this context
+        break;
+    }
+  }
+
+  void finishLoad([
+    JUIRefreshIndicatorResult result = JUIRefreshIndicatorResult.success,
+    bool focus = true,
+  ]) {
+    switch (result) {
+      case JUIRefreshIndicatorResult.success:
+        loadComplete();
+        break;
+      case JUIRefreshIndicatorResult.noMore:
+        loadNoData();
+        break;
+      case JUIRefreshIndicatorResult.fail:
+        loadFailed();
+        break;
+      case JUIRefreshIndicatorResult.none:
+        resetFooter();
+        break;
+      case JUIRefreshIndicatorResult.idle:
+      case JUIRefreshIndicatorResult.canRefresh:
+      case JUIRefreshIndicatorResult.refreshing:
+      case JUIRefreshIndicatorResult.canTwoLevel:
+      case JUIRefreshIndicatorResult.twoLevelOpening:
+      case JUIRefreshIndicatorResult.twoLeveling:
+      case JUIRefreshIndicatorResult.twoLevelClosing:
+        break;
+    }
+  }
+
+  void resetFooter() {
+    resetNoData();
+  }
+
+  Future callLoad({ScrollController? scrollController}) async {
+    await requestLoading();
+  }
+
+  Future callRefresh({ScrollController? scrollController}) async {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      requestRefresh();
+    });
+  }
+}
 
 class JUIRefresh extends StatefulWidget {
-  final Widget child;
+  final Widget? child;
+  final JUIRefresherBuilder? childBuilder;
   final JUIEasyRefreshController? controller;
   final ScrollController? scrollController;
   final bool refreshOnStart;
+  final bool safeArea;
   final ValueChanged<JUIEasyRefreshController>? createdController;
   final VoidCallback? refreshAnimationComplete;
   final VoidCallback? loadAnimationComplete;
@@ -24,16 +133,19 @@ class JUIRefresh extends StatefulWidget {
   final FutureOr<JUIRefreshIndicatorResult> Function()? onRefresh;
 
   const JUIRefresh(
-      {required this.child,
+      {this.child,
+      this.childBuilder,
       this.onLoad,
       this.onRefresh,
       this.scrollController,
       this.refreshOnStart = false,
+      this.safeArea = true,
       this.createdController,
       this.refreshAnimationComplete,
       this.loadAnimationComplete,
       this.controller,
-      super.key});
+      super.key})
+      : assert((child == null) != (childBuilder == null));
 
   @override
   State<JUIRefresh> createState() => _JUIRefreshState();
@@ -41,11 +153,13 @@ class JUIRefresh extends StatefulWidget {
 
 class _JUIRefreshState extends State<JUIRefresh> {
   late JUIEasyRefreshController refreshController;
-  late final JUIEasyRefreshController _refreshController =
-      JUIEasyRefreshController(
-    controlFinishRefresh: true,
-    controlFinishLoad: false,
-  );
+  // late final JUIEasyRefreshController _refreshController =
+  //     JUIEasyRefreshController(
+  //   controlFinishRefresh: true,
+  //   controlFinishLoad: false,
+  // );
+  final JUIEasyRefreshController _refreshController =
+      JUIEasyRefreshController();
 
   @override
   void initState() {
@@ -53,6 +167,11 @@ class _JUIRefreshState extends State<JUIRefresh> {
 
     refreshController = widget.controller ?? _refreshController;
     widget.createdController?.call(refreshController);
+    if (widget.refreshOnStart) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        refreshController.requestRefresh();
+      });
+    }
   }
 
   @override
@@ -65,106 +184,206 @@ class _JUIRefreshState extends State<JUIRefresh> {
 
   @override
   Widget build(BuildContext context) {
-    return er.EasyRefresh(
-      header: ch.ClassicHeader(
-        triggerOffset: 40,
-        dragText: JUISettings.refreshHeaderTextConfig.dragText,
-        armedText: JUISettings.refreshHeaderTextConfig.armedText,
-        readyText: JUISettings.refreshHeaderTextConfig.readyText,
-        processingText: JUISettings.refreshHeaderTextConfig.processingText,
-        processedText: JUISettings.refreshHeaderTextConfig.processedText,
-        noMoreText: JUISettings.refreshHeaderTextConfig.noMoreText,
-        failedText: JUISettings.refreshHeaderTextConfig.failedText,
-        messageText: JUISettings.refreshHeaderTextConfig.messageText,
-        showMessage: JUISettings.refreshHeaderTextConfig.showMessage,
-        iconTheme: IconThemeData(
-          color: Color.fromRGBO(147, 153, 159, 1),
-        ),
-        textStyle:
-            TextStyle(fontSize: 12, color: Color.fromRGBO(147, 153, 159, 1)),
+    return RefreshConfiguration(
+      springDescription: SpringDescription(
+        mass: 1, // 质量
+        stiffness: 80, // 刚度（越大越硬，回弹越快）
+        damping: 15, // 阻尼（越大越快停下）
       ),
-      footer: er.ClassicFooter(
-        dragText: JUISettings.refreshFooterTextConfig.dragText,
-        armedText: JUISettings.refreshFooterTextConfig.armedText,
-        readyText: JUISettings.refreshFooterTextConfig.readyText,
-        processingText: JUISettings.refreshFooterTextConfig.processingText,
-        processedText: JUISettings.refreshFooterTextConfig.processedText,
-        noMoreText: JUISettings.refreshFooterTextConfig.noMoreText,
-        failedText: JUISettings.refreshFooterTextConfig.failedText,
-        messageText: JUISettings.refreshFooterTextConfig.messageText,
-        showMessage: JUISettings.refreshFooterTextConfig.showMessage,
-        noMoreIcon: null,
-        iconTheme: IconThemeData(
-          color: Color.fromRGBO(147, 153, 159, 1),
-        ),
-        textStyle: const TextStyle(
-            fontSize: 12, color: Color.fromRGBO(147, 153, 159, 1)),
-      ),
-      resetAfterRefresh: false,
-      onRefresh: widget.onRefresh == null
-          ? null
-          : () async {
-              final res = await widget.onRefresh?.call() ??
-                  JUIRefreshIndicatorResult.success;
-              refreshController.finishRefresh(res);
-              widget.refreshAnimationComplete?.call();
-            },
-      onLoad: widget.onLoad == null
-          ? null
-          : () async {
-              final res = await widget.onLoad?.call() ??
-                  JUIRefreshIndicatorResult.success;
-              refreshController.finishLoad(res, true);
-              widget.loadAnimationComplete?.call();
-              return res;
-            },
-      refreshOnStart: widget.refreshOnStart,
-      controller: refreshController,
-      child: widget.child,
+      child: SmartRefresher(
+          enablePullDown: true,
+          enablePullUp: widget.onLoad != null,
+          controller: refreshController,
+          header: ClassicHeader(
+            refreshStyle: RefreshStyle.follow,
+            textStyle: JUISettings.refreshHeaderTextConfig.textStyle,
+            completeDuration: const Duration(seconds: 1),
+            releaseText: JUISettings.refreshHeaderTextConfig.armedText,
+            refreshingText: JUISettings.refreshHeaderTextConfig.processingText,
+            completeText: JUISettings.refreshHeaderTextConfig.processedText,
+            idleText: JUISettings.refreshHeaderTextConfig.dragText,
+            failedIcon: const Icon(Icons.error, color: Colors.grey),
+            completeIcon: const Icon(Icons.done, color: Colors.grey),
+            idleIcon: const Icon(Icons.arrow_downward, color: Colors.grey),
+            releaseIcon: const Icon(Icons.refresh, color: Colors.grey),
+            refreshingIcon:
+                const CupertinoActivityIndicator(color: Colors.grey),
+          ),
+          footer: ClassicFooter(
+            loadStyle: LoadStyle.showWhenLoading,
+            canLoadingText: JUISettings.refreshFooterTextConfig.armedText,
+            idleText: JUISettings.refreshFooterTextConfig.dragText,
+            loadingText: JUISettings.refreshFooterTextConfig.processingText,
+            noDataText: JUISettings.refreshFooterTextConfig.noMoreText,
+            textStyle: JUISettings.refreshFooterTextConfig.textStyle,
+            loadingIcon: SizedBox(
+              width: 24,
+              height: 24,
+              child: CupertinoActivityIndicator(),
+            ),
+            completeDuration: const Duration(
+              milliseconds: 1000,
+            ),
+          ),
+          onRefresh: widget.onRefresh == null
+              ? null
+              : () async {
+                  final res = await widget.onRefresh?.call() ??
+                      JUIRefreshIndicatorResult.success;
+                  refreshController.finishRefresh(res);
+                  widget.refreshAnimationComplete?.call();
+                },
+          onLoading: widget.onLoad == null
+              ? null
+              : () async {
+                  final res = await widget.onLoad?.call() ??
+                      JUIRefreshIndicatorResult.success;
+                  refreshController.finishLoad(res, true);
+                  widget.loadAnimationComplete?.call();
+                },
+          child: widget.child),
     );
+    // var header = ch.ClassicHeader(
+    //     triggerOffset: 40,
+    //     dragText: JUISettings.refreshHeaderTextConfig.dragText,
+    //     armedText: JUISettings.refreshHeaderTextConfig.armedText,
+    //     readyText: JUISettings.refreshHeaderTextConfig.readyText,
+    //     processingText: JUISettings.refreshHeaderTextConfig.processingText,
+    //     processedText: JUISettings.refreshHeaderTextConfig.processedText,
+    //     noMoreText: JUISettings.refreshHeaderTextConfig.noMoreText,
+    //     failedText: JUISettings.refreshHeaderTextConfig.failedText,
+    //     messageText: JUISettings.refreshHeaderTextConfig.messageText,
+    //     showMessage: JUISettings.refreshHeaderTextConfig.showMessage,
+    //     iconTheme: JUISettings.refreshHeaderTextConfig.iconThemeData,
+    //     textStyle: JUISettings.refreshHeaderTextConfig.textStyle,
+    //     safeArea: widget.safeArea
+
+    //     // position: er.IndicatorPosition.locator,
+    //     );
+    // var footer = er.ClassicFooter(
+    //     dragText: JUISettings.refreshFooterTextConfig.dragText,
+    //     armedText: JUISettings.refreshFooterTextConfig.armedText,
+    //     readyText: JUISettings.refreshFooterTextConfig.readyText,
+    //     processingText: JUISettings.refreshFooterTextConfig.processingText,
+    //     processedText: JUISettings.refreshFooterTextConfig.processedText,
+    //     noMoreText: JUISettings.refreshFooterTextConfig.noMoreText,
+    //     failedText: JUISettings.refreshFooterTextConfig.failedText,
+    //     messageText: JUISettings.refreshFooterTextConfig.messageText,
+    //     showMessage: JUISettings.refreshFooterTextConfig.showMessage,
+    //     noMoreIcon: null,
+    //     iconTheme: JUISettings.refreshHeaderTextConfig.iconThemeData,
+    //     textStyle: JUISettings.refreshFooterTextConfig.textStyle,
+    //     safeArea: widget.safeArea
+    //     // position: er.IndicatorPosition.locator,
+    //     );
+    // if (widget.child != null) {
+    //   return er.EasyRefresh(
+    //     spring: SpringDescription(
+    //       mass: 1, // 质量
+    //       stiffness: 100, // 刚度（越大越硬，回弹越快）
+    //       damping: 15, // 阻尼（越大越快停下）
+    //     ),
+    //     scrollController: widget.scrollController,
+    //     header: header,
+    //     footer: footer,
+    //     resetAfterRefresh: false,
+    //     onRefresh: widget.onRefresh == null
+    //         ? null
+    //         : () async {
+    //             final res = await widget.onRefresh?.call() ??
+    //                 JUIRefreshIndicatorResult.success;
+    //             refreshController.finishRefresh(res);
+    //             widget.refreshAnimationComplete?.call();
+    //           },
+    //     onLoad: widget.onLoad == null
+    //         ? null
+    //         : () async {
+    //             final res = await widget.onLoad?.call() ??
+    //                 JUIRefreshIndicatorResult.success;
+    //             refreshController.finishLoad(res, true);
+    //             widget.loadAnimationComplete?.call();
+    //             return res;
+    //           },
+    //     refreshOnStart: widget.refreshOnStart,
+    //     controller: refreshController,
+    //     child: widget.child,
+    //   );
+    // } else {
+    //   return er.EasyRefresh.builder(
+    //     spring: SpringDescription(
+    //       mass: 1, // 质量
+    //       stiffness: 100, // 刚度（越大越硬，回弹越快）
+    //       damping: 15, // 阻尼（越大越快停下）
+    //     ),
+    //     scrollController: widget.scrollController,
+    //     header: header,
+    //     footer: footer,
+    //     resetAfterRefresh: false,
+    //     onRefresh: widget.onRefresh == null
+    //         ? null
+    //         : () async {
+    //             final res = await widget.onRefresh?.call() ??
+    //                 JUIRefreshIndicatorResult.success;
+    //             refreshController.finishRefresh(res);
+    //             widget.refreshAnimationComplete?.call();
+    //           },
+    //     onLoad: widget.onLoad == null
+    //         ? null
+    //         : () async {
+    //             final res = await widget.onLoad?.call() ??
+    //                 JUIRefreshIndicatorResult.success;
+    //             refreshController.finishLoad(res, true);
+    //             widget.loadAnimationComplete?.call();
+    //             return res;
+    //           },
+    //     refreshOnStart: widget.refreshOnStart,
+    //     controller: refreshController,
+    //     childBuilder: widget.childBuilder,
+    //   );
+    // }
   }
 
-  er.Footer? footer() {
-    return er.ClassicFooter(
-      dragText: JUISettings.refreshFooterTextConfig.dragText,
-      armedText: JUISettings.refreshFooterTextConfig.armedText,
-      readyText: JUISettings.refreshFooterTextConfig.readyText,
-      processingText: JUISettings.refreshFooterTextConfig.processingText,
-      processedText: JUISettings.refreshFooterTextConfig.processedText,
-      noMoreText: JUISettings.refreshFooterTextConfig.noMoreText,
-      failedText: JUISettings.refreshFooterTextConfig.failedText,
-      messageText: JUISettings.refreshFooterTextConfig.messageText,
-      showMessage: JUISettings.refreshFooterTextConfig.showMessage,
-      noMoreIcon: null,
-      iconTheme: IconThemeData(
-        color: Color.fromRGBO(147, 153, 159, 1),
-      ),
-      textStyle: const TextStyle(
-          fontSize: 12, color: Color.fromRGBO(147, 153, 159, 1)),
-    );
-  }
+  // er.Footer? footer() {
+  //   return er.ClassicFooter(
+  //     dragText: JUISettings.refreshFooterTextConfig.dragText,
+  //     armedText: JUISettings.refreshFooterTextConfig.armedText,
+  //     readyText: JUISettings.refreshFooterTextConfig.readyText,
+  //     processingText: JUISettings.refreshFooterTextConfig.processingText,
+  //     processedText: JUISettings.refreshFooterTextConfig.processedText,
+  //     noMoreText: JUISettings.refreshFooterTextConfig.noMoreText,
+  //     failedText: JUISettings.refreshFooterTextConfig.failedText,
+  //     messageText: JUISettings.refreshFooterTextConfig.messageText,
+  //     showMessage: JUISettings.refreshFooterTextConfig.showMessage,
+  //     noMoreIcon: null,
+  //     iconTheme: IconThemeData(
+  //       color: Color.fromRGBO(147, 153, 159, 1),
+  //     ),
+  //     textStyle: const TextStyle(
+  //         fontSize: 12, color: Color.fromRGBO(147, 153, 159, 1)),
+  //   );
+  // }
 
-  er.Header? header() {
-    return er.ClassicHeader(
-      triggerOffset: 18,
-      readySpringBuilder: er.kBezierSpringBuilder,
-      frictionFactor: er.kBezierFrictionFactor,
-      dragText: JUISettings.refreshHeaderTextConfig.dragText,
-      armedText: JUISettings.refreshHeaderTextConfig.armedText,
-      readyText: JUISettings.refreshHeaderTextConfig.readyText,
-      processingText: JUISettings.refreshHeaderTextConfig.processingText,
-      processedText: JUISettings.refreshHeaderTextConfig.processedText,
-      noMoreText: JUISettings.refreshHeaderTextConfig.noMoreText,
-      failedText: JUISettings.refreshHeaderTextConfig.failedText,
-      messageText: JUISettings.refreshHeaderTextConfig.messageText,
-      showMessage: JUISettings.refreshHeaderTextConfig.showMessage,
-      iconTheme: IconThemeData(
-        color: Color.fromRGBO(147, 153, 159, 1),
-      ),
-      textStyle:
-          TextStyle(fontSize: 12, color: Color.fromRGBO(147, 153, 159, 1)),
-    );
-  }
+  // er.Header? header() {
+  //   return er.ClassicHeader(
+  //     triggerOffset: 18,
+  //     readySpringBuilder: er.kBezierSpringBuilder,
+  //     frictionFactor: er.kBezierFrictionFactor,
+  //     dragText: JUISettings.refreshHeaderTextConfig.dragText,
+  //     armedText: JUISettings.refreshHeaderTextConfig.armedText,
+  //     readyText: JUISettings.refreshHeaderTextConfig.readyText,
+  //     processingText: JUISettings.refreshHeaderTextConfig.processingText,
+  //     processedText: JUISettings.refreshHeaderTextConfig.processedText,
+  //     noMoreText: JUISettings.refreshHeaderTextConfig.noMoreText,
+  //     failedText: JUISettings.refreshHeaderTextConfig.failedText,
+  //     messageText: JUISettings.refreshHeaderTextConfig.messageText,
+  //     showMessage: JUISettings.refreshHeaderTextConfig.showMessage,
+  //     iconTheme: IconThemeData(
+  //       color: Color.fromRGBO(147, 153, 159, 1),
+  //     ),
+  //     textStyle:
+  //         TextStyle(fontSize: 12, color: Color.fromRGBO(147, 153, 159, 1)),
+  //   );
+  // }
 }
 
 class JUIPagingListWidget<T> extends StatelessWidget {
@@ -178,6 +397,7 @@ class JUIPagingListWidget<T> extends StatelessWidget {
   final bool refreshOnStart;
   final bool isSingleScrollView;
   final bool isLodeMore;
+  final bool safeArea;
 
   JUIPagingListWidget({
     super.key,
@@ -191,6 +411,7 @@ class JUIPagingListWidget<T> extends StatelessWidget {
     this.refreshOnStart = true,
     this.isSingleScrollView = true,
     this.isLodeMore = true,
+    this.safeArea = true,
   }) : super() {
     pageModel._customPagingSize = pageSize;
 
@@ -205,6 +426,7 @@ class JUIPagingListWidget<T> extends StatelessWidget {
       child: JUIRefresh(
         scrollController: scrollController,
         controller: controller,
+        safeArea: safeArea,
         onRefresh: () {
           beforeRefresh?.call();
           var future = pageModel._onRefreshDown(callConRefresh: false);
@@ -384,22 +606,28 @@ mixin JUIPageListRefreshModel<T> {
     _currPageIndex = isRefresh
         ? _DEFAULT_START_PAGE_INDEX
         : _handlePageIndex(_currPageIndex, pagingSize);
-    var future = load(_currPageIndex, _handlePage(_currPageIndex, pagingSize));
+    try {
+      var future =
+          load(_currPageIndex, _handlePage(_currPageIndex, pagingSize));
 
-    loadingFuture = future;
+      loadingFuture = future;
 
-    future.then((data) {
-      debugPrint('future then: $data');
-      dataList.addAll(data.list);
+      future.then((data) {
+        debugPrint('future then: $data');
+        dataList.addAll(data.list);
 
-      _onFinish(true);
-    }).catchError((e) {
+        _onFinish(true);
+      }).catchError((e) {
+        _onFinish(false);
+      }).whenComplete(() {
+        _isLoading = false;
+        isRefreshing = false;
+        loadingFuture = null;
+      });
+      return future;
+    } catch (e) {
       _onFinish(false);
-    }).whenComplete(() {
-      _isLoading = false;
-      isRefreshing = false;
-      loadingFuture = null;
-    });
-    return future;
+      rethrow;
+    }
   }
 }
