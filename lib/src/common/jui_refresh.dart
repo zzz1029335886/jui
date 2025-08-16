@@ -50,7 +50,7 @@ enum JUIRefreshIndicatorResult {
 typedef JUIRefresherBuilder = RefresherBuilder; //er.ERChildBuilder;
 
 // typedef EasyRefresh = er.EasyRefresh;
-class JUIEasyRefreshController extends RefreshController {
+class JUIRefreshController extends RefreshController {
   void finishRefresh(JUIRefreshIndicatorResult result) {
     switch (result) {
       case JUIRefreshIndicatorResult.success:
@@ -113,7 +113,7 @@ class JUIEasyRefreshController extends RefreshController {
 
   Future callRefresh({ScrollController? scrollController}) async {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      requestRefresh();
+      requestRefresh(duration: const Duration(milliseconds: 250));
     });
   }
 }
@@ -121,11 +121,11 @@ class JUIEasyRefreshController extends RefreshController {
 class JUIRefresh extends StatefulWidget {
   final Widget? child;
   final JUIRefresherBuilder? childBuilder;
-  final JUIEasyRefreshController? controller;
+  final JUIRefreshController? controller;
   final ScrollController? scrollController;
   final bool refreshOnStart;
   final bool safeArea;
-  final ValueChanged<JUIEasyRefreshController>? createdController;
+  final ValueChanged<JUIRefreshController>? createdController;
   final VoidCallback? refreshAnimationComplete;
   final VoidCallback? loadAnimationComplete;
 
@@ -152,14 +152,13 @@ class JUIRefresh extends StatefulWidget {
 }
 
 class _JUIRefreshState extends State<JUIRefresh> {
-  late JUIEasyRefreshController refreshController;
+  late JUIRefreshController refreshController;
   // late final JUIEasyRefreshController _refreshController =
   //     JUIEasyRefreshController(
   //   controlFinishRefresh: true,
   //   controlFinishLoad: false,
   // );
-  final JUIEasyRefreshController _refreshController =
-      JUIEasyRefreshController();
+  final JUIRefreshController _refreshController = JUIRefreshController();
 
   @override
   void initState() {
@@ -202,6 +201,7 @@ class _JUIRefreshState extends State<JUIRefresh> {
             refreshingText: JUISettings.refreshHeaderTextConfig.processingText,
             completeText: JUISettings.refreshHeaderTextConfig.processedText,
             idleText: JUISettings.refreshHeaderTextConfig.dragText,
+            failedText: JUISettings.refreshHeaderTextConfig.failedText,
             failedIcon: const Icon(Icons.error, color: Colors.grey),
             completeIcon: const Icon(Icons.done, color: Colors.grey),
             idleIcon: const Icon(Icons.arrow_downward, color: Colors.grey),
@@ -215,6 +215,7 @@ class _JUIRefreshState extends State<JUIRefresh> {
             idleText: JUISettings.refreshFooterTextConfig.dragText,
             loadingText: JUISettings.refreshFooterTextConfig.processingText,
             noDataText: JUISettings.refreshFooterTextConfig.noMoreText,
+            failedText: JUISettings.refreshHeaderTextConfig.failedText,
             textStyle: JUISettings.refreshFooterTextConfig.textStyle,
             loadingIcon: SizedBox(
               width: 24,
@@ -391,7 +392,7 @@ class JUIPagingListWidget<T> extends StatelessWidget {
   final VoidCallback? refreshCompleted;
   final VoidCallback? beforeRefresh;
   final ScrollController? scrollController;
-  final JUIEasyRefreshController? controller;
+  final JUIRefreshController? controller;
 
   final Widget child;
   final bool refreshOnStart;
@@ -439,7 +440,7 @@ class JUIPagingListWidget<T> extends StatelessWidget {
                 return _complete(future, false);
               },
         refreshOnStart: refreshOnStart,
-        createdController: (JUIEasyRefreshController controller) {
+        createdController: (JUIRefreshController controller) {
           pageModel._refreshController = controller;
           if (!isSingleScrollView) {
             pageModel._refreshWithOutAnimate();
@@ -500,9 +501,9 @@ class JUIPageListResultModel<T> {
 }
 
 mixin JUIPageListRefreshModel<T> {
-  late JUIEasyRefreshController _refreshController;
+  late JUIRefreshController _refreshController;
 
-  JUIEasyRefreshController get refreshController => _refreshController;
+  JUIRefreshController get refreshController => _refreshController;
 
   // ignore: constant_identifier_names
   static const int _DEFAULT_START_PAGE_INDEX = 1;
