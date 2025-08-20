@@ -28,7 +28,7 @@ dependencies:
   # 底部弹出
   modal_bottom_sheet: ^3.0.0-pre
   # 图片选择
-  image_pickers: ^2.0.1
+  # image_pickers: ^2.0.1
   # 加载框
   flutter_easyloading: ^3.0.5
   # 自定义键盘操作按钮
