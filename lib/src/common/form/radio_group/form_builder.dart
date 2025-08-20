@@ -80,7 +80,7 @@ class FormBuilder extends StatefulWidget {
   ///
   /// The [child] argument must not be null.
   const FormBuilder({
-    Key? key,
+    super.key,
     required this.child,
     this.onChanged,
     this.autovalidateMode,
@@ -90,7 +90,7 @@ class FormBuilder extends StatefulWidget {
     this.enabled = true,
     this.autoFocusOnValidationFailure = false,
     this.clearValueOnUnregister = false,
-  }) : super(key: key);
+  });
 
   static FormBuilderState? of(BuildContext context) =>
       context.findAncestorStateOfType<FormBuilderState>();

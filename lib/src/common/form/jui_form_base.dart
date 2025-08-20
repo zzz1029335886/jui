@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'jui_form_builder.dart';
+import 'jui_form.dart';
 
 class JUIFormConfig {
   late String? title; // 标题
@@ -102,7 +102,6 @@ abstract class JUIFormBaseState<T extends JUIFormBase> extends State<T> {
   double get contentWidth {
     var screenWidth = MediaQuery.of(context).size.width;
     var config = getConfig();
-    var style = getStyle();
 
     var width = screenWidth -
         stylePadding.left -
@@ -127,9 +126,7 @@ abstract class JUIFormBaseState<T extends JUIFormBase> extends State<T> {
     return width;
   }
 
-/**
- * 计算文本内容宽度
- */
+  /// 计算文本内容宽度
   double _textWidth(String title, TextStyle? textStyle) {
     var tp = TextPainter(
         textDirection: TextDirection.ltr,
@@ -139,11 +136,11 @@ abstract class JUIFormBaseState<T extends JUIFormBase> extends State<T> {
     return tp.width;
   }
 
-  JUIFormBuilderState? formBuilderState;
+  JUIFormState? formBuilderState;
 
   @override
   void initState() {
-    formBuilderState = JUIFormBuilder.of(context);
+    formBuilderState = JUIForm.of(context);
     super.initState();
   }
 
@@ -161,7 +158,8 @@ abstract class JUIFormBaseState<T extends JUIFormBase> extends State<T> {
     var linePadding = style.linePadding;
 
     Widget contentWidget = Container(
-      color: bgColor,
+      color: style.decoration == null ? bgColor : null,
+      decoration: style.decoration,
       padding: padding,
       margin: margin,
       height: height != null
@@ -219,9 +217,7 @@ abstract class JUIFormBaseState<T extends JUIFormBase> extends State<T> {
     );
   }
 
-  Widget mainWidget(
-    isRow,
-  ) {
+  Widget mainWidget(bool isRow) {
     var config = getConfig();
     var style = getStyle();
     var height = style.height;
@@ -264,6 +260,8 @@ abstract class JUIFormBaseState<T extends JUIFormBase> extends State<T> {
       getStyle().padding ?? deepStyle?.padding ?? EdgeInsets.zero;
   EdgeInsets get styleMargin =>
       getStyle().margin ?? deepStyle?.margin ?? EdgeInsets.zero;
+  double get titleBottomPadding =>
+      getStyle().titleBottomPadding ?? deepStyle?.titleBottomPadding ?? 0;
 
   Widget titleWidget() {
     var config = getConfig();
@@ -272,6 +270,7 @@ abstract class JUIFormBaseState<T extends JUIFormBase> extends State<T> {
       alignment: Alignment.center,
       width: titleWidth,
       height: titleHeight,
+      margin: EdgeInsets.only(bottom: titleBottomPadding),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.start,

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
 import '../../other/cf_picture_selection.dart';
-import 'jui_form.dart';
+import 'jui_form_export.dart';
 
+// ignore: must_be_immutable
 class JUIFormImages extends JUIFormBase {
   final int columnCount;
   final bool isUpload;

@@ -25,6 +25,7 @@ class GroupedRadio<T> extends StatefulWidget {
   ///
   /// Defaults to [ThemeData.toggleableActiveColor].
   final Color? activeColor;
+  final Color? inactiveColor;
 
   /// Configures the minimum size of the tap target.
   final MaterialTapTargetSize? materialTapTargetSize;
@@ -72,6 +73,7 @@ class GroupedRadio<T> extends StatefulWidget {
   ///
   /// Defaults to 0.0.
   final double wrapSpacing;
+  final double textSpacing;
 
   /// How the runs themselves should be placed in the cross axis.
   ///
@@ -181,9 +183,11 @@ class GroupedRadio<T> extends StatefulWidget {
     this.value,
     this.disabled,
     this.activeColor,
+    this.inactiveColor,
     this.focusColor,
     this.hoverColor,
     this.materialTapTargetSize,
+    this.textSpacing = 0,
     this.wrapDirection = Axis.horizontal,
     this.wrapAlignment = WrapAlignment.start,
     this.wrapSpacing = 0.0,
@@ -214,13 +218,17 @@ class _GroupedRadioState<T> extends State<GroupedRadio<T?>> {
           scrollDirection: Axis.vertical,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
+            spacing: widget.wrapSpacing,
             children: widgetList,
           ),
         );
       case OptionsOrientation.horizontal:
         return SingleChildScrollView(
           scrollDirection: Axis.horizontal,
-          child: Row(children: widgetList),
+          child: Row(
+            spacing: widget.wrapSpacing,
+            children: widgetList,
+          ),
         );
       case OptionsOrientation.wrap:
       default:
@@ -247,8 +255,16 @@ class _GroupedRadioState<T> extends State<GroupedRadio<T?>> {
     final isOptionDisabled = true == widget.disabled?.contains(optionValue);
     final control = Radio<T?>(
       groupValue: widget.value,
-      activeColor: widget.activeColor,
+      // activeColor: widget.activeColor,
       focusColor: widget.focusColor,
+      // fillColor: WidgetStateProperty.all(widget.inactiveColor), // 改颜色
+      fillColor: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.selected)) {
+          return widget.activeColor; // 选中时
+        }
+        return widget.inactiveColor; // 未选中时
+      }),
+      splashRadius: 0.5,
       hoverColor: widget.hoverColor,
       materialTapTargetSize: widget.materialTapTargetSize,
       value: optionValue,
@@ -267,33 +283,35 @@ class _GroupedRadioState<T> extends State<GroupedRadio<T?>> {
             },
       child: option,
     );
+    final content = SizedBox(
+      height: 20,
+      width: 20,
+      child: control,
+    );
 
-    return Container(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            height: 23,
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                if (widget.controlAffinity == ControlAffinity.leading) control,
-                Flexible(child: label),
-                if (widget.controlAffinity == ControlAffinity.trailing) control,
-                if (widget.orientation != OptionsOrientation.vertical &&
-                    widget.separator != null &&
-                    index != widget.options.length - 1)
-                  widget.separator!,
-              ],
-            ),
-          ),
-          if (widget.orientation == OptionsOrientation.vertical &&
-              widget.separator != null &&
-              index != widget.options.length - 1)
-            widget.separator!,
-        ],
-      ),
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          spacing: widget.textSpacing,
+          children: [
+            if (widget.controlAffinity == ControlAffinity.leading) content,
+            Flexible(child: label),
+            if (widget.controlAffinity == ControlAffinity.trailing) content,
+            if (widget.orientation != OptionsOrientation.vertical &&
+                widget.separator != null &&
+                index != widget.options.length - 1)
+              widget.separator!,
+          ],
+        ),
+        if (widget.orientation == OptionsOrientation.vertical &&
+            widget.separator != null &&
+            index != widget.options.length - 1)
+          widget.separator!,
+      ],
     );
   }
 }

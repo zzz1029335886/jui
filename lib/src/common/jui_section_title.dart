@@ -1,28 +1,38 @@
 import 'package:flutter/material.dart';
 import 'package:jui/jui.dart';
 
+// ignore: must_be_immutable
 class JUISectionTitleContainer extends StatelessWidget {
   final String title;
+  final TextStyle? titleStyle;
   final Widget child;
   late Widget? titleRightChild;
+  late Widget? leadingTitleChild;
   final VoidCallback? moreCallbackAction;
-  JUISectionTitleContainer(this.title,
-      {required this.child,
-      this.moreCallbackAction,
-      this.titleRightChild,
-      super.key}) {
+  JUISectionTitleContainer(
+    this.title, {
+    required this.child,
+    this.titleStyle,
+    this.moreCallbackAction,
+    this.titleRightChild,
+    this.leadingTitleChild,
+    super.key,
+  }) {
     if (moreCallbackAction != null) {
       titleRightChild =
           JUIButton.moreButton(onPressed: moreCallbackAction!, title: '查看更多');
     }
   }
 
-  static Widget defaultStyle(String title,
-      {required Widget child,
-      double marginMiddle = 20,
-      double bottomPadding = 20,
-      VoidCallback? moreCallbackAction,
-      Widget? titleRightChild}) {
+  static Widget defaultStyle(
+    String title, {
+    required Widget child,
+    double marginMiddle = 20,
+    double bottomPadding = 20,
+    VoidCallback? moreCallbackAction,
+    Widget? titleRightChild,
+    Widget? leadingTitleChild,
+  }) {
     return Container(
       padding:
           EdgeInsets.only(top: 20, left: 16, right: 16, bottom: bottomPadding),
@@ -31,6 +41,7 @@ class JUISectionTitleContainer extends StatelessWidget {
         title,
         titleRightChild: titleRightChild,
         moreCallbackAction: moreCallbackAction,
+        leadingTitleChild: leadingTitleChild ?? Container(),
         child: Container(
           margin: EdgeInsets.only(top: marginMiddle),
           child: child,
@@ -42,26 +53,26 @@ class JUISectionTitleContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Row(
               children: [
-                Container(
-                  width: 3,
-                  height: 16,
-                  decoration: const BoxDecoration(
-                      color: Color.fromRGBO(129, 216, 208, 1),
-                      borderRadius: BorderRadius.all(Radius.circular(1.5))),
-                ),
-                const SizedBox(
-                  width: 8,
-                ),
+                leadingTitleChild != null
+                    ? leadingTitleChild!
+                    : Container(
+                        width: 3,
+                        height: 16,
+                        margin: EdgeInsets.only(right: 8),
+                        decoration: const BoxDecoration(
+                            color: Color.fromRGBO(129, 216, 208, 1),
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(1.5))),
+                      ),
                 Text(
                   title,
-                  style: Theme.of(context).textTheme.titleMedium,
+                  style: titleStyle ?? Theme.of(context).textTheme.titleMedium,
                 ),
               ],
             ),

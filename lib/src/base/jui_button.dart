@@ -26,28 +26,31 @@ class JUIButton extends StatelessWidget {
   final String? badgeValue;
   final double badgeHeight;
   final int? maxLines;
+  final Alignment? alignment;
 
-  const JUIButton(
-      {this.onPressed,
-      this.labelPosition = JUIButtonLabelPosition.labelRight,
-      this.isEnabled = true,
-      this.icon,
-      this.iconWidget,
-      this.iconSize,
-      this.badgeValue,
-      this.badgeHeight = 16,
-      this.padding = EdgeInsets.zero,
-      this.color,
-      this.tintColor,
-      this.title,
-      this.maxLines,
-      this.titleColor,
-      this.titleAlign,
-      this.middlePadding = 8,
-      this.fontSize,
-      this.fontWeight,
-      this.child,
-      super.key});
+  const JUIButton({
+    this.onPressed,
+    this.labelPosition = JUIButtonLabelPosition.labelRight,
+    this.isEnabled = true,
+    this.icon,
+    this.iconWidget,
+    this.iconSize,
+    this.badgeValue,
+    this.badgeHeight = 16,
+    this.padding = EdgeInsets.zero,
+    this.color,
+    this.tintColor,
+    this.title,
+    this.maxLines,
+    this.titleColor,
+    this.titleAlign,
+    this.middlePadding = 8,
+    this.fontSize,
+    this.fontWeight,
+    this.child,
+    this.alignment,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -81,8 +84,12 @@ class JUIButton extends StatelessWidget {
       children: children,
     );
 
-    Widget finalWidget =
-        isOneWidget ? children.first : Container(child: showChild);
+    Widget finalWidget = isOneWidget
+        ? children.first
+        : Container(
+            alignment: alignment,
+            child: showChild,
+          );
     Widget button = JUIEnabled(
       isEnabled: isEnabled,
       child: TextButton(
@@ -137,11 +144,11 @@ class JUIButton extends StatelessWidget {
     );
   }
 
-  get isOneWidget =>
+  bool get isOneWidget =>
       (icon == null && iconWidget == null) &&
           (title != null || child != null) ||
       (icon != null || iconWidget != null) && title == null && child == null;
-  get isVertical =>
+  bool get isVertical =>
       labelPosition == JUIButtonLabelPosition.labelBottom ||
       labelPosition == JUIButtonLabelPosition.labelTop;
 
@@ -205,32 +212,35 @@ class JUIButton extends StatelessWidget {
         maxLines: maxLines);
   }
 
-  static Widget themeBackground(
-      {VoidCallback? onPressed,
-      double? width,
-      EdgeInsets? padding,
-      EdgeInsets? margin,
-      bool isEnabled = true,
-      String? title,
-      int? maxLines,
-      double? radius = 7,
-      double? fontSize = 16,
-      double? height = 44,
-      Color? backgroundColor = const Color.fromRGBO(129, 216, 208, 1),
-      bool isShowOnAppBar = false}) {
+  static Widget themeBackground({
+    VoidCallback? onPressed,
+    double? width,
+    EdgeInsets? padding,
+    EdgeInsets? margin,
+    bool isEnabled = true,
+    String? title,
+    int? maxLines,
+    double? radius = 22,
+    double? fontSize = 16,
+    double? height = 44,
+    Color? backgroundColor = const Color(0xff6BC9C0),
+    bool isShowOnAppBar = false,
+  }) {
     return custom(
-        onPressed: onPressed,
-        width: width,
-        padding: padding,
-        isEnabled: isEnabled,
-        margin: margin,
-        height: height,
-        fontSize: fontSize,
-        radius: radius,
-        backgroundColor: backgroundColor,
-        isShowOnAppBar: isShowOnAppBar,
-        maxLines: maxLines,
-        title: title);
+      onPressed: onPressed,
+      width: width,
+      padding: padding,
+      isEnabled: isEnabled,
+      margin: margin,
+      height: height,
+      fontSize: fontSize,
+      radius: radius,
+      backgroundColor: backgroundColor,
+      isShowOnAppBar: isShowOnAppBar,
+      maxLines: maxLines,
+      title: title,
+      titleColor: Colors.white,
+    );
   }
 
   static Widget pageBottomButtons({
@@ -264,53 +274,66 @@ class JUIButton extends StatelessWidget {
     required String title,
     bool isEnabled = true,
     VoidCallback? onPressed,
+    bool safeBottom = true,
+    Color? backgroundColor,
+    bool divider = true,
+    EdgeInsets? padding,
   }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        const Divider(
-          height: 0.5,
+    return Container(
+      color: backgroundColor ?? Colors.white,
+      child: SafeArea(
+        top: false,
+        bottom: safeBottom,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            if (divider)
+              const Divider(
+                height: 0.5,
+              ),
+            Container(
+              padding: padding ??
+                  const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: JUIButton.themeBackground(
+                onPressed: onPressed,
+                isEnabled: isEnabled,
+                title: title,
+              ),
+            ),
+          ],
         ),
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          color: Colors.white,
-          child: JUIButton.themeBackground(
-            onPressed: onPressed,
-            isEnabled: isEnabled,
-            title: title,
-          ),
-        ),
-      ],
+      ),
     );
   }
 
-  static Widget custom(
-      {Key? key,
-      Color? color,
-      VoidCallback? onPressed,
-      String? title,
-      int? maxLines,
-      IconData? icon,
-      double? iconSize,
-      Widget? iconWidget,
-      Color? tintColor,
-      double? width,
-      Widget? clild,
-      EdgeInsets? padding,
-      EdgeInsets? margin,
-      double? height,
-      double middlePadding = 8,
-      bool isEnabled = true,
-      Color? titleColor,
-      double? fontSize,
-      FontWeight? fontWeight,
-      double? radius,
-      Color? borderColor,
-      double borderWidth = 0.5,
-      Color? backgroundColor,
-      String? badgeValue,
-      double badgeHeight = 16,
-      bool isShowOnAppBar = false}) {
+  static Widget custom({
+    Key? key,
+    Color? color,
+    VoidCallback? onPressed,
+    String? title,
+    int? maxLines,
+    IconData? icon,
+    double? iconSize,
+    Widget? iconWidget,
+    Color? tintColor,
+    double? width,
+    Widget? clild,
+    EdgeInsets? padding,
+    EdgeInsets? margin,
+    double? height,
+    double middlePadding = 8,
+    bool isEnabled = true,
+    Color? titleColor,
+    double? fontSize,
+    FontWeight? fontWeight,
+    double? radius,
+    Color? borderColor,
+    double borderWidth = 0.5,
+    Color? backgroundColor,
+    String? badgeValue,
+    double badgeHeight = 16,
+    bool isShowOnAppBar = false,
+  }) {
     var _padding = padding;
     // if (isShowOnAppBar && padding == null) {
     //   _padding = const EdgeInsets.only(right: 16);

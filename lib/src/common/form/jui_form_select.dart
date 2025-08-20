@@ -8,19 +8,22 @@ class JUIFormSelect extends JUIFormContent {
   final bool hiddenArrow;
   final VoidCallback? clickCallback;
   final String? placeholder;
-  final TextStyle? contentTextStyle;
   final TextStyle? placeholderTextStyle;
   final double iconSize;
+  final Color? iconColor;
+  final MainAxisAlignment mainAxisAlignment;
+
   JUIFormSelect({
     super.key,
     super.content,
-    this.contentTextStyle,
     this.placeholderTextStyle =
         const TextStyle(color: Color.fromRGBO(183, 187, 191, 1), fontSize: 14),
     this.placeholder,
     this.clickCallback,
     this.hiddenArrow = false,
     this.iconSize = 18,
+    this.iconColor,
+    this.mainAxisAlignment = MainAxisAlignment.start,
     super.config,
     super.style,
     super.styleBuilder,
@@ -35,11 +38,12 @@ class _JUIFormSelectState extends JUIFormBaseState<JUIFormSelect> {
   @override
   Widget contentBuild(BuildContext context) {
     return Row(
+      mainAxisAlignment: widget.mainAxisAlignment,
       children: [
         if (widget.content != null)
           Text(
             widget.content!,
-            style: widget.contentTextStyle,
+            style: widget.contentStyle,
           ),
         if (widget.content == null && widget.placeholder != null)
           Text(
@@ -48,8 +52,11 @@ class _JUIFormSelectState extends JUIFormBaseState<JUIFormSelect> {
           ),
         Offstage(
           offstage: widget.hiddenArrow,
-          child: Icon(Icons.arrow_forward_ios,
-              size: widget.iconSize, color: const Color(0xFFC8C8C8)),
+          child: Icon(
+            Icons.arrow_forward_ios,
+            size: widget.iconSize,
+            color: widget.iconColor ?? const Color(0xFFC8C8C8),
+          ),
         )
       ],
     );
