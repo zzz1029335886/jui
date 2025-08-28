@@ -558,6 +558,12 @@ mixin JUIPageListRefreshModel<T> {
     notifyRefresh?.call();
   }
 
+  Future<JUIPageListResultModel<T>?> onLoadUp(
+      {bool callConRefresh = true, ScrollController? scrollController}) {
+    return _onLoadUp(
+        callConRefresh: callConRefresh, scrollController: scrollController);
+  }
+
   Future<JUIPageListResultModel<T>?> _onLoadUp(
       {bool callConRefresh = true, ScrollController? scrollController}) async {
     if (callConRefresh) {
@@ -566,6 +572,12 @@ mixin JUIPageListRefreshModel<T> {
           .then((value) => null);
     }
     return _loadPage(isRefresh: false);
+  }
+
+  Future<JUIPageListResultModel<T>?> onRefreshDown(
+      {bool callConRefresh = true, ScrollController? scrollController}) {
+    return _onRefreshDown(
+        callConRefresh: callConRefresh, scrollController: scrollController);
   }
 
   Future<JUIPageListResultModel<T>?> _onRefreshDown(
