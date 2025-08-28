@@ -26,11 +26,11 @@ dependencies:
   # 流水布局
   flutter_staggered_grid_view: ^0.7.0
   # 底部弹出
-  modal_bottom_sheet: ^3.0.0-pre
+  modal_bottom_sheet: ^3.0.0
   # 图片选择
   image_pickers: ^2.0.6
   # 加载框
-  flutter_easyloading: ^3.0.5
+  # flutter_easyloading: ^3.0.5
   # 自定义键盘操作按钮
   # keyboard_actions: ^4.2.0
   get: ^4.6.5
